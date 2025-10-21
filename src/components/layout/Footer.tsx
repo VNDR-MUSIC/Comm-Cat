@@ -11,7 +11,8 @@ const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Footer = () => {
-    const partnerLogos = PlaceHolderImages.filter(img => img.id.startsWith("logo-"));
+    const blaqueTechLogo = PlaceHolderImages.find(img => img.id === 'logo-blaque-tech');
+    const imgLogo = PlaceHolderImages.find(img => img.id === 'logo-img');
 
   return (
     <footer className="bg-secondary text-secondary-foreground">
@@ -73,12 +74,16 @@ const Footer = () => {
                     <p className="font-bold">Powered by:</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <a href="https://blaque.tech" target="_blank" rel="noopener noreferrer">
-                        <Image src="https://i.ibb.co/r2QMqgJG/Blaque-Tech.png" alt="Blaque Tech Logo" width={100} height={40} className="object-contain invert" />
-                    </a>
-                     <a href="https://indieMedia.llc" target="_blank" rel="noopener noreferrer">
-                        <Image src="https://i.ibb.co/v64ZGh4m/logo-full-256x.png" alt="IMG Independent Media Group Logo" width={100} height={40} className="object-contain invert" />
-                    </a>
+                    {blaqueTechLogo && (
+                        <Link href="https://blaque.tech" target="_blank" rel="noopener noreferrer">
+                            <Image src={blaqueTechLogo.imageUrl} alt={blaqueTechLogo.description} width={100} height={40} className="object-contain invert" data-ai-hint={blaqueTechLogo.imageHint} />
+                        </Link>
+                    )}
+                     {imgLogo && (
+                         <Link href="https://indieMedia.llc" target="_blank" rel="noopener noreferrer">
+                            <Image src={imgLogo.imageUrl} alt={imgLogo.description} width={100} height={40} className="object-contain invert" data-ai-hint={imgLogo.imageHint} />
+                        </Link>
+                     )}
                 </div>
             </div>
             <p className="text-xs text-secondary-foreground/40 mb-4">Blaque Tech is a subsidiary of IMG Independent Media Group</p>

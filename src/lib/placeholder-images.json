@@ -107,6 +107,18 @@
       "description": "National Institute of Corrections Logo",
       "imageUrl": "https://picsum.photos/seed/niclogo/150/60",
       "imageHint": "corrections seal"
+    },
+    {
+      "id": "logo-blaque-tech",
+      "description": "Blaque Tech Logo",
+      "imageUrl": "https://i.ibb.co/r2QMqgJG/Blaque-Tech.png",
+      "imageHint": "tech logo"
+    },
+    {
+      "id": "logo-img",
+      "description": "IMG Independent Media Group Logo",
+      "imageUrl": "https://i.ibb.co/v64ZGh4m/logo-full-256x.png",
+      "imageHint": "media group logo"
     }
   ]
 }
