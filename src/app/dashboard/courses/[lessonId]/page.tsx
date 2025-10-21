@@ -4,8 +4,10 @@ import { useParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, FileText, Download, PlayCircle } from 'lucide-react';
+import { CheckCircle, FileText, Download, PlayCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
+import { collection, query, where, serverTimestamp } from 'firebase/firestore';
 
 const lessons: { [key: string]: { title: string, module: string, videoUrl?: string, description: string } } = {
     l1: { 
@@ -43,6 +45,12 @@ const lessons: { [key: string]: { title: string, module: string, videoUrl?: stri
     },
 };
 
+interface UserLessonProgress {
+    userId: string;
+    lessonId: string;
+    completedAt: any;
+}
+
 const getNextLesson = (currentId: string) => {
     const lessonKeys = Object.keys(lessons);
     const currentIndex = lessonKeys.indexOf(currentId);
@@ -56,8 +64,37 @@ const getNextLesson = (currentId: string) => {
 export default function LessonPage() {
     const params = useParams();
     const lessonId = params.lessonId as string;
+    const { user } = useUser();
+    const firestore = useFirestore();
+
     const lesson = lessons[lessonId] || { title: "Lesson Not Found", module: "Unknown Module", description: "This lesson does not exist." };
     const nextLesson = getNextLesson(lessonId);
+
+    const progressQuery = useMemoFirebase(() => {
+        if (!firestore || !user?.uid) return null;
+        return query(
+            collection(firestore, 'userLessonProgress'),
+            where('userId', '==', user.uid),
+            where('lessonId', '==', lessonId)
+        );
+    }, [firestore, user?.uid, lessonId]);
+
+    const { data: progress, isLoading } = useCollection<UserLessonProgress>(progressQuery);
+
+    const isCompleted = progress && progress.length > 0;
+
+    const handleMarkComplete = () => {
+        if (!firestore || !user?.uid || isCompleted) return;
+
+        const progressData = {
+            userId: user.uid,
+            lessonId: lessonId,
+            completedAt: serverTimestamp(),
+        };
+
+        const collectionRef = collection(firestore, 'userLessonProgress');
+        addDocumentNonBlocking(collectionRef, progressData);
+    };
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
@@ -104,7 +141,10 @@ export default function LessonPage() {
                                 <CardTitle>Actions</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <Button className="w-full justify-start"><CheckCircle /> Mark as Complete</Button>
+                                <Button className="w-full justify-start" onClick={handleMarkComplete} disabled={isLoading || isCompleted}>
+                                    {isLoading ? <Loader2 className="animate-spin" /> : <CheckCircle />}
+                                    <span>{isCompleted ? 'Completed' : 'Mark as Complete'}</span>
+                                </Button>
                                 <Button variant="outline" className="w-full justify-start"><FileText /> Reflect (Journal)</Button>
                                 <Button variant="outline" className="w-full justify-start"><Download /> Download Resources</Button>
                             </CardContent>
@@ -134,3 +174,5 @@ export default function LessonPage() {
         </div>
     );
 }
+
+    

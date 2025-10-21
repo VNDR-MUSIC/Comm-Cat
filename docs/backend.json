@@ -402,6 +402,27 @@
         "title",
         "createdAt"
       ]
+    },
+     "UserLessonProgress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserLessonProgress",
+      "type": "object",
+      "description": "Tracks when a user completes a specific lesson.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who completed the lesson."
+        },
+        "lessonId": {
+          "type": "string",
+          "description": "The ID of the completed lesson."
+        },
+        "completedAt": {
+          "type": "object",
+          "description": "The timestamp when the lesson was marked as complete."
+        }
+      },
+      "required": ["userId", "lessonId", "completedAt"]
     }
   },
   "auth": {
@@ -511,7 +532,7 @@
           "schema": {
             "$ref": "#/backend/entities/DiscussionPost"
           },
-          "description": "Stores all discussion posts across all modules. Accessible to all authenticated users.",
+          "description": "Stores all discussion posts across all modules. Accessible to all authenticated users for viewing, and only by the author for writing.",
           "params": [
             {
               "name": "postId",
@@ -623,9 +644,26 @@
             }
           ]
         }
+      },
+      {
+        "path": "/userLessonProgress/{progressId}",
+        "definition": {
+          "entityName": "UserLessonProgress",
+          "schema": {
+            "$ref": "#/backend/entities/UserLessonProgress"
+          },
+          "description": "Tracks when a user completes a specific lesson. Stored in a top-level collection for easy querying across all users and lessons. Accessible for reads by the user and for writes only by the user.",
+          "params": [
+            {
+              "name": "progressId",
+              "description": "The unique identifier for the lesson progress record."
+            }
+          ]
+        }
       }
     ],
     "reasoning": "The Firestore structure is designed to support the Catalyst Academy platform, focusing on courses, user progress, and community interaction. It emphasizes authorization independence and clear security rules. User-specific data (progress, certificates) is stored under the `/users/{userId}` path for private access. Course-related data (courses, modules, lessons, resources) is stored in top-level collections, enabling efficient listing and querying. Discussion threads and replies are nested under modules to maintain context and facilitate moderation. The structure uses denormalization where necessary to avoid complex security rules that require `get()` calls.\n\n**Authorization Independence:** User-specific data like `UserCourseProgress`, `ModuleProgress`, and `Certificate` are nested under `/users/{userId}`. This inherently ties the data's access control to the user's ID, removing the need for `get()` calls in security rules. For collaborative content like `DiscussionThread` and `DiscussionReply`, the `creatorId` field is used, which, although not strictly a membership map, allows simple checks against `request.auth.uid` for creation and modification.\n\n**QAPs (Rules are not Filters):** Segregation is used extensively. User data is separated from course content. Private user data resides under `/users/{userId}`, ensuring that listing operations are always secure. Public course content is stored in top-level collections, and its access is controlled based on user authentication (e.g., only authenticated users can access certain course details)."
   }
 }
+
     
