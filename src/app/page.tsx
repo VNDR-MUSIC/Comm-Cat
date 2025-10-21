@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Award, BarChart, CalendarDays, Target, Users, BookOpen, Lightbulb, TrendingUp, Trophy, Video } from 'lucide-react';
+import { Award, BarChart, CalendarDays, Target, Users, BookOpen, Landmark, Briefcase, Shield, Trophy, Video } from 'lucide-react';
 import React from 'react';
 import Autoplay from "embla-carousel-autoplay";
 
@@ -88,48 +88,36 @@ const stats = [
     { value: 92, label: 'Reduction in Recidivism', unit: '%' },
 ];
 
-const testimonials = [
+const featuredModules = [
   {
-    id: "testimonial-1",
-    name: "James P.",
-    role: "Founder, Second Chance Woodworks",
-    quote: "I walked out with nothing but the clothes on my back. Catalyst Academy didn't just give me skills, it gave me back my identity. I'm not an ex-con; I'm a carpenter, a business owner, a father. I'm building a future, not just furniture.",
+    id: "module-1",
+    icon: <Shield className="h-10 w-10" />,
+    title: "Foundations of Self-Worth",
+    description: "Reclaim your story, identify core values, and cast a powerful vision for your future, free from the weight of the past.",
   },
   {
-    id: "testimonial-2",
-    name: "Sarah L.",
-    role: "Certified Paralegal & Advocate",
-    quote: "The system is designed to keep you down. This program is designed to lift you up. The financial literacy module alone was life-changing. I went from being in debt to investing in my future and my community.",
+    id: "module-2",
+    icon: <Landmark className="h-10 w-10" />,
+    title: "Financial Literacy & Wealth",
+    description: "Gain control over your financial future, from daily budgeting to long-term wealth creation and credit repair.",
   },
   {
-    id: "testimonial-3",
-    name: "Michael R.",
-    role: "Logistics Manager",
-    quote: "The hardest part is convincing employers to see you for who you are now, not who you were. The interview prep and resume workshops were invaluable. I landed a management position I never thought was possible.",
+    id: "module-3",
+    icon: <Briefcase className="h-10 w-10" />,
+    title: "Professional Readiness",
+    description: "Translate your life experience into professional assets, master interviews, and network with confidence.",
   },
   {
-    id: "testimonial-4",
-    name: "Dominique T.",
-    role: "Community Organizer, The Phoenix Project",
-    quote: "I always had a voice, but Catalyst Academy taught me how to use it. The civic engagement module empowered me to go from being a statistic to being a leader. Now, I advocate for others who are still finding their way.",
+    id: "module-4",
+    icon: <Users className="h-10 w-10" />,
+    title: "Community Advocacy",
+    description: "Become a force for positive change by learning to advocate for the issues that matter to you and your community.",
   },
   {
-    id: "testimonial-5",
-    name: "David C.",
-    role: "Student, Module 2",
-    quote: "I felt like my past was a life sentence of shame. The first module, 'Reclaiming Your Narrative,' helped me understand that my story is one of resilience. It's the first time in years I've felt hope.",
-  },
-  {
-    id: "testimonial-6",
-    name: "Aisha K.",
-    role: "Entrepreneur, AK Consulting",
-    quote: "For years, I was just a number. Here, I became a name, a voice, a leader. The capstone project pushed me to turn my idea into a real business plan. I'm not just surviving; I'm building an empire.",
-  },
-  {
-    id: "testimonial-7",
-    name: "Roberto G.",
-    role: "Welding Apprentice",
-    quote: "This program is a brotherhood. When I wanted to give up, my peer mentor was there. He'd been through it. That support, that understanding... you can't put a price on it. It kept me going.",
+    id: "module-5",
+    icon: <Trophy className="h-10 w-10" />,
+    title: "Leadership & Legacy",
+    description: "Synthesize your learning into a capstone project—a business or non-profit—that serves as your first step in building a legacy.",
   },
 ];
 
@@ -181,14 +169,14 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="testimonials" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
+        <section id="featured-modules" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Success Stories from Our Catalysts</h2>
-              <p className="text-muted-foreground md:text-xl">Real stories from individuals who have transformed their lives through our program.</p>
+              <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">A Glimpse Into Your Journey</h2>
+              <p className="text-muted-foreground md:text-xl">Our curriculum is designed to rebuild from the ground up. Here are some of the core modules you'll experience.</p>
             </div>
             <div className="mt-12">
-              <Carousel 
+              <Carousel
                 className="w-full"
                 plugins={[plugin.current]}
                 onMouseEnter={plugin.current.stop}
@@ -199,37 +187,32 @@ export default function HomePage() {
                 }}
               >
                 <CarouselContent>
-                  {testimonials.map((testimonial) => {
-                      const image = PlaceHolderImages.find(p => p.id === testimonial.id);
-                      return (
-                        <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3">
-                          <div className="p-1 h-full">
-                             <Card className="flex flex-col h-full bg-card shadow-lg">
-                                <CardContent className="p-6 flex flex-col items-center text-center flex-1">
-                                    <div className="relative h-64 w-full mb-4 rounded-lg overflow-hidden">
-                                         <Image
-                                            src={image?.imageUrl || ''}
-                                            alt={image?.description || ''}
-                                            fill
-                                            className="object-cover"
-                                            data-ai-hint={image?.imageHint}
-                                        />
-                                    </div>
-                                    <p className="text-muted-foreground italic flex-1">&quot;{testimonial.quote}&quot;</p>
-                                    <div className="mt-4">
-                                        <p className="font-bold font-headline">{testimonial.name}</p>
-                                        <p className="text-sm text-accent">{testimonial.role}</p>
-                                    </div>
-                                </CardContent>
-                             </Card>
-                          </div>
-                        </CarouselItem>
-                      )
-                  })}
+                  {featuredModules.map((module) => (
+                    <CarouselItem key={module.id} className="md:basis-1/2 lg:basis-1/3">
+                      <div className="p-1 h-full">
+                         <Card className="flex flex-col h-full bg-card shadow-lg text-center">
+                            <CardHeader className="items-center">
+                                <div className="p-4 bg-accent/10 rounded-full mb-4 text-accent">
+                                    {module.icon}
+                                </div>
+                                <CardTitle className="font-headline text-xl">{module.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-1">
+                                <p className="text-muted-foreground">{module.description}</p>
+                            </CardContent>
+                         </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
               </Carousel>
+            </div>
+             <div className="text-center mt-12">
+                <GlowingButton asChild>
+                    <Link href="/curriculum">Explore the Full Curriculum</Link>
+                </GlowingButton>
             </div>
           </div>
         </section>
