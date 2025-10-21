@@ -33,14 +33,12 @@ export default function AdminLayout({
   useEffect(() => {
     const isLoading = isUserLoading || isProfileLoading;
     
-    // If loading is finished and we determine the user is not an admin, redirect.
     if (!isLoading && (!user || !userProfile?.isAdmin)) {
-      router.push('/dashboard');
+      router.push('/login');
     }
   }, [user, userProfile, isUserLoading, isProfileLoading, router]);
 
-  // While checking auth state and profile, show a loading indicator.
-  if (isUserLoading || isProfileLoading) {
+  if (isUserLoading || isProfileLoading || !userProfile?.isAdmin) {
     return (
         <div className="flex h-dvh w-full items-center justify-center bg-background">
             <div className="flex flex-col items-center gap-4">
@@ -51,30 +49,14 @@ export default function AdminLayout({
     );
   }
 
-  // If user is an admin, render the admin layout.
-  // We add an extra check here to prevent a brief flash of content for non-admins.
-  if (userProfile?.isAdmin) {
-    return (
-       <SidebarProvider>
-            <AdminSidebar />
-            <SidebarInset>
-                <div className="min-h-dvh">
-                    {children}
-                </div>
-            </SidebarInset>
-        </SidebarProvider>
-    );
-  }
-
-  // Fallback, in case the redirect effect hasn't fired yet.
   return (
-    <div className="flex h-dvh w-full items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-accent"/>
-            <p className="text-muted-foreground">Verifying administrator access...</p>
-        </div>
-    </div>
+      <SidebarProvider>
+          <AdminSidebar />
+          <SidebarInset>
+              <div className="min-h-dvh">
+                  {children}
+              </div>
+          </SidebarInset>
+      </SidebarProvider>
   );
 }
-
-    
