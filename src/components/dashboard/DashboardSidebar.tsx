@@ -57,8 +57,8 @@ export function DashboardSidebar() {
       <SidebarFooter>
          <SidebarMenu>
             <SidebarMenuItem>
-                <Link href="#" className="w-full">
-                    <SidebarMenuButton>
+                <Link href="/dashboard/profile" className="w-full">
+                    <SidebarMenuButton isActive={pathname === '/dashboard/profile'}>
                         <UserCircle />
                         <span>Profile</span>
                     </SidebarMenuButton>
