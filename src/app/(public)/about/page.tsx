@@ -64,6 +64,14 @@ export default function AboutPage() {
                     <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground md:text-xl">
                         We are dedicated to reframing the narrative for the millions of Americans impacted by the justice system. We believe that a past mistake does not define a person's future potential. Our mission is to unlock that potential, transforming returning citizens into leaders, entrepreneurs, and pillars of their communities.
                     </p>
+                     <div className="mt-8 flex justify-center gap-4">
+                        <GlowingButton asChild>
+                            <Link href="/enroll">Enroll Now</Link>
+                        </GlowingButton>
+                        <Link href="/curriculum" className="inline-flex items-center justify-center rounded-md bg-primary-foreground text-primary px-6 py-3 font-bold transition-colors hover:bg-primary-foreground/90">
+                            Explore the Curriculum
+                        </Link>
+                    </div>
                 </div>
             </section>
 

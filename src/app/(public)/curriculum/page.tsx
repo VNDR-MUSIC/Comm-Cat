@@ -83,6 +83,11 @@ export default function CurriculumPage() {
                 <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground md:text-xl">
                     Our 52-week program is a comprehensive, holistic journey divided into six core modules. Each is designed to build upon the last, guiding you from deep personal foundations to impactful community leadership.
                 </p>
+                 <div className="mt-8 flex justify-center gap-4">
+                    <GlowingButton asChild>
+                        <Link href="/enroll">Start Your Journey (It's Free)</Link>
+                    </GlowingButton>
+                </div>
             </div>
         </section>
 
