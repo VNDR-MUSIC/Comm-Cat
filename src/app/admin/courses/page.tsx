@@ -8,6 +8,7 @@ import { DataTable } from '@/components/shared/data-table';
 import { columns, type CourseData } from './columns';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function AdminCoursesPage() {
     const firestore = useFirestore();
@@ -30,7 +31,9 @@ export default function AdminCoursesPage() {
                         Create, edit, and organize all curriculum content.
                     </p>
                 </div>
-                <Button>Add New Course</Button>
+                <Button asChild>
+                    <Link href="/admin/courses/new">Add New Course</Link>
+                </Button>
             </header>
 
             <Card>

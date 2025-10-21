@@ -6,6 +6,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { initializeFirebase } from "@/firebase";
+import { redirect } from "next/navigation";
 
 const postSchema = z.object({
   post: z.string().min(10, { message: "Your post must be at least 10 characters long to be meaningful." }),
@@ -159,3 +160,51 @@ export async function submitSponsorship(prevState: SponsorshipState, formData: F
   }
 }
 
+const courseSchema = z.object({
+  title: z.string().min(5, { message: "Title must be at least 5 characters long." }),
+  description: z.string().min(20, { message: "Description must be at least 20 characters long." }),
+  duration: z.string().min(1, { message: "Please enter a duration for the course." }),
+});
+
+export type CourseState = {
+  errors?: {
+    title?: string[];
+    description?: string[];
+    duration?: string[];
+  };
+  message?: string | null;
+};
+
+export async function createCourse(prevState: CourseState, formData: FormData): Promise<CourseState> {
+  const validatedFields = courseSchema.safeParse({
+    title: formData.get("title"),
+    description: formData.get("description"),
+    duration: formData.get("duration"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { firestore } = initializeFirebase();
+  const { title, description, duration } = validatedFields.data;
+
+  try {
+    await addDoc(collection(firestore, "courses"), {
+      title,
+      description,
+      duration,
+      modules: [],
+    });
+  } catch (error) {
+    console.error("Error creating course:", error);
+    return {
+      message: "An unexpected error occurred. Please try again.",
+    };
+  }
+
+  revalidatePath("/admin/courses");
+  redirect("/admin/courses");
+}
