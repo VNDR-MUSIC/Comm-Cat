@@ -222,5 +222,3 @@ const ProfilePageSkeleton = () => (
         </div>
     </div>
 )
-
-    
