@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -27,40 +28,10 @@ interface NoteEditorProps {
   onDelete: (noteId: string) => void;
 }
 
-// Debounce hook
-function useDebounce(callback: (...args: any[]) => void, delay: number) {
-    const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
-    useEffect(() => {
-        // Cleanup the timeout if the component unmounts
-        return () => {
-            if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
-            }
-        };
-    }, []);
-
-    return (...args: any[]) => {
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-        }
-        timeoutRef.current = setTimeout(() => {
-            callback(...args);
-        }, delay);
-    };
-}
-
-
 export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
   const { toast } = useToast();
-
-  const debouncedSave = useDebounce(() => {
-    // This function will be called by the effect, but we need to pass the current values
-    // To do this, we'll read from the state inside the debounced function, but we can't pass them as params
-    // Let's adjust the onSave call to get the latest state
-  }, 1500);
 
   useEffect(() => {
     // Reset state when the note prop changes
@@ -68,7 +39,7 @@ export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
     setContent(note.content);
   }, [note]);
   
-  const handleSave = useCallback(onSave, [onSave, note.id]);
+  const handleSave = useCallback(onSave, [onSave]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
