@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "User": {
@@ -162,30 +163,23 @@
       "type": "object",
       "description": "Represents a resource (document, video, etc.) available to students.",
       "properties": {
-        "id": {
+        "title": {
           "type": "string",
-          "description": "Unique identifier for the resource entity."
+          "description": "The title of the resource."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the resource (e.g., Document, Spreadsheet, PDF Guide, External Link)."
         },
         "url": {
           "type": "string",
-          "description": "URL of the resource."
-        },
-        "category": {
-          "type": "string",
-          "description": "Category of the resource (e.g., Employment, Finance, Leadership)."
-        },
-        "tags": {
-          "type": "array",
-          "description": "Tags associated with the resource.",
-          "items": {
-            "type": "string"
-          }
+          "description": "URL of the resource, if applicable.",
+          "format": "uri"
         }
       },
       "required": [
-        "id",
-        "url",
-        "category"
+        "title",
+        "type"
       ]
     },
     "DiscussionPost": {
@@ -403,7 +397,7 @@
         "createdAt"
       ]
     },
-     "UserLessonProgress": {
+    "UserLessonProgress": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UserLessonProgress",
       "type": "object",
@@ -422,7 +416,11 @@
           "description": "The timestamp when the lesson was marked as complete."
         }
       },
-      "required": ["userId", "lessonId", "completedAt"]
+      "required": [
+        "userId",
+        "lessonId",
+        "completedAt"
+      ]
     }
   },
   "auth": {
@@ -516,7 +514,7 @@
           "schema": {
             "$ref": "#/backend/entities/Resource"
           },
-          "description": "Stores resource information, such as URLs and categories.  Access controlled based on resource category and tags (potentially public or restricted to enrolled users).",
+          "description": "Stores resource information, such as URLs and categories.  Accessible to all authenticated users.",
           "params": [
             {
               "name": "resourceId",
