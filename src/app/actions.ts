@@ -4,7 +4,7 @@
 import { moderateDiscussionBoard } from "@/ai/flows/moderate-discussion-board";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getFirestore, collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion, writeBatch } from 'firebase/firestore';
 import { initializeFirebase } from "@/firebase";
 import { redirect } from "next/navigation";
 
@@ -282,7 +282,6 @@ export async function addModuleToCourse(prevState: ModuleState, formData: FormDa
   const { title, courseId } = validatedFields.data;
   
   try {
-    // 1. Add the new module to the subcollection
     const moduleCollectionRef = collection(firestore, `courses/${courseId}/modules`);
     const newModuleDocRef = await addDoc(moduleCollectionRef, {
       title,
@@ -290,7 +289,6 @@ export async function addModuleToCourse(prevState: ModuleState, formData: FormDa
       lessons: [],
     });
 
-    // 2. Update the parent course document with the new module's ID
     const courseDocRef = doc(firestore, "courses", courseId);
     await updateDoc(courseDocRef, {
       modules: arrayUnion(newModuleDocRef.id),
@@ -494,3 +492,5 @@ export async function createResource(prevState: any, formData: FormData): Promis
   revalidatePath("/admin/resources");
   redirect("/admin/resources");
 }
+
+    
