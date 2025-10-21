@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "facilitator-1",
+      "description": "Portrait of Dr. Aliyah Khan",
+      "imageUrl": "https://images.unsplash.com/photo-1595211877493-41a4e5f236b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjA5NTE0NDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "professional portrait"
+    },
+    {
+      "id": "facilitator-2",
+      "description": "Portrait of Marcus Reid",
+      "imageUrl": "https://images.unsplash.com/photo-1706648515832-761ec096a550?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmcmllbmRseSUyMG1hbnxlbnwwfHx8fDE3NjA5MzAxOTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "friendly man"
+    },
+    {
+      "id": "facilitator-3",
+      "description": "Portrait of Elena Santos",
+      "imageUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHNtaWxpbmd8ZW58MHx8fHwxNzYwOTE3NDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "testimonial-1",
+      "description": "Avatar for James P.",
+      "imageUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm9maWxlJTIwYXZhdGFyfGVufDB8fHx8MTc2MDk1MzAxNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "profile avatar"
+    },
+    {
+      "id": "testimonial-2",
+      "description": "Avatar for Sarah L.",
+      "imageUrl": "https://images.unsplash.com/photo-1750535135451-7c20e24b60c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBhdmF0YXJ8ZW58MHx8fHwxNzYwOTQ2ODMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person avatar"
+    },
+    {
+      "id": "logo-hud",
+      "description": "HUD Logo",
+      "imageUrl": "https://images.unsplash.com/photo-1756988183893-dbf4a5dbbce7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnb3Zlcm5tZW50JTIwc2VhbHxlbnwwfHx8fDE3NjEwMDgyODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "government seal"
+    },
+    {
+      "id": "logo-naadac",
+      "description": "NAADAC Logo",
+      "imageUrl": "https://picsum.photos/seed/naadaclogo/150/60",
+      "imageHint": "professional association"
+    },
+    {
+      "id": "logo-doj",
+      "description": "DOJ Reentry Initiative Logo",
+      "imageUrl": "https://images.unsplash.com/photo-1729612706649-7cc90e85b5e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqdXN0aWNlJTIwbG9nb3xlbnwwfHx8fDE3NjEwMDgyODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "justice logo"
+    },
+    {
+      "id": "logo-nul",
+      "description": "National Urban League Logo",
+      "imageUrl": "https://images.unsplash.com/photo-1693891156257-dd6e94199a20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bGVhZ3VlJTIwbG9nb3xlbnwwfHx8fDE3NjEwMDQxODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "league logo"
+    },
+    {
+      "id": "logo-edx",
+      "description": "EdX Logo",
+      "imageUrl": "https://images.unsplash.com/photo-1759820941220-fed6a1010146?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlZHVjYXRpb24lMjBsb2dvfGVufDB8fHx8MTc2MDkyMDc0MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "education logo"
+    },
+    {
+      "id": "logo-harvard",
+      "description": "Harvard Reentry Project Logo",
+      "imageUrl": "https://images.unsplash.com/photo-1642707334908-8a4723fc1e24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx1bml2ZXJzaXR5JTIwY3Jlc3R8ZW58MHx8fHwxNzYxMDA4MjgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "university crest"
+    },
+    {
+      "id": "logo-nic",
+      "description": "National Institute of Corrections Logo",
+      "imageUrl": "https://picsum.photos/seed/niclogo/150/60",
+      "imageHint": "corrections seal"
+    }
+  ]
 }
