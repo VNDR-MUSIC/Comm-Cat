@@ -180,6 +180,10 @@
       "type": "object",
       "description": "Represents a resource (document, video, etc.) available to students.",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the resource."
+        },
         "title": {
           "type": "string",
           "description": "The title of the resource."
@@ -195,8 +199,10 @@
         }
       },
       "required": [
+        "id",
         "title",
-        "type"
+        "type",
+        "url"
       ]
     },
     "DiscussionPost": {

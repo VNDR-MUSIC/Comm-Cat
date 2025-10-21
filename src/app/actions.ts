@@ -441,4 +441,53 @@ export async function toggleAdminStatus(userId: string, isAdmin: boolean) {
     }
 }
 
-    
+const resourceSchema = z.object({
+  title: z.string().min(3, { message: "Title must be at least 3 characters long." }),
+  type: z.string().min(3, { message: "Please select a resource type." }),
+  url: z.string().url({ message: "Please enter a valid URL." }),
+});
+
+export type ResourceState = {
+  errors?: {
+    title?: string[];
+    type?: string[];
+    url?: string[];
+  };
+  message?: string | null;
+  success: boolean;
+};
+
+export async function createResource(prevState: any, formData: FormData): Promise<ResourceState> {
+  const validatedFields = resourceSchema.safeParse({
+    title: formData.get("title"),
+    type: formData.get("type"),
+    url: formData.get("url"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      success: false,
+    };
+  }
+
+  const { firestore } = initializeFirebase();
+  const { title, type, url } = validatedFields.data;
+
+  try {
+    await addDoc(collection(firestore, "resources"), {
+      title,
+      type,
+      url,
+    });
+  } catch (error) {
+    console.error("Error creating resource:", error);
+    return {
+      message: "An unexpected error occurred. Please try again.",
+      success: false,
+    };
+  }
+
+  revalidatePath("/admin/resources");
+  redirect("/admin/resources");
+}
