@@ -15,7 +15,7 @@ const Footer = () => {
     const imgLogo = PlaceHolderImages.find(img => img.id === 'logo-img');
 
   return (
-    <footer className="bg-secondary text-secondary-foreground">
+    <footer className="bg-secondary text-secondary-foreground relative z-40">
       <div className="relative py-12">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-blue-500 to-cyan-400 bg-400% animate-gradient-flow" style={{backgroundSize: "400%"}} />
         <div className="container mx-auto px-4 md:px-6">
