@@ -137,6 +137,10 @@
           "type": "string",
           "description": "Title of the lesson."
         },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the lesson content."
+        },
         "duration": {
           "type": "string",
           "description": "Duration of the lesson."
@@ -144,6 +148,11 @@
         "activityType": {
           "type": "string",
           "description": "Type of activity (e.g., video, quiz, reading)."
+        },
+        "videoUrl": {
+          "type": "string",
+          "description": "URL for the lesson video (e.g., YouTube embed URL).",
+          "format": "uri"
         },
         "resourceIds": {
           "type": "array",

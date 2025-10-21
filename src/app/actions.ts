@@ -312,6 +312,8 @@ const lessonSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters long." }),
   duration: z.string().min(1, { message: "Duration is required." }),
   activityType: z.string().min(3, { message: "Activity type is required." }),
+  description: z.string().optional(),
+  videoUrl: z.string().optional(),
   courseId: z.string(),
   moduleId: z.string(),
 });
@@ -382,6 +384,8 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
         title: formData.get('title'),
         duration: formData.get('duration'),
         activityType: formData.get('activityType'),
+        description: formData.get('description'),
+        videoUrl: formData.get('videoUrl'),
         courseId: formData.get('courseId'),
         moduleId: formData.get('moduleId'),
         lessonId: formData.get('lessonId'),
@@ -396,7 +400,7 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
     }
     
     const { firestore } = initializeFirebase();
-    const { title, courseId, moduleId, lessonId, duration, activityType } = validatedFields.data;
+    const { title, courseId, moduleId, lessonId, duration, activityType, description, videoUrl } = validatedFields.data;
 
     try {
         const lessonDocRef = doc(firestore, `courses/${courseId}/modules/${moduleId}/lessons`, lessonId);
@@ -404,6 +408,8 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
             title,
             duration,
             activityType,
+            description,
+            videoUrl,
             updatedAt: serverTimestamp(),
         });
 

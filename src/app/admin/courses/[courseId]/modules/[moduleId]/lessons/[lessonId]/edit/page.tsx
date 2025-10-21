@@ -24,11 +24,14 @@ import {
 } from "@/components/ui/select"
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
 
 interface LessonData {
   title: string;
   duration: string;
   activityType: string;
+  description?: string;
+  videoUrl?: string;
 }
 
 export default function EditLessonPage() {
@@ -55,12 +58,16 @@ export default function EditLessonPage() {
     const [title, setTitle] = useState('');
     const [duration, setDuration] = useState('');
     const [activityType, setActivityType] = useState('');
+    const [description, setDescription] = useState('');
+    const [videoUrl, setVideoUrl] = useState('');
 
     useEffect(() => {
         if (lesson) {
             setTitle(lesson.title);
             setDuration(lesson.duration);
             setActivityType(lesson.activityType);
+            setDescription(lesson.description || '');
+            setVideoUrl(lesson.videoUrl || '');
         }
     }, [lesson]);
 
@@ -89,6 +96,7 @@ export default function EditLessonPage() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-24 w-full" />
                         <Skeleton className="h-10 w-full" />
                          <Skeleton className="h-10 w-full" />
                     </CardContent>
@@ -143,6 +151,14 @@ export default function EditLessonPage() {
                             <Label htmlFor="title">Lesson Title</Label>
                             <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
                             {state.errors?.title && <p className="text-sm text-destructive">{state.errors.title[0]}</p>}
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="description">Lesson Description</Label>
+                            <Textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={5} placeholder="A detailed overview of what students will learn in this lesson." />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="videoUrl">Video URL</Label>
+                            <Input id="videoUrl" name="videoUrl" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="e.g., https://www.youtube.com/embed/..." />
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="duration">Duration</Label>

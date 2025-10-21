@@ -169,6 +169,19 @@ export default function LessonPage() {
                                 </AspectRatio>
                             </CardContent>
                         </Card>
+
+                        {lesson.description && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Lesson Details</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="prose dark:prose-invert max-w-none">
+                                        <p>{lesson.description}</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
                         
                         {lessonResources.length > 0 && (
                              <Card>
@@ -238,4 +251,3 @@ export default function LessonPage() {
         </div>
     );
 }
-
