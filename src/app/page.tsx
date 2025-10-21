@@ -1,7 +1,11 @@
 
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Award, BarChart, CalendarDays, Target, Users, BookOpen, Lightbulb, TrendingUp, Trophy, Video } from 'lucide-react';
+import React from 'react';
+import Autoplay from "embla-carousel-autoplay";
+
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -84,8 +88,58 @@ const stats = [
     { value: 92, label: 'Reduction in Recidivism', unit: '%' },
 ];
 
+const testimonials = [
+  {
+    id: "testimonial-1",
+    name: "James P.",
+    role: "Founder, Second Chance Woodworks",
+    quote: "I walked out with nothing but the clothes on my back. Catalyst Academy didn't just give me skills, it gave me back my identity. I'm not an ex-con; I'm a carpenter, a business owner, a father. I'm building a future, not just furniture.",
+  },
+  {
+    id: "testimonial-2",
+    name: "Sarah L.",
+    role: "Certified Paralegal & Advocate",
+    quote: "The system is designed to keep you down. This program is designed to lift you up. The financial literacy module alone was life-changing. I went from being in debt to investing in my future and my community.",
+  },
+  {
+    id: "testimonial-3",
+    name: "Michael R.",
+    role: "Logistics Manager",
+    quote: "The hardest part is convincing employers to see you for who you are now, not who you were. The interview prep and resume workshops were invaluable. I landed a management position I never thought was possible.",
+  },
+  {
+    id: "testimonial-4",
+    name: "Dominique T.",
+    role: "Community Organizer, The Phoenix Project",
+    quote: "I always had a voice, but Catalyst Academy taught me how to use it. The civic engagement module empowered me to go from being a statistic to being a leader. Now, I advocate for others who are still finding their way.",
+  },
+  {
+    id: "testimonial-5",
+    name: "David C.",
+    role: "Student, Module 2",
+    quote: "I felt like my past was a life sentence of shame. The first module, 'Reclaiming Your Narrative,' helped me understand that my story is one of resilience. It's the first time in years I've felt hope.",
+  },
+  {
+    id: "testimonial-6",
+    name: "Aisha K.",
+    role: "Entrepreneur, AK Consulting",
+    quote: "For years, I was just a number. Here, I became a name, a voice, a leader. The capstone project pushed me to turn my idea into a real business plan. I'm not just surviving; I'm building an empire.",
+  },
+  {
+    id: "testimonial-7",
+    name: "Roberto G.",
+    role: "Welding Apprentice",
+    quote: "This program is a brotherhood. When I wanted to give up, my peer mentor was there. He'd been through it. That support, that understanding... you can't put a price on it. It kept me going.",
+  },
+];
+
+
 export default function HomePage() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image-1');
+  const plugin = React.useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  );
+
   return (
     <div className="flex flex-col">
       <main className="flex-1">
@@ -127,7 +181,60 @@ export default function HomePage() {
           </div>
         </section>
 
-         <section id="methodology" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
+        <section id="testimonials" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Success Stories from Our Catalysts</h2>
+              <p className="text-muted-foreground md:text-xl">Real stories from individuals who have transformed their lives through our program.</p>
+            </div>
+            <div className="mt-12">
+              <Carousel 
+                className="w-full"
+                plugins={[plugin.current]}
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.reset}
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+              >
+                <CarouselContent>
+                  {testimonials.map((testimonial) => {
+                      const image = PlaceHolderImages.find(p => p.id === testimonial.id);
+                      return (
+                        <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3">
+                          <div className="p-1 h-full">
+                             <Card className="flex flex-col h-full bg-card shadow-lg">
+                                <CardContent className="p-6 flex flex-col items-center text-center flex-1">
+                                    <div className="relative h-64 w-full mb-4 rounded-lg overflow-hidden">
+                                         <Image
+                                            src={image?.imageUrl || ''}
+                                            alt={image?.description || ''}
+                                            fill
+                                            className="object-cover"
+                                            data-ai-hint={image?.imageHint}
+                                        />
+                                    </div>
+                                    <p className="text-muted-foreground italic flex-1">&quot;{testimonial.quote}&quot;</p>
+                                    <div className="mt-4">
+                                        <p className="font-bold font-headline">{testimonial.name}</p>
+                                        <p className="text-sm text-accent">{testimonial.role}</p>
+                                    </div>
+                                </CardContent>
+                             </Card>
+                          </div>
+                        </CarouselItem>
+                      )
+                  })}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </div>
+          </div>
+        </section>
+
+         <section id="methodology" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Learning Methodology</h2>
@@ -159,7 +266,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="impact" className="py-16 md:py-24 bg-background">
+        <section id="impact" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="relative h-96">
@@ -193,7 +300,7 @@ export default function HomePage() {
             </div>
         </section>
         
-        <section id="journey" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
+        <section id="journey" className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-3xl mx-auto space-y-4">
                     <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">The 52-Week Journey</h2>
@@ -218,7 +325,7 @@ export default function HomePage() {
             </div>
         </section>
 
-         <section id="faq" className="py-16 md:py-24 bg-background">
+         <section id="faq" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
             <div className="container mx-auto px-4 md:px-6">
                  <div className="text-center max-w-3xl mx-auto space-y-4">
                     <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Frequently Asked Questions</h2>

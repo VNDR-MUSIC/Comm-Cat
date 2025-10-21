@@ -26,15 +26,45 @@
     },
     {
       "id": "testimonial-1",
-      "description": "Avatar for James P.",
-      "imageUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm9maWxlJTIwYXZhdGFyfGVufDB8fHx8MTc2MDk1MzAxNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "profile avatar"
+      "description": "Portrait of a man who looks determined",
+      "imageUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "determined man"
     },
     {
       "id": "testimonial-2",
-      "description": "Avatar for Sarah L.",
-      "imageUrl": "https://images.unsplash.com/photo-1750535135451-7c20e24b60c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBhdmF0YXJ8ZW58MHx8fHwxNzYwOTQ2ODMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person avatar"
+      "description": "Portrait of a woman smiling in a professional setting",
+      "imageUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2576&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "smiling professional woman"
+    },
+    {
+      "id": "testimonial-3",
+      "description": "Man working in a wood workshop",
+      "imageUrl": "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "wood workshop"
+    },
+    {
+      "id": "testimonial-4",
+      "description": "Woman leading a community meeting",
+      "imageUrl": "https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3",
+      "imageHint": "community meeting"
+    },
+    {
+      "id": "testimonial-5",
+      "description": "Man looking up at the sky with hope",
+      "imageUrl": "https://images.unsplash.com/photo-1530268729831-4b0b9e170218?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "hopeful man"
+    },
+    {
+      "id": "testimonial-6",
+      "description": "Woman confidently speaking at a podium",
+      "imageUrl": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "speaking podium"
+    },
+    {
+      "id": "testimonial-7",
+      "description": "Man being embraced by his family",
+      "imageUrl": "https://images.unsplash.com/photo-1560275816-64693a134365?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "family embrace"
     },
     {
       "id": "logo-hud",

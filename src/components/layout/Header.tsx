@@ -26,6 +26,7 @@ import {
 import GlowingButton from '@/components/shared/GlowingButton';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -112,11 +113,14 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent side="full" className="p-0">
                  <SheetHeader className='p-6 border-b'>
-                    <SheetTitle className="flex items-center gap-2">
-                         <University className="h-8 w-8 text-accent" />
+                    <SheetTitle>
+                      <Link href="/" className="flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                        <University className="h-8 w-8 text-accent" />
                         <span className="font-headline text-xl font-bold text-foreground">
-                            Catalyst Academy
+                          Catalyst Academy
                         </span>
+                      </Link>
+                      <VisuallyHidden>Mobile Navigation Menu</VisuallyHidden>
                     </SheetTitle>
                  </SheetHeader>
                  <div className="flex flex-col h-full p-6">
