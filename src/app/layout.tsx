@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { Inter, Poppins } from 'next/font/google';
@@ -34,7 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <head />
+      <head>
+        <Script src="https://app.aminos.ai/js/chat_plugin.js" data-bot-id="55174" strategy="beforeInteractive" />
+      </head>
       <body className={cn("font-body antialiased", fontHeadline.variable, fontBody.variable)}>
         <FirebaseClientProvider>
           <div className="flex flex-col min-h-dvh bg-background text-foreground">
@@ -44,7 +47,6 @@ export default function RootLayout({
           </div>
           <Toaster />
         </FirebaseClientProvider>
-        <Script src="https://app.aminos.ai/js/chat_plugin.js" data-bot-id="55174" strategy="afterInteractive" />
       </body>
     </html>
   );
