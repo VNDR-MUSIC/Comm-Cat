@@ -11,21 +11,13 @@ const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const Footer = () => {
     const partnerLogos = PlaceHolderImages.filter(img => img.id.startsWith("logo-"));
-    const credibilityLinks = [
-        { name: 'DOJ Reentry Initiative', id: 'logo-doj' },
-        { name: 'National Institute of Corrections', id: 'logo-nic' },
-        { name: 'Harvard Reentry Project', id: 'logo-harvard' },
-        { name: 'EdX Learning Alliance', id: 'logo-edx' },
-        { name: 'NAADAC Education Partnership', id: 'logo-naadac' },
-        { name: 'Urban League Leadership Council', id: 'logo-nul' }
-    ];
 
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="relative py-12">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-blue-500 to-cyan-400 bg-400% animate-gradient-flow" style={{backgroundSize: "400%"}} />
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-4">
                 <Link href="/" className="flex items-center gap-2" prefetch={false}>
                     <University className="h-8 w-8 text-accent" />
@@ -52,17 +44,6 @@ const Footer = () => {
                 <li><Link href="#" className="text-sm text-primary-foreground/70 hover:text-accent">Press</Link></li>
                 <li><Link href="#" className="text-sm text-primary-foreground/70 hover:text-accent">Contact</Link></li>
               </ul>
-            </div>
-
-            <div className="space-y-4">
-                <h4 className="font-bold text-lg">Backed By</h4>
-                <ul className="space-y-2">
-                    {credibilityLinks.map(link => (
-                        <li key={link.id}>
-                            <a href="#" className="text-sm text-primary-foreground/70 hover:text-accent">{link.name}</a>
-                        </li>
-                    ))}
-                </ul>
             </div>
             
             <div className="space-y-4">
