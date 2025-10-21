@@ -33,6 +33,15 @@
           "description": "Date when the user enrolled.",
           "format": "date-time"
         },
+        "phone": {
+          "type": "string",
+          "description": "User's phone number."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "User's date of birth.",
+          "format": "date"
+        },
         "scholarshipCode": {
           "type": "string",
           "description": "Scholarship code applied by the user, if any."

@@ -22,6 +22,8 @@ export default function EnrollPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [phone, setPhone] = useState('');
+    const [dob, setDob] = useState('');
     const [error, setError] = useState<string | null>(null);
 
 
@@ -51,6 +53,8 @@ export default function EnrollPage() {
                     email: email,
                     firstName: firstName || '',
                     lastName: lastName || '',
+                    phone: phone,
+                    dateOfBirth: dob,
                     enrollmentDate: serverTimestamp(),
                     bio: 'Welcome to Catalyst Academy! Tell us a bit about yourself.'
                 };
@@ -135,11 +139,11 @@ export default function EnrollPage() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
-                                        <Input id="phone" type="tel" placeholder="(555) 123-4567" required />
+                                        <Input id="phone" type="tel" placeholder="(555) 123-4567" required value={phone} onChange={(e) => setPhone(e.target.value)} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="dob">Date of Birth</Label>
-                                        <Input id="dob" type="date" required />
+                                        <Input id="dob" type="date" required value={dob} onChange={(e) => setDob(e.target.value)} />
                                     </div>
                                 </div>
                             </div>
