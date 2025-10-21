@@ -1,0 +1,248 @@
+/**
+ * @fileoverview Firestore Security Rules for Catalyst Academy.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for private user data while allowing public read access to course content and resources. It prioritizes authorization independence by denormalizing authorization data within documents and aims for secure and scalable access control.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores private user profiles. Only the authenticated user can access their own profile.
+ * - /courses/{courseId}: Stores public course information. Accessible to all users.
+ * - /courses/{courseId}/modules/{moduleId}: Stores public module information. Accessible to all users.
+ * - /courses/{courseId}/modules/{moduleId}/lessons/{lessonId}: Stores public lesson information. Accessible to all users.
+ * - /users/{userId}/course_progress/{courseProgressId}: Stores private user course progress. Only the authenticated user can access their own progress.
+ * - /courses/{courseId}/discussion_threads/{threadId}: Stores public discussion threads. Accessible to all users.
+ * - /courses/{courseId}/discussion_threads/{threadId}/discussion_posts/{postId}: Stores discussion posts.  Write access is restricted to the user who 'owns' the post.
+ * - /resources/{resourceId}: Stores publicly accessible resources.
+ * - /users/{userId}/certificates/{certificateId}: Stores private user certificates. Only the authenticated user can access their own certificates.
+ * - /badges/{badgeId}: Stores publicly accessible badge definitions.
+ * - /users/{userId}/user_badges/{userBadgeId}: Stores private user badges. Only the authenticated user can access their own badges.
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed to protect user privacy.
+ * - Public read access is granted to courses, modules, lessons, resources, and badges to facilitate browsing.
+ * - Ownership is enforced on user profiles, course progress, discussion posts, certificates, and user badges using path-based matching and/or explicit userId fields.
+ *
+ * Denormalization for Authorization:
+ * - Discussion posts include a 'userId' field to simplify authorization rules and avoid costly `get()` calls.
+ *
+ * Structural Segregation:
+ * - Public data (courses, modules, lessons, resources, badges) is stored in top-level collections with public read access.
+ * - Private data (user profiles, course progress, certificates, user badges) is stored under the /users/{userId} path and secured with owner-only access.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Manages user profile access. Only the authenticated user can read or modify their own profile.
+     * @path /users/{userId}
+     * @allow (create) - Authenticated user with matching userId creates their own profile.
+     * @allow (get, list, update, delete) - Authenticated user with matching userId reads/modifies their own profile.
+     * @deny (create) - Authenticated user attempts to create a profile with a userId that does not match their own.
+     * @deny (get, list, update, delete) - Authenticated user attempts to read/modify another user's profile.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow get, list: if isOwner(userId);
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Allows public read access to courses.
+     * @path /courses/{courseId}
+     * @allow (get, list) - Any user can read course information.
+     * @deny (create, update, delete) - No user can create, update, or delete course information.
+     * @principle Allows public read access to courses.
+     */
+    match /courses/{courseId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows public read access to modules within a course.
+     * @path /courses/{courseId}/modules/{moduleId}
+     * @allow (get, list) - Any user can read module information.
+     * @deny (create, update, delete) - No user can create, update, or delete module information.
+     * @principle Allows public read access to modules.
+     */
+    match /courses/{courseId}/modules/{moduleId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows public read access to lessons within a module.
+     * @path /courses/{courseId}/modules/{moduleId}/lessons/{lessonId}
+     * @allow (get, list) - Any user can read lesson information.
+     * @deny (create, update, delete) - No user can create, update, or delete lesson information.
+     * @principle Allows public read access to lessons.
+     */
+    match /courses/{courseId}/modules/{moduleId}/lessons/{lessonId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Manages user's course progress. Only the authenticated user can read or modify their own progress.
+     * @path /users/{userId}/course_progress/{courseProgressId}
+     * @allow (create) - Authenticated user with matching userId creates their own course progress.
+     * @allow (get, list, update, delete) - Authenticated user with matching userId reads/modifies their own course progress.
+     * @deny (create) - Authenticated user attempts to create course progress with a userId that does not match their own.
+     * @deny (get, list, update, delete) - Authenticated user attempts to read/modify another user's course progress.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/course_progress/{courseProgressId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow get, list: if isOwner(userId);
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Allows public read access to discussion threads within a course.
+     * @path /courses/{courseId}/discussion_threads/{threadId}
+     * @allow (get, list) - Any user can read discussion thread information.
+     * @deny (create, update, delete) - No user can create, update, or delete discussion thread information.
+     * @principle Allows public read access to discussion threads.
+     */
+    match /courses/{courseId}/discussion_threads/{threadId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Manages discussion posts within a thread. Only the user who created the post can modify or delete it.
+     * @path /courses/{courseId}/discussion_threads/{threadId}/discussion_posts/{postId}
+     * @allow (create) - Authenticated user can create a discussion post.
+     * @allow (get, list) - Any user can read discussion posts.
+     * @allow (update, delete) - Authenticated user with matching userId updates/deletes their own post.
+     * @deny (update, delete) - Authenticated user attempts to update/delete another user's post.
+     * @principle Enforces document ownership for writes, with public read access.
+     */
+    match /courses/{courseId}/discussion_threads/{threadId}/discussion_posts/{postId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow get, list: if true;
+      allow update: if isExistingOwner(resource.data.userId);
+      allow delete: if isExistingOwner(resource.data.userId);
+    }
+
+    /**
+     * @description Allows public read access to resources.
+     * @path /resources/{resourceId}
+     * @allow (get, list) - Any user can read resource information.
+     * @deny (create, update, delete) - No user can create, update, or delete resource information.
+     * @principle Allows public read access to resources.
+     */
+    match /resources/{resourceId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Manages user's certificates. Only the authenticated user can read or modify their own certificates.
+     * @path /users/{userId}/certificates/{certificateId}
+     * @allow (create) - Authenticated user with matching userId creates their own certificate.
+     * @allow (get, list, update, delete) - Authenticated user with matching userId reads/modifies their own certificate.
+     * @deny (create) - Authenticated user attempts to create a certificate with a userId that does not match their own.
+     * @deny (get, list, update, delete) - Authenticated user attempts to read/modify another user's certificate.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/certificates/{certificateId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow get, list: if isOwner(userId);
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Allows public read access to badges.
+     * @path /badges/{badgeId}
+     * @allow (get, list) - Any user can read badge information.
+     * @deny (create, update, delete) - No user can create, update, or delete badge information.
+     * @principle Allows public read access to badges.
+     */
+    match /badges/{badgeId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Manages user's badges. Only the authenticated user can read or modify their own badges.
+     * @path /users/{userId}/user_badges/{userBadgeId}
+     * @allow (create) - Authenticated user with matching userId creates their own user badge.
+     * @allow (get, list, update, delete) - Authenticated user with matching userId reads/modifies their own user badge.
+     * @deny (create) - Authenticated user attempts to create a user badge with a userId that does not match their own.
+     * @deny (get, list, update, delete) - Authenticated user attempts to read/modify another user's badge.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/user_badges/{userBadgeId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow get, list: if isOwner(userId);
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}

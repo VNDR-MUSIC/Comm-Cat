@@ -1,0 +1,575 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user in the Catalyst Academy platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user.",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The name displayed to other users."
+        },
+        "enrollmentDate": {
+          "type": "string",
+          "description": "Date when the user enrolled in the platform.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "displayName",
+        "enrollmentDate"
+      ]
+    },
+    "Course": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Course",
+      "type": "object",
+      "description": "Represents a course offered on the Catalyst Academy platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Course entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the course."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the course content."
+        },
+        "durationWeeks": {
+          "type": "number",
+          "description": "The length of time the course lasts in weeks"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "durationWeeks"
+      ]
+    },
+    "Module": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Module",
+      "type": "object",
+      "description": "Represents a module within a course.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Module entity."
+        },
+        "courseId": {
+          "type": "string",
+          "description": "Reference to Course. (Relationship: Course 1:N Module)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the module."
+        },
+        "order": {
+          "type": "number",
+          "description": "The order the module appears in the course"
+        }
+      },
+      "required": [
+        "id",
+        "courseId",
+        "title",
+        "order"
+      ]
+    },
+    "Lesson": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Lesson",
+      "type": "object",
+      "description": "Represents a lesson within a module.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Lesson entity."
+        },
+        "moduleId": {
+          "type": "string",
+          "description": "Reference to Module. (Relationship: Module 1:N Lesson)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the lesson."
+        },
+        "durationMinutes": {
+          "type": "number",
+          "description": "Estimated duration of the lesson in minutes."
+        },
+        "activityType": {
+          "type": "string",
+          "description": "The type of activity the lesson covers."
+        }
+      },
+      "required": [
+        "id",
+        "moduleId",
+        "title",
+        "durationMinutes",
+        "activityType"
+      ]
+    },
+    "UserCourseProgress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserCourseProgress",
+      "type": "object",
+      "description": "Represents a user's progress in a specific course.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserCourseProgress entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N UserCourseProgress)"
+        },
+        "courseId": {
+          "type": "string",
+          "description": "Reference to Course. (Relationship: Course 1:N UserCourseProgress)"
+        },
+        "completionPercentage": {
+          "type": "number",
+          "description": "Percentage of the course completed by the user."
+        },
+        "lastAccessed": {
+          "type": "string",
+          "description": "The last time the user accessed the course",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "courseId",
+        "completionPercentage",
+        "lastAccessed"
+      ]
+    },
+    "DiscussionThread": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DiscussionThread",
+      "type": "object",
+      "description": "Represents a discussion thread within the platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the DiscussionThread entity."
+        },
+        "courseId": {
+          "type": "string",
+          "description": "Reference to Course. (Relationship: Course 1:N DiscussionThread)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the discussion thread."
+        },
+        "creationDate": {
+          "type": "string",
+          "description": "Date when the discussion thread was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "courseId",
+        "title",
+        "creationDate"
+      ]
+    },
+    "DiscussionPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DiscussionPost",
+      "type": "object",
+      "description": "Represents a post within a discussion thread.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the DiscussionPost entity."
+        },
+        "threadId": {
+          "type": "string",
+          "description": "Reference to DiscussionThread. (Relationship: DiscussionThread 1:N DiscussionPost)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N DiscussionPost)"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the discussion post."
+        },
+        "postDate": {
+          "type": "string",
+          "description": "Date when the post was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "threadId",
+        "userId",
+        "content",
+        "postDate"
+      ]
+    },
+    "Resource": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Resource",
+      "type": "object",
+      "description": "Represents a resource available to students.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Resource entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the resource."
+        },
+        "url": {
+          "type": "string",
+          "description": "URL of the resource.",
+          "format": "uri"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the resource (e.g., Employment, Finance)."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url",
+        "category"
+      ]
+    },
+    "Certificate": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Certificate",
+      "type": "object",
+      "description": "Represents a certificate awarded to a user upon course completion.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Certificate entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Certificate)"
+        },
+        "courseId": {
+          "type": "string",
+          "description": "Reference to Course. (Relationship: Course 1:N Certificate)"
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "Date when the certificate was issued.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "courseId",
+        "issueDate"
+      ]
+    },
+    "Badge": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Badge",
+      "type": "object",
+      "description": "Represents a badge a user can be awarded",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Badge entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the Badge."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of what the badge signifies."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ]
+    },
+    "UserBadge": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserBadge",
+      "type": "object",
+      "description": "Represents the relationship between a user and a badge they have earned.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserBadge entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N UserBadge)"
+        },
+        "badgeId": {
+          "type": "string",
+          "description": "Reference to Badge. (Relationship: Badge 1:N UserBadge)"
+        },
+        "awardDate": {
+          "type": "string",
+          "description": "The date the badge was awarded.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "badgeId",
+        "awardDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Includes standard user information. Path-based ownership ensures only the authenticated user can access their own profile.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}",
+        "definition": {
+          "entityName": "Course",
+          "schema": {
+            "$ref": "#/backend/entities/Course"
+          },
+          "description": "Stores course information. Accessible to all users for browsing course details.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}/modules/{moduleId}",
+        "definition": {
+          "entityName": "Module",
+          "schema": {
+            "$ref": "#/backend/entities/Module"
+          },
+          "description": "Stores modules for each course. Accessible to all users who can view the course.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            },
+            {
+              "name": "moduleId",
+              "description": "The unique identifier for the module."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}/modules/{moduleId}/lessons/{lessonId}",
+        "definition": {
+          "entityName": "Lesson",
+          "schema": {
+            "$ref": "#/backend/entities/Lesson"
+          },
+          "description": "Stores lessons for each module. Accessible to users enrolled in the course.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            },
+            {
+              "name": "moduleId",
+              "description": "The unique identifier for the module."
+            },
+            {
+              "name": "lessonId",
+              "description": "The unique identifier for the lesson."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/course_progress/{courseProgressId}",
+        "definition": {
+          "entityName": "UserCourseProgress",
+          "schema": {
+            "$ref": "#/backend/entities/UserCourseProgress"
+          },
+          "description": "Stores user's progress in a specific course. Path-based ownership ensures only the authenticated user can access their own progress data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "courseProgressId",
+              "description": "The unique identifier for the user course progress."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}/discussion_threads/{threadId}",
+        "definition": {
+          "entityName": "DiscussionThread",
+          "schema": {
+            "$ref": "#/backend/entities/DiscussionThread"
+          },
+          "description": "Stores discussion threads for each course. Accessible to users enrolled in the course.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            },
+            {
+              "name": "threadId",
+              "description": "The unique identifier for the discussion thread."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}/discussion_threads/{threadId}/discussion_posts/{postId}",
+        "definition": {
+          "entityName": "DiscussionPost",
+          "schema": {
+            "$ref": "#/backend/entities/DiscussionPost"
+          },
+          "description": "Stores discussion posts for each thread. Includes denormalized 'userId' for authorization independence.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            },
+            {
+              "name": "threadId",
+              "description": "The unique identifier for the discussion thread."
+            },
+            {
+              "name": "postId",
+              "description": "The unique identifier for the discussion post."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/resources/{resourceId}",
+        "definition": {
+          "entityName": "Resource",
+          "schema": {
+            "$ref": "#/backend/entities/Resource"
+          },
+          "description": "Stores resources available to students. Publicly accessible.",
+          "params": [
+            {
+              "name": "resourceId",
+              "description": "The unique identifier for the resource."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/certificates/{certificateId}",
+        "definition": {
+          "entityName": "Certificate",
+          "schema": {
+            "$ref": "#/backend/entities/Certificate"
+          },
+          "description": "Stores certificates awarded to a user. Path-based ownership ensures only the authenticated user can access their own certificates.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "certificateId",
+              "description": "The unique identifier for the certificate."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/badges/{badgeId}",
+        "definition": {
+          "entityName": "Badge",
+          "schema": {
+            "$ref": "#/backend/entities/Badge"
+          },
+          "description": "Stores the list of badges that can be awarded to users. Publicly accessible.",
+          "params": [
+            {
+              "name": "badgeId",
+              "description": "The unique identifier for the badge."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/user_badges/{userBadgeId}",
+        "definition": {
+          "entityName": "UserBadge",
+          "schema": {
+            "$ref": "#/backend/entities/UserBadge"
+          },
+          "description": "Stores the badges awarded to specific users. Path-based ownership ensures only the authenticated user can access their own badges.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "userBadgeId",
+              "description": "The unique identifier for the user badge."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support a SCORM-compatible course website and student dashboard application, focusing on authorization independence, clarity, and scalability. User-specific data is stored under the `/users/{userId}` path, ensuring private access. Course-related data, including modules, lessons, discussion threads, and user progress, is organized to facilitate efficient data retrieval and secure access control. Collaborative data like discussion posts are stored in subcollections under discussion threads. Resources and Badges are stored in root level collections. Certificates awarded to users are stored under the user profile. The structure prioritizes denormalization, especially for collaborative data, ensuring authorization independence by including relevant authorization context within documents, avoiding the need for `get()` calls in security rules.\n\nTo achieve Authorization Independence (CRITICAL), the design denormalizes authorization data. For instance, in DiscussionPosts, the userId is included, thus associating the user who owns the post within the document. This avoids the need for security rules to traverse up the data hierarchy to determine ownership and permissions.\n\nTo enable secure `list` operations (QAPs), Structural Segregation is used to ensure that all documents in a collection have the same security requirements. For example, user-specific data like `/users/{userId}/course_progress` can be listed securely with rules that only allow the authenticated user (`request.auth.uid`) to access their own progress documents. Collaborative data is secured via membership maps, which can be denormalized if needed.  Global data can be accessed in root collections (e.g. resources)."
+  }
+}
