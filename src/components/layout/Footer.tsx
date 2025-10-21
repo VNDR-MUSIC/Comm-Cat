@@ -63,23 +63,6 @@ const Footer = () => {
                     <Link href="#" className="text-secondary-foreground/70 hover:text-accent"><XIcon className="w-6 h-6" /></Link>
                     <Link href="#" className="text-secondary-foreground/70 hover:text-accent"><Youtube className="w-6 h-6" /></Link>
                 </div>
-                <div className="pt-4">
-                     <h4 className="font-bold text-lg mb-2">Accreditation & Partners</h4>
-                     <div className="grid grid-cols-3 gap-4">
-                        {partnerLogos.slice(0, 6).map(logo => (
-                            <div key={logo.id} className="flex justify-center items-center bg-white/10 rounded-md p-2">
-                                 <Image
-                                    src={logo.imageUrl}
-                                    alt={logo.description}
-                                    width={150}
-                                    height={60}
-                                    data-ai-hint={logo.imageHint}
-                                    className="object-contain w-full h-8 invert"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
             </div>
 
           </div>
