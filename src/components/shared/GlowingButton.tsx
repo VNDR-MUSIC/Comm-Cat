@@ -13,18 +13,15 @@ const GlowingButton = React.forwardRef<HTMLButtonElement, GlowingButtonProps>(
     return (
       <Comp
         className={cn(
-          "relative inline-flex items-center justify-center rounded-lg p-[3px] shadow-lg focus:outline-none focus:ring-4 focus:ring-cyan-500/50",
-          "bg-gradient-to-r from-yellow-400 via-amber-500 via-blue-500 to-cyan-400",
-          "bg-400% animate-gradient-flow",
+          "relative inline-flex items-center justify-center rounded-lg bg-accent px-8 py-3 text-lg font-bold text-accent-foreground shadow-lg transition-transform duration-200 ease-in-out hover:scale-105",
+          "focus:outline-none focus:ring-4 focus:ring-accent/50",
+          "glow-effect",
           className
         )}
-        style={{ backgroundSize: '400%' }}
         ref={ref}
         {...props}
       >
-        <div className={cn("bg-primary text-primary-foreground px-8 py-3 rounded-md w-full h-full transition-colors hover:bg-primary/90 flex items-center justify-center", asChild && "bg-transparent")}>
-          <span className="font-bold">{children}</span>
-        </div>
+        {children}
       </Comp>
     );
   }
