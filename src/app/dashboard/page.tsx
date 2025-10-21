@@ -16,27 +16,31 @@ import {
 } from "@/components/ui/accordion"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { BookText, FileText, HelpCircle, Download, MessageSquare, CheckCircle2, Check } from "lucide-react"
+import { BookText, FileText, HelpCircle, Download, MessageSquare, CheckCircle2, Check, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const courseStructure = {
-    "Community Catalyst: Empowering Returning Citizens": {
-        id: "AZgwb4n8k5g4z8E4o4y1",
-        modules: [
-            { id: "m1", title: "Module 1: Foundations of Self-Worth & Vision", lessons: [{ id: "l1", title: "Reclaiming Your Narrative" }, { id: "l2", title: "Goal Setting with Purpose" }], moduleId: "JmDTSkaxJo3S6C6kTC8S" },
-            { id: "m2", title: "Module 2: Financial Literacy & Wealth Building", lessons: [{ id: "l3", title: "Budgeting for a New Beginning" }, { id: "l4", title: "Repairing Credit" }], moduleId: "e065bf1f" },
-            { id: "m3", title: "Module 3: Professional Readiness & Career Pathways", lessons: [{ id: "l5", title: "Crafting Your Resume" }, { id: "l6", "title": "Mastering the Interview" }], moduleId: "a39b4b02" },
-            { id: "m4", title: "Module 4: Health, Wellness, & Resilience", lessons: [], moduleId: "d19921b9" },
-            { id: "m5", title: "Module 5: Community Advocacy & Civic Engagement", lessons: [], moduleId: "c807b508" },
-            { id: "m6", title: "Module 6: Leadership, Legacy & Capstone Project", lessons: [], moduleId: "b7e2f5f1" },
-        ]
-    }
+interface Lesson {
+    id: string;
+    title: string;
 }
 
+interface Module {
+    id: string;
+    title: string;
+    lessons: Lesson[];
+}
+
+interface Course {
+    id: string;
+    title: string;
+    description: string;
+    modules: Module[];
+}
 
 interface UserLessonProgress {
     lessonId: string;
@@ -45,6 +49,8 @@ interface UserLessonProgress {
 export default function DashboardPage() {
     const { user } = useUser();
     const firestore = useFirestore();
+    const [course, setCourse] = useState<Course | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const progressQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
@@ -54,16 +60,90 @@ export default function DashboardPage() {
         );
     }, [firestore, user?.uid]);
 
-    const { data: lessonProgress } = useCollection<UserLessonProgress>(progressQuery);
+    const { data: lessonProgress, isLoading: progressLoading } = useCollection<UserLessonProgress>(progressQuery);
+
+    useEffect(() => {
+        if (!firestore) return;
+
+        const fetchCourseData = async () => {
+            setIsLoading(true);
+            const coursesQuery = query(collection(firestore, 'courses'), orderBy('title', 'asc'), limit(1));
+            const coursesSnapshot = await getDocs(coursesQuery);
+
+            if (coursesSnapshot.empty) {
+                setIsLoading(false);
+                return;
+            }
+
+            const courseDoc = coursesSnapshot.docs[0];
+            const fetchedCourse: Course = { id: courseDoc.id, title: courseDoc.data().title, description: courseDoc.data().description, modules: [] };
+
+            const modulesQuery = query(collection(firestore, `courses/${courseDoc.id}/modules`), orderBy('title', 'asc'));
+            const modulesSnapshot = await getDocs(modulesQuery);
+
+            const modulesPromises = modulesSnapshot.docs.map(async (moduleDoc) => {
+                const moduleData: Module = { id: moduleDoc.id, title: moduleDoc.data().title, lessons: [] };
+                
+                const lessonsQuery = query(collection(firestore, `courses/${courseDoc.id}/modules/${moduleDoc.id}/lessons`), orderBy('title', 'asc'));
+                const lessonsSnapshot = await getDocs(lessonsQuery);
+                
+                moduleData.lessons = lessonsSnapshot.docs.map(lessonDoc => ({ id: lessonDoc.id, ...lessonDoc.data() } as Lesson));
+                return moduleData;
+            });
+
+            fetchedCourse.modules = await Promise.all(modulesPromises);
+            setCourse(fetchedCourse);
+            setIsLoading(false);
+        }
+
+        fetchCourseData();
+    }, [firestore]);
 
     const completedLessons = useMemo(() => {
         return new Set(lessonProgress?.map(p => p.lessonId) || []);
     }, [lessonProgress]);
 
-    const allLessons = useMemo(() => courseStructure["Community Catalyst: Empowering Returning Citizens"].modules.flatMap(m => m.lessons), []);
+    const allLessons = useMemo(() => course?.modules.flatMap(m => m.lessons) || [], [course]);
     const allLessonsCount = allLessons.length;
     const overallProgress = allLessonsCount > 0 ? (completedLessons.size / allLessonsCount) * 100 : 0;
     
+    if (isLoading || progressLoading) {
+        return (
+             <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
+                <div className="max-w-7xl mx-auto">
+                    <header className="mb-8">
+                        <Skeleton className="h-10 w-1/2" />
+                        <Skeleton className="h-6 w-3/4 mt-2" />
+                    </header>
+                    <div className="space-y-4">
+                        <Skeleton className="h-24 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (!course) {
+        return (
+             <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
+                <div className="max-w-7xl mx-auto">
+                     <header className="mb-8">
+                        <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground">
+                            Welcome back, Catalyst!
+                        </h1>
+                    </header>
+                    <Card>
+                        <CardHeader><CardTitle>No courses found.</CardTitle></CardHeader>
+                        <CardContent><p>There are no courses available at this time. Please check back later.</p></CardContent>
+                    </Card>
+                </div>
+             </div>
+        )
+    }
+
     return (
         <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
             <div className="max-w-7xl mx-auto">
@@ -72,14 +152,14 @@ export default function DashboardPage() {
                         Welcome back, Catalyst!
                     </h1>
                     <p className="text-muted-foreground mt-2 text-lg">
-                        Your Cohort (Delta-2024) is on Week 28. Keep up the great work.
+                        Your Cohort (Delta-2024) is making great progress. Keep up the momentum!
                     </p>
                 </header>
 
                 <div className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline">Community Catalyst: Empowering Returning Citizens</CardTitle>
+                            <CardTitle className="font-headline">{course.title}</CardTitle>
                             <CardDescription>Overall Program Progress</CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -90,12 +170,11 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
 
-                    <Accordion type="multiple" defaultValue={["m2", "m3"]} className="w-full space-y-4">
-                        {courseStructure["Community Catalyst: Empowering Returning Citizens"].modules.map(module => {
+                    <Accordion type="multiple" className="w-full space-y-4">
+                        {course.modules.map(module => {
                             const completedModuleLessons = module.lessons.filter(l => completedLessons.has(l.id)).length;
                             const moduleProgress = module.lessons.length > 0 ? (completedModuleLessons / module.lessons.length) * 100 : 0;
-                            const courseId = courseStructure["Community Catalyst: Empowering Returning Citizens"].id;
-
+                            
                             return (
                                 <AccordionItem value={module.id} key={module.id} className="bg-card border-border/50 rounded-lg shadow-sm">
                                     <AccordionTrigger className="px-6 py-4 hover:no-underline">
@@ -110,34 +189,36 @@ export default function DashboardPage() {
                                     <AccordionContent className="p-6 border-t">
                                        <div className="space-y-4">
                                             <h4 className="font-bold">Lessons in this module:</h4>
-                                            <ul className="space-y-3">
-                                                {module.lessons.map(lesson => {
-                                                    const isCompleted = completedLessons.has(lesson.id);
-                                                    return (
-                                                        <li key={lesson.id} className="flex justify-between items-center p-3 bg-secondary/50 rounded-md">
-                                                            <div className="flex items-center gap-3">
-                                                                {isCompleted ? <Check className="w-5 h-5 text-green-500" /> : <BookText className="w-5 h-5 text-accent"/>}
-                                                                <span className={cn("font-medium", isCompleted && "line-through text-muted-foreground")}>{lesson.title}</span>
-                                                            </div>
-                                                            <Button variant={isCompleted ? "secondary" : "ghost"} size="sm" asChild>
-                                                                <Link href={`/dashboard/courses/${courseId}/modules/${module.moduleId}/lessons/${lesson.id}`}>{isCompleted ? "Review" : "Start Lesson"}</Link>
-                                                            </Button>
-                                                        </li>
-                                                    )
-                                                })}
-                                                 {module.lessons.length === 0 && <p className="text-sm text-muted-foreground">No lessons started yet for this module.</p>}
-                                            </ul>
-                                            <h4 className="font-bold pt-4 border-t">Required Actions:</h4>
+                                            {module.lessons.length > 0 ? (
+                                                <ul className="space-y-3">
+                                                    {module.lessons.map(lesson => {
+                                                        const isCompleted = completedLessons.has(lesson.id);
+                                                        return (
+                                                            <li key={lesson.id} className="flex justify-between items-center p-3 bg-secondary/50 rounded-md">
+                                                                <div className="flex items-center gap-3">
+                                                                    {isCompleted ? <Check className="w-5 h-5 text-green-500" /> : <BookText className="w-5 h-5 text-accent"/>}
+                                                                    <span className={cn("font-medium", isCompleted && "line-through text-muted-foreground")}>{lesson.title}</span>
+                                                                </div>
+                                                                <Button variant={isCompleted ? "secondary" : "ghost"} size="sm" asChild>
+                                                                    <Link href={`/dashboard/courses/${course.id}/modules/${module.id}/lessons/${lesson.id}`}>{isCompleted ? "Review" : "Start Lesson"}</Link>
+                                                                </Button>
+                                                            </li>
+                                                        )
+                                                    })}
+                                                </ul>
+                                            ) : (
+                                                <p className="text-sm text-muted-foreground">No lessons have been added to this module yet.</p>
+                                            )}
+                                            <h4 className="font-bold pt-4 border-t">Module Actions:</h4>
                                             <div className="flex flex-wrap gap-2">
                                                 <Button variant="outline"><FileText />Reflect (Journal)</Button>
                                                 <Button variant="outline"><HelpCircle />Module Quiz</Button>
                                                  <Button variant="outline" asChild>
                                                     <Link href={`/dashboard/discussion/${module.id}`}>
-                                                         {module.id === "m1" || module.id === "m2" ? <CheckCircle2 className="text-green-500" /> : <MessageSquare />}
+                                                         <MessageSquare />
                                                         <span>Join Discussion</span>
                                                     </Link>
                                                 </Button>
-                                                <Button variant="outline"><Download />Download Resources</Button>
                                             </div>
                                        </div>
                                     </AccordionContent>
