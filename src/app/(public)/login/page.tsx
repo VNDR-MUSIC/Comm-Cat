@@ -1,3 +1,4 @@
+
 // This component simulates a login form. In a real application,
 // it would handle authentication with Firebase.
 
