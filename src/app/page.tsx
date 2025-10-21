@@ -45,13 +45,6 @@ const courseFeatures = [
   },
 ];
 
-const facilitators = PlaceHolderImages.filter(img => img.id.startsWith("facilitator-"));
-const facilitatorDetails = [
-    { name: 'Dr. Warren O. Crabb', title: 'Founder & Lead Curriculum Designer', imageId: 'facilitator-1', bio: 'Dr. Crabb combines his background in media and production with lived experience to create a curriculum that is both evidence-based and deeply empathetic.' },
-    { name: 'Marcus Reid', title: 'Community Outreach & Partnerships Lead', imageId: 'facilitator-2', bio: 'A master networker, Marcus builds bridges to employers, community leaders, and resources to ensure our Catalysts have every opportunity to succeed.' },
-    { name: 'Elena Santos', title: 'Career & Entrepreneurship Coach', imageId: 'facilitator-3', bio: 'Elena is a certified career coach who specializes in helping individuals translate their life experiences into powerful assets for the job market or their own business ventures.' },
-];
-
 const testimonials = PlaceHolderImages.filter(img => img.id.startsWith("testimonial-"));
 const testimonialDetails = [
     { name: 'James P.', cohort: 'Cohort 2023', text: "This program didn't just give me skills; it gave me back my voice and my worth. I'm now a small business owner and a mentor to young men in my community.", imageId: 'testimonial-1' },
@@ -182,37 +175,6 @@ export default function HomePage() {
                     ))}
                 </div>
             </div>
-        </section>
-
-        <section id="facilitators" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-                <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Meet the Facilitators</h2>
-                <p className="text-muted-foreground md:text-xl">Guided by experts with a passion for empowerment and restorative justice. Our team has lived experience and professional expertise.</p>
-            </div>
-            <div className="mt-12 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
-              {facilitatorDetails.map((facilitator) => {
-                  const image = facilitators.find(img => img.id === facilitator.imageId);
-                  return (
-                    <Card key={facilitator.name} className="flex flex-col items-center text-center group border-0 bg-transparent shadow-none">
-                        <div className="relative">
-                            <Avatar className="w-40 h-40 border-4 border-transparent group-hover:border-accent transition-all duration-300">
-                                {image && <AvatarImage src={image.imageUrl} alt={image.description} data-ai-hint={image.imageHint} />}
-                                <AvatarFallback>{facilitator.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                        </div>
-                        <CardHeader>
-                          <CardTitle className="font-headline">{facilitator.name}</CardTitle>
-                          <p className="text-accent font-medium">{facilitator.title}</p>
-                        </CardHeader>
-                         <CardContent>
-                            <p className="text-sm text-muted-foreground">{facilitator.bio}</p>
-                        </CardContent>
-                    </Card>
-                  )
-              })}
-            </div>
-          </div>
         </section>
 
         <section id="testimonials" className="py-16 md:py-24 bg-primary text-primary-foreground section-glow-border">
