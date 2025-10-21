@@ -41,9 +41,13 @@ export default function RootLayout({
       <body className={cn("font-body antialiased", fontHeadline.variable, fontBody.variable)}>
         <FirebaseClientProvider>
           <div className="flex flex-col min-h-dvh bg-background text-foreground">
-            <Header />
+            <div className="relative z-50">
+                <Header />
+            </div>
             <main className="flex-1">{children}</main>
-            <Footer />
+            <div className="relative z-40">
+                <Footer />
+            </div>
           </div>
           <Toaster />
         </FirebaseClientProvider>
