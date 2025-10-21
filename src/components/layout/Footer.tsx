@@ -1,5 +1,6 @@
+
 import Link from "next/link";
-import { University, Linkedin, Youtube } from "lucide-react";
+import { University, Linkedin, Youtube, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
@@ -47,7 +48,17 @@ const Footer = () => {
             
             <div className="space-y-4">
                 <h4 className="font-bold text-lg">Connect</h4>
-                <div className="flex space-x-4">
+                 <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-accent" />
+                        <a href="tel:+15615627222" className="text-sm text-primary-foreground/70 hover:text-accent">+1 (561) 562-7222</a>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-accent" />
+                        <a href="mailto:support@catalyst.edu" className="text-sm text-primary-foreground/70 hover:text-accent">support@catalyst.edu</a>
+                    </div>
+                </div>
+                <div className="flex space-x-4 pt-2">
                     <Link href="#" className="text-primary-foreground/70 hover:text-accent"><Linkedin className="w-6 h-6" /></Link>
                     <Link href="#" className="text-primary-foreground/70 hover:text-accent"><XIcon className="w-6 h-6" /></Link>
                     <Link href="#" className="text-primary-foreground/70 hover:text-accent"><Youtube className="w-6 h-6" /></Link>
