@@ -26,7 +26,7 @@ import { useMemo } from "react";
 const modules = [
     { id: "m1", title: "Module 1: Foundations of Self-Worth & Vision", lessons: [{ id: "l1", title: "Reclaiming Your Narrative" }, { id: "l2", title: "Goal Setting with Purpose" }], discussionCompleted: true },
     { id: "m2", title: "Module 2: Financial Literacy & Wealth Building", lessons: [{ id: "l3", title: "Budgeting for a New Beginning" }, { id: "l4", title: "Repairing Credit" }], discussionCompleted: true },
-    { id: "m3", title: "Module 3: Professional Readiness & Career Pathways", lessons: [{ id: "l5", title: "Crafting Your Resume" }, { id: "l6", title: "Mastering the Interview" }], discussionCompleted: false },
+    { id: "m3", title: "Module 3: Professional Readiness & Career Pathways", lessons: [{ id: "l5", title: "Crafting Your Resume" }, { id: "l6", "title": "Mastering the Interview" }], discussionCompleted: false },
     { id: "m4", title: "Module 4: Health, Wellness, & Resilience", lessons: [], discussionCompleted: false },
     { id: "m5", title: "Module 5: Community Advocacy & Civic Engagement", lessons: [], discussionCompleted: false },
     { id: "m6", title: "Module 6: Leadership, Legacy & Capstone Project", lessons: [], discussionCompleted: false },
