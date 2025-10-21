@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { LifeBuoy, Mail, Phone, Calendar } from "lucide-react";
 import GlowingButton from "@/components/shared/GlowingButton";
+import Link from "next/link";
 
 export default function SupportPage() {
     return (
@@ -79,9 +80,11 @@ export default function SupportPage() {
                                 <CardDescription>Book a 1-on-1 session with a mentor.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button className="w-full">
-                                    <Calendar />
-                                    <span>Book a Session</span>
+                                <Button asChild className="w-full">
+                                    <Link href="/dashboard/schedule">
+                                        <Calendar />
+                                        <span>Book a Session</span>
+                                    </Link>
                                 </Button>
                             </CardContent>
                         </Card>
