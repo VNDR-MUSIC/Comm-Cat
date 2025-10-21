@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -34,10 +35,10 @@ export default function EnrollPage() {
                                 Thank you for taking this courageous step, {name || "Catalyst"}.
                             </p>
                             <p>
-                                We've received your application. Our founder, Dr. Warren O. Crabb, personally reviews every submission with the care and attention it deserves. You will receive an email regarding next steps within the next 7-10 business days. Your journey is important to us.
+                                We've received your application. Our founder, Dr. Warren O. Crabb, personally reviews every submission with the care and attention it deserves. You will receive an email regarding next steps within the next 7-10 business days. For now, let's get you prepared for your journey.
                             </p>
                             <GlowingButton asChild>
-                                <Link href="/dashboard">Go to Dashboard</Link>
+                                <Link href="/welcome">See Your Next Steps</Link>
                             </GlowingButton>
                         </div>
                     </div>
