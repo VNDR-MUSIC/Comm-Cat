@@ -1,92 +1,147 @@
-/**
- * @file This Firestore Security Rules file enforces a strict, path-based ownership model for user-specific data while allowing public read access to course content and resources.
- *
- * Core Philosophy: User data is secured via path-based ownership (e.g., /users/{userId}), ensuring only authenticated users can access their own information. Course content and resources are generally publicly readable, but write access is restricted.
- *
- * Data Structure:
- * - /users/{userId}: Stores user profiles.
- * - /courses/{courseId}: Stores course information.
- * - /courses/{courseId}/modules/{moduleId}: Stores modules within a course.
- * - /courses/{courseId}/modules/{moduleId}/lessons/{lessonId}: Stores lessons within a module.
- * - /users/{userId}/courseProgress/{courseProgressId}: Stores user's course progress.
- * - /courses/{courseId}/discussionThreads/{threadId}: Stores discussion threads.
- * - /courses/{courseId}/discussionThreads/{threadId}/posts/{postId}: Stores discussion posts (potentially requires denormalized membership data for write access control).
- * - /resources/{resourceId}: Stores publicly available resources.
- * - /users/{userId}/certificates/{certificateId}: Stores user certificates.
- * - /badges/{badgeId}: Stores badge information.
- * - /users/{userId}/badges/{userBadgeId}: Stores user badges.
- *
- * Key Security Decisions:
- * - User-specific data (profiles, progress, certificates, badges) is strictly controlled by path-based ownership.
- * - Courses, modules, lessons, discussion threads, and resources are publicly readable.
- * - Discussion posts might require denormalized membership data to control write access based on course enrollment.
- * - List operations are generally allowed for courses and resources, but restricted to owners for user-specific data.
- *
- * Denormalization for Authorization: The 'members' map in the /courses/{courseId}/discussionThreads/{threadId}/posts/{postId} collection will contain a map of user IDs who have access to the course. This eliminates the need for `get()` calls in security rules and supports atomic operations.
- *
- * Structural Segregation: User-specific data is stored under the /users/{userId} path, while publicly accessible data (courses, resources) are stored at the top level. This allows for different security rules for each type of data.
- */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows a user to read and write their own profile data.
+     * @description Controls access to user profiles.
      * @path /users/{userId}
+     * @allow (create, update, delete): User with matching {userId} can modify their own profile.
+     * @allow (get, list): User with matching {userId} can read their own profile.
+     * @deny (create, update, delete): User attempting to modify another user's profile.
+     * @principle Enforces document ownership for writes.
      */
     match /users/{userId} {
-      // Helper function to check if the authenticated user is the owner of the document
       function isOwner(userId) {
         return request.auth != null && request.auth.uid == userId;
       }
 
-      // Helper function to check if the authenticated user is the owner of the document being updated, and that the document exists
       function isExistingOwner(userId) {
-        return isOwner(userId) && getSelf().data != null;
+        return request.auth != null && request.auth.uid == userId;
       }
 
-      function getSelf() {
-        return get(/databases/$(database)/documents/users/$(userId));
+      function isSignedIn() {
+        return request.auth != null;
       }
 
       allow get: if isOwner(userId);
-      allow list: if false; // Prevent listing of all users
+      allow list: if isOwner(userId);
 
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == getSelf().data.id;
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
     }
 
     /**
-     * @description Allows anyone to read course details, but restricts creation, updates, and deletion.
+     * @description Controls access to course information.
      * @path /courses/{courseId}
+     * @allow (get, list): All authenticated users can view course details.
+     * @deny (create, update, delete): No one can create, update, or delete courses.
+     * @principle Grants public read access to course catalog.
      */
     match /courses/{courseId} {
-      allow get, list: if true;
-      allow create, update, delete: if false; // TODO: Add admin role validation
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows anyone to read module details, but restricts creation, updates, and deletion.
+     * @description Controls access to module information within a course.
      * @path /courses/{courseId}/modules/{moduleId}
+     * @allow (get, list): All authenticated users can view module details within a course.
+     * @deny (create, update, delete): No one can create, update, or delete modules.
+     * @principle Grants public read access to course modules.
      */
     match /courses/{courseId}/modules/{moduleId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;  // TODO: Add admin role validation
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows anyone to read lesson details, but restricts creation, updates, and deletion.
+     * @description Controls access to lesson information within a module.
      * @path /courses/{courseId}/modules/{moduleId}/lessons/{lessonId}
+     * @allow (get, list): All authenticated users can view lesson details within a module.
+     * @deny (create, update, delete): No one can create, update, or delete lessons.
+     * @principle Grants public read access to course lessons.
      */
     match /courses/{courseId}/modules/{moduleId}/lessons/{lessonId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;  // TODO: Add admin role validation
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows a user to read and write their own course progress data.
+     * @description Controls access to resource information.
+     * @path /resources/{resourceId}
+     * @allow (get, list): All users can view resource details.
+     * @deny (create, update, delete): No one can create, update, or delete resources.
+     * @principle Grants public read access to resources, owner-only writes (TODO: Implement owner-only writes).
+     */
+    match /resources/{resourceId} {
+       allow get, list: if isSignedIn();
+       allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Controls access to discussion threads within a module.
+     * @path /courses/{courseId}/modules/{moduleId}/discussionThreads/{threadId}
+     * @allow (get, list): All authenticated users can view discussion threads.
+     * @allow (create): Authenticated users can create discussion threads.
+     * @allow (update, delete): Only the creator can update or delete a discussion thread.
+     * @deny (update, delete): Non-creators cannot modify threads.
+     * @principle Restricts write access to the creator of the thread.
+     */
+    match /courses/{courseId}/modules/{moduleId}/discussionThreads/{threadId} {
+      function isOwner(creatorId) {
+        return request.auth != null && request.auth.uid == creatorId;
+      }
+
+       function isExistingOwner(creatorId) {
+        return request.auth != null && request.auth.uid == resource.data.creatorId;
+      }
+
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if request.auth.uid == resource.data.creatorId;
+      allow delete: if request.auth.uid == resource.data.creatorId;
+    }
+
+    /**
+     * @description Controls access to replies to discussion threads.
+     * @path /courses/{courseId}/modules/{moduleId}/discussionThreads/{threadId}/discussionReplies/{replyId}
+     * @allow (get, list): All authenticated users can view discussion replies.
+     * @allow (create): Authenticated users can create discussion replies.
+     * @allow (update, delete): Only the creator can update or delete their own replies.
+     * @deny (update, delete): Non-creators cannot modify replies.
+     * @principle Restricts write access to the creator of the reply.
+     */
+    match /courses/{courseId}/modules/{moduleId}/discussionThreads/{threadId}/discussionReplies/{replyId} {
+       function isOwner(creatorId) {
+        return request.auth != null && request.auth.uid == creatorId;
+      }
+
+       function isExistingOwner(creatorId) {
+        return request.auth != null && request.auth.uid == resource.data.creatorId;
+      }
+
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if request.auth.uid == resource.data.creatorId;
+      allow delete: if request.auth.uid == resource.data.creatorId;
+    }
+
+    /**
+     * @description Controls access to user's course progress.
      * @path /users/{userId}/courseProgress/{courseProgressId}
+     * @allow (create, update, delete): User with matching {userId} can modify their own course progress.
+     * @allow (get, list): User with matching {userId} can read their own course progress.
+     * @deny (create, update, delete): User attempting to modify another user's course progress.
+     * @principle Enforces document ownership for writes.
      */
     match /users/{userId}/courseProgress/{courseProgressId} {
       function isOwner(userId) {
@@ -94,66 +149,49 @@ service cloud.firestore {
       }
 
       function isExistingOwner(userId) {
-        return isOwner(userId) && getSelf().data != null;
-      }
-
-      function getSelf() {
-        return get(/databases/$(database)/documents/users/$(userId)/courseProgress/$(courseProgressId));
+        return request.auth != null && request.auth.uid == userId;
       }
 
       allow get: if isOwner(userId);
       allow list: if isOwner(userId);
 
-      allow create: if isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.userId == getSelf().data.userId;
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
     }
 
     /**
-     * @description Allows anyone to read discussion thread details, but restricts creation, updates, and deletion.
-     * @path /courses/{courseId}/discussionThreads/{threadId}
+     * @description Controls access to user's module progress within a course.
+     * @path /users/{userId}/courseProgress/{courseProgressId}/moduleProgress/{moduleProgressId}
+     * @allow (create, update, delete): User with matching {userId} can modify their own module progress.
+     * @allow (get, list): User with matching {userId} can read their own module progress.
+     * @deny (create, update, delete): User attempting to modify another user's module progress.
+     * @principle Enforces document ownership for writes.
      */
-    match /courses/{courseId}/discussionThreads/{threadId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;  // TODO: Add admin/instructor role validation
+    match /users/{userId}/courseProgress/{courseProgressId}/moduleProgress/{moduleProgressId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
     }
 
     /**
-     * @description Allows users who are members of the course to create, read, update, and delete discussion posts.
-     * @path /courses/{courseId}/discussionThreads/{threadId}/posts/{postId}
-     */
-    match /courses/{courseId}/discussionThreads/{threadId}/posts/{postId} {
-      // Helper function to check if the user is a member of the course
-      function isCourseMember(courseId) {
-        return get(/databases/$(database)/documents/courses/$(courseId)).data.members[request.auth.uid] != null;
-      }
-
-      function isExistingCourseMember(courseId) {
-        return isCourseMember(courseId) && getSelf().data != null;
-      }
-
-      function getSelf() {
-        return get(/databases/$(database)/documents/courses/$(courseId)/discussionThreads/$(threadId)/posts/$(postId));
-      }
-
-      allow get, list: if true;
-      allow create: if request.auth.uid != null && request.resource.data.userId == request.auth.uid;
-      allow update: if isExistingCourseMember(courseId) && request.resource.data.userId == request.auth.uid;
-      allow delete: if isExistingCourseMember(courseId);
-    }
-
-    /**
-     * @description Allows anyone to read resource details, but restricts creation, updates, and deletion.
-     * @path /resources/{resourceId}
-     */
-    match /resources/{resourceId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;  // TODO: Add admin role validation
-    }
-
-    /**
-     * @description Allows a user to read and write their own certificate data.
+     * @description Controls access to user's certificates.
      * @path /users/{userId}/certificates/{certificateId}
+     * @allow (create, update, delete): User with matching {userId} can modify their own certificates.
+     * @allow (get, list): User with matching {userId} can read their own certificates.
+     * @deny (create, update, delete): User attempting to modify another user's certificates.
+     * @principle Enforces document ownership for writes.
      */
     match /users/{userId}/certificates/{certificateId} {
       function isOwner(userId) {
@@ -161,53 +199,19 @@ service cloud.firestore {
       }
 
       function isExistingOwner(userId) {
-        return isOwner(userId) && getSelf().data != null;
-      }
-
-      function getSelf() {
-        return get(/databases/$(database)/documents/users/$(userId)/certificates/$(certificateId));
-      }
-
-      allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-
-      allow create: if isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.userId == getSelf().data.userId;
-      allow delete: if isExistingOwner(userId);
-    }
-
-    /**
-     * @description Allows anyone to read badge details, but restricts creation, updates, and deletion.
-     * @path /badges/{badgeId}
-     */
-    match /badges/{badgeId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;  // TODO: Add admin role validation
-    }
-
-    /**
-     * @description Allows a user to read and write their own badge data.
-     * @path /users/{userId}/badges/{userBadgeId}
-     */
-    match /users/{userId}/badges/{userBadgeId} {
-      function isOwner(userId) {
         return request.auth != null && request.auth.uid == userId;
       }
 
-      function isExistingOwner(userId) {
-        return isOwner(userId) && getSelf().data != null;
-      }
-
-      function getSelf() {
-        return get(/databases/$(database)/documents/users/$(userId)/badges/$(userBadgeId));
-      }
-
       allow get: if isOwner(userId);
       allow list: if isOwner(userId);
 
-      allow create: if isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.userId == getSelf().data.userId;
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
     }
+  }
+
+  function isSignedIn() {
+    return request.auth != null;
   }
 }
