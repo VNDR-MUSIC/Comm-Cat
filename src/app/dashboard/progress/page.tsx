@@ -1,68 +1,86 @@
 
-'use client';
-
-import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Award, Star, Shield, BrainCircuit, Loader2 } from "lucide-react";
 import GlowingButton from "@/components/shared/GlowingButton";
-import { cn } from "@/lib/utils";
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { initializeFirebase, getSdks } from '@/firebase';
+import { collection, getDocs, query, where, CollectionReference } from 'firebase/firestore';
+import { headers } from 'next/headers';
+import { getApp, getApps } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { User } from 'firebase/auth';
+import { ProgressClientPage } from "./ProgressClientPage";
 
-// Define the course structure centrally for this component
-const modules = [
-    { id: "m1", title: "Module 1", lessons: ["l1", "l2"] },
-    { id: "m2", title: "Module 2", lessons: ["l3", "l4"] },
-    { id: "m3", title: "Module 3", lessons: ["l5", "l6"] },
-    { id: "m4", title: "Module 4", lessons: [] },
-    { id: "m5", title: "Module 5", lessons: [] },
-    { id: "m6", title: "Module 6", lessons: [] },
-];
+interface Lesson {
+    id: string;
+}
 
-const badges = [
-    { icon: <Star className="w-8 h-8 text-yellow-400"/>, title: "Self-Worth Champion", description: "Completed Module 1", requiredModuleId: "m1" },
-    { icon: <BrainCircuit className="w-8 h-8 text-green-400"/>, title: "Financial Pro", description: "Completed Module 2", requiredModuleId: "m2" },
-    { icon: <Award className="w-8 h-8 text-blue-400"/>, title: "Career Ready", description: "Completed Module 3", requiredModuleId: "m3" },
-    { icon: <Shield className="w-8 h-8 text-indigo-400"/>, title: "Leadership Advocate", description: "Completed Module 6", requiredModuleId: "m6" },
-];
+interface Module {
+    id: string;
+    title: string;
+    lessons: Lesson[];
+}
+
+interface Course {
+    id: string;
+    modules: Module[];
+}
 
 interface UserLessonProgress {
     lessonId: string;
 }
 
-export default function ProgressPage() {
-    const { user } = useUser();
-    const firestore = useFirestore();
+// This function needs to be defined to be used in a Server Component context
+// It cannot rely on the client-side `useUser` hook.
+async function getCurrentUser(): Promise<User | null> {
+    const auth = getAuth(getApp());
+    // This is a simplified way; in a real app with server-side rendering,
+    // you'd typically handle auth state via cookies or session management.
+    // For this context, we assume auth state can be determined.
+    return auth.currentUser;
+}
 
-    const progressQuery = useMemoFirebase(() => {
-        if (!firestore || !user?.uid) return null;
-        return query(
-            collection(firestore, 'userLessonProgress'),
-            where('userId', '==', user.uid)
-        );
-    }, [firestore, user?.uid]);
 
-    const { data: lessonProgress, isLoading } = useCollection<UserLessonProgress>(progressQuery);
+async function getCourseStructure(): Promise<Course[]> {
+    const { firestore } = initializeFirebase();
+    const coursesCol = collection(firestore, 'courses') as CollectionReference<any>;
+    const courseSnapshot = await getDocs(coursesCol);
+    
+    const courses: Course[] = [];
 
-    const completedLessons = useMemo(() => {
-        return new Set(lessonProgress?.map(p => p.lessonId) || []);
-    }, [lessonProgress]);
+    for (const courseDoc of courseSnapshot.docs) {
+        const courseData = { id: courseDoc.id, modules: [] } as Course;
+        
+        const modulesCol = collection(firestore, `courses/${courseDoc.id}/modules`) as CollectionReference<any>;
+        const modulesSnapshot = await getDocs(modulesCol);
 
-    const earnedBadges = useMemo(() => {
-        const earned = new Set<string>();
-        if (isLoading) return earned;
+        for (const moduleDoc of modulesSnapshot.docs) {
+            const moduleData = { id: moduleDoc.id, title: moduleDoc.data().title, lessons: [] } as Module;
 
-        badges.forEach(badge => {
-            const module = modules.find(m => m.id === badge.requiredModuleId);
-            if (module && module.lessons.length > 0) {
-                const allLessonsCompleted = module.lessons.every(lessonId => completedLessons.has(lessonId));
-                if (allLessonsCompleted) {
-                    earned.add(badge.title);
-                }
-            }
-        });
-        return earned;
-    }, [completedLessons, isLoading]);
+            const lessonsCol = collection(firestore, `courses/${courseDoc.id}/modules/${moduleDoc.id}/lessons`) as CollectionReference<any>;
+            const lessonsSnapshot = await getDocs(lessonsCol);
+            
+            lessonsSnapshot.forEach(lessonDoc => {
+                moduleData.lessons.push({ id: lessonDoc.id });
+            });
+            courseData.modules.push(moduleData);
+        }
+        courses.push(courseData);
+    }
+    return courses;
+}
+
+
+export default async function ProgressPage() {
+    // This is a simplified auth check for a server component.
+    // In a real app, you'd have a more robust session management system.
+    const headersList = headers();
+    const userCookie = headersList.get('cookie'); // Placeholder for getting user session
+
+    // For the purpose of this component, let's assume we can get the user ID
+    // A more robust solution would involve a proper server-side auth library
+    // For now, we cannot reliably get the user without a request context.
+    // We will pass the data fetching down to a client component where user is available.
+
+    const courseStructure = await getCourseStructure();
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
@@ -87,7 +105,7 @@ export default function ProgressPage() {
                                     <div className="bg-background rounded-lg p-8 text-center aspect-[4/3] flex flex-col justify-center items-center">
                                         <h2 className="text-2xl font-headline font-bold animated-gradient-text">Certificate of Completion</h2>
                                         <p className="mt-4 text-muted-foreground">This certifies that</p>
-                                        <p className="text-3xl font-bold font-headline my-4">{user?.displayName || "A. Student"}</p>
+                                        <p className="text-3xl font-bold font-headline my-4">A. Student</p>
                                         <p className="text-muted-foreground">has successfully completed the</p>
                                         <p className="text-xl font-bold font-headline mt-2">Community Catalyst Program</p>
                                         <p className="text-sm text-muted-foreground mt-8">Issued: Not yet earned</p>
@@ -100,34 +118,7 @@ export default function ProgressPage() {
                         </Card>
                     </div>
                     <div className="lg:col-span-1">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline">My Badges</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                {isLoading ? (
-                                    <div className="flex justify-center items-center h-48">
-                                        <Loader2 className="w-8 h-8 animate-spin text-accent" />
-                                    </div>
-                                ) : (
-                                    badges.map(badge => {
-                                        const isEarned = earnedBadges.has(badge.title);
-                                        return (
-                                            <div key={badge.title} className={cn(
-                                                "flex items-center gap-4 p-4 rounded-lg transition-all duration-300",
-                                                isEarned ? 'bg-secondary/50' : 'bg-secondary/20 opacity-50'
-                                            )}>
-                                                <div>{badge.icon}</div>
-                                                <div>
-                                                    <h3 className="font-bold">{badge.title}</h3>
-                                                    <p className="text-sm text-muted-foreground">{badge.description}</p>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                )}
-                            </CardContent>
-                        </Card>
+                        <ProgressClientPage courseStructure={courseStructure} />
                     </div>
                 </div>
             </div>
