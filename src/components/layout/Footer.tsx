@@ -26,16 +26,10 @@ const Footer = () => {
                     </span>
                 </Link>
                 <p className="text-sm text-primary-foreground/70 max-w-md">
-                    Empowering Returning Citizens to Rise and Lead. A 52-week, no-cost program funded by community sponsors who believe in second chances.
+                    Empowering individuals to rise and lead. Our program is offered at no-cost to returning citizens, funded by community sponsors who believe in second chances.
                 </p>
                  <div className="flex items-center gap-4 text-sm pt-2">
-                    <div className="flex items-center gap-2">
-                        <div className="relative p-1 rounded-full bg-gradient-to-r from-yellow-400 to-blue-500">
-                            <svg className="w-5 h-5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
-                        </div>
-                        <span className="font-semibold">Firebase Verified</span>
-                    </div>
-                     <p className="text-primary-foreground/70">Path to 501(c)(3) Status</p>
+                    <p className="text-primary-foreground/70">Path to 501(c)(3) Status</p>
                 </div>
             </div>
 
@@ -46,7 +40,7 @@ const Footer = () => {
                 <li><Link href="/curriculum" className="text-sm text-primary-foreground/70 hover:text-accent">Curriculum</Link></li>
                 <li><Link href="/sponsorship" className="text-sm text-primary-foreground/70 hover:text-accent">Sponsorship</Link></li>
                 <li><Link href="/community" className="text-sm text-primary-foreground/70 hover:text-accent">Community</Link></li>
-                <li><Link href="#" className="text-sm text-primary-foreground/70 hover:text-accent">Press</Link></li>
+                 <li><Link href="/returning-citizens" className="text-sm text-primary-foreground/70 hover:text-accent">For Returning Citizens</Link></li>
                 <li><Link href="/support" className="text-sm text-primary-foreground/70 hover:text-accent">Contact</Link></li>
               </ul>
             </div>

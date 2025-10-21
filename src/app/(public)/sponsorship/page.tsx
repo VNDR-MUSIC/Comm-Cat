@@ -61,8 +61,13 @@ export default function SponsorshipPage() {
                         Sponsor a Student, Ignite a Future
                     </h1>
                     <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl">
-                        Catalyst Academy is offered at <span className="font-bold">zero cost</span> to our students. This is only possible through the generosity of sponsors like you who believe in the power of second chances. Your contribution directly funds a returning citizen's journey to becoming a community leader.
+                        Catalyst Academy is offered at <span className="font-bold">zero cost</span> to our students. This is only possible through the generosity of sponsors like you who believe in the power of second chances. Your contribution directly funds a student's journey to becoming a community leader.
                     </p>
+                    <div className="mt-8 flex justify-center gap-4">
+                        <GlowingButton asChild>
+                            <Link href="/sponsorship-application">Become a Sponsor</Link>
+                        </GlowingButton>
+                    </div>
                 </div>
             </section>
             
@@ -74,7 +79,7 @@ export default function SponsorshipPage() {
                             The Impact of Your Sponsorship
                         </h2>
                         <p className="mt-4 text-muted-foreground md:text-xl">
-                           Your gift isn't a handout; it's an investment in human potential. It's a belief in the simple idea that a past mistake should not be a life sentence.
+                           Your gift isn't a handout; it's an investment in human potential. It's a belief in the simple idea that a past mistake should not be a life sentence of limited opportunity.
                         </p>
                     </div>
                     <div className="mt-12 grid md:grid-cols-3 gap-8">
@@ -102,7 +107,7 @@ export default function SponsorshipPage() {
                             Choose Your Impact Level
                         </h2>
                         <p className="mt-4 text-muted-foreground md:text-xl">
-                            Every dollar makes a difference. Select the sponsorship level that aligns with your passion for change.
+                            Every dollar makes a difference. Select the sponsorship level that aligns with your passion for change, or contact us about corporate partnerships.
                         </p>
                     </div>
                     <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -124,7 +129,9 @@ export default function SponsorshipPage() {
                                     </ul>
                                 </CardContent>
                                 <div className="p-6 pt-0">
-                                    <GlowingButton className="w-full">Sponsor at this Level</GlowingButton>
+                                    <GlowingButton asChild className="w-full">
+                                      <Link href="/sponsorship-application">Sponsor at this Level</Link>
+                                    </GlowingButton>
                                 </div>
                             </Card>
                         ))}
@@ -147,7 +154,7 @@ export default function SponsorshipPage() {
                             <p>Catalyst Academy is operated under the umbrella of The Doctor Project Corporation, a registered non-profit organization. We are actively pursuing official 501(c)(3) tax-exempt status from the IRS.</p>
                              <p>While this process is underway, your sponsorship is a powerful social investment in the future of our communities. Once our 501(c)(3) status is approved, all prior donations within the eligibility window may become tax-deductible retroactively. We are committed to transparency and will keep all of our valued partners updated on our progress.</p>
                             <GlowingButton asChild>
-                                <Link href="/contact">Contact Us for Corporate Sponsorship</Link>
+                                <Link href="/sponsorship-application?type=corporate">Contact Us for Corporate Sponsorship</Link>
                             </GlowingButton>
                         </CardContent>
                    </Card>

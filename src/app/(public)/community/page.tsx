@@ -41,7 +41,7 @@ export default function CommunityPage() {
                         Why We Exist: The Purpose of Purpose
                     </h1>
                     <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground md:text-xl">
-                        Catalyst Academy was born from a simple, powerful belief: a person's past does not dictate their future. We exist to provide a structured pathway for returning citizens to transform their lives, not just by finding a job, but by rediscovering their purpose, reclaiming their narrative, and becoming leaders in their own communities.
+                        Catalyst Academy was born from a simple, powerful belief: a person's past does not dictate their future. We exist to provide a structured pathway for individuals to transform their lives, not just by finding a job, but by rediscovering their purpose, reclaiming their narrative, and becoming leaders in their own communities.
                     </p>
                      <div className="mt-8 flex justify-center gap-4">
                         <GlowingButton asChild>
@@ -60,10 +60,10 @@ export default function CommunityPage() {
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="space-y-4">
                             <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">
-                                A Program for Transformation
+                                A Program for Universal Transformation
                             </h2>
                             <p className="text-lg text-muted-foreground">
-                                While our curriculum is tailored to address the unique challenges and opportunities faced by returning citizens, the principles of renewal, leadership, and community-building are universal. This journey is for you if:
+                                While our curriculum is expertly tailored to address the unique challenges faced by returning citizens, the principles of renewal, leadership, and community-building are universal. This journey is for anyone, from any background, if:
                             </p>
                             <ul className="space-y-3 text-lg text-muted-foreground">
                                 <li className="flex items-start gap-3">
@@ -91,7 +91,7 @@ export default function CommunityPage() {
                         </div>
                         <div className="bg-card p-8 rounded-lg shadow-lg">
                             <h3 className="font-headline text-2xl font-bold">Our Commitment to You</h3>
-                            <p className="text-muted-foreground mt-4">We commit to providing you with a world-class curriculum, dedicated mentorship, and a supportive, lifelong network. In return, we ask for your full commitment to the process, to yourself, and to the community we build together. This is a partnership in your success. Dr. Warren O. Crabb personally reviews every application to ensure each cohort is filled with individuals truly ready for this transformative journey.</p>
+                            <p className="text-muted-foreground mt-4">We commit to providing you with a world-class curriculum, dedicated mentorship, and a supportive, lifelong network. In return, we ask for your full commitment to the process, to yourself, and to the community we build together. This is a partnership in your success. Our founder, Dr. Warren O. Crabb, personally reviews every application to ensure each cohort is filled with individuals truly ready for this transformative journey.</p>
                         </div>
                     </div>
                 </div>
@@ -135,13 +135,13 @@ export default function CommunityPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <p>Our moderation process is designed to be fair and transparent, always starting with the assumption of positive intent, but escalating as needed to protect the community.</p>
+                            <p>Our moderation process is designed to be fair and transparent, always starting with the assumption of positive intent, but escalating as needed to protect the community. Dignity and respect are paramount.</p>
                             <ol className="list-decimal pl-6 space-y-2 font-medium">
-                                <li><span className="font-bold">First Violation:</span> A formal warning from a facilitator and a temporary suspension of posting privileges for 24 hours. The offending content will be removed.</li>
-                                <li><span className="font-bold">Second Violation:</span> A mandatory 1-on-1 meeting with a program director to discuss the community covenant and a 7-day suspension of all platform access.</li>
-                                <li><span className="font-bold">Third Violation:</span> Immediate and permanent removal from the Catalyst Academy program and all associated communities.</li>
+                                <li><span className="font-bold">First Violation:</span> A formal warning from a facilitator and a temporary suspension of posting privileges for 24 hours. The offending content will be removed. This serves as a learning opportunity.</li>
+                                <li><span className="font-bold">Second Violation:</span> A mandatory 1-on-1 meeting with a program director to discuss the community covenant and a 7-day suspension of all platform access. Reinstatement is contingent on a commitment to uphold our values.</li>
+                                <li><span className="font-bold">Third Violation:</span> Immediate and permanent removal from the Catalyst Academy program and all associated communities, without appeal.</li>
                             </ol>
-                            <p className="text-sm pt-4">We hold this firm line because trust and safety are paramount. Creating a space where everyone feels secure enough to be vulnerable and to grow is a responsibility we all share.</p>
+                            <p className="text-sm pt-4">We hold this firm line because trust and safety are non-negotiable. Creating a space where everyone feels secure enough to be vulnerable and to grow is a responsibility we all share.</p>
                         </CardContent>
                    </Card>
                 </div>

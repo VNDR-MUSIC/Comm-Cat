@@ -32,12 +32,12 @@ const coreValues = [
     {
         icon: <Megaphone className="h-10 w-10 text-accent" />,
         title: 'Advocacy',
-        description: 'We champion systemic change, challenging stigmas and creating pathways for returning citizens to become celebrated community leaders.'
+        description: 'We champion systemic change, challenging stigmas and creating pathways for our participants to become celebrated community leaders.'
     }
 ];
 
 const timeline = [
-    { year: '2020', event: 'The Idea', description: 'Our founder, a returning citizen himself, envisioned a program that went beyond basic job training to address the whole person.' },
+    { year: '2020', event: 'The Idea', description: 'Our founder, drawing from lived experience, envisioned a program that went beyond basic job training to address the whole person.' },
     { year: '2021', event: 'Pilot Program', description: 'Launched our first cohort with 15 participants in a borrowed community center room, proving the model works.' },
     { year: '2022', event: 'National Recognition', description: 'Received the "Innovations in Reentry" award from the Department of Justice.' },
     { year: '2023', event: 'First 500 Graduates', description: 'Celebrated empowering over 500 individuals who are now leaders in their communities.' },
@@ -59,10 +59,10 @@ export default function AboutPage() {
                 <div className="container mx-auto px-4 md:px-6 text-center">
                     <p className="text-accent font-semibold mb-2">OUR WHY</p>
                     <h1 className="text-4xl font-headline font-black tracking-tighter sm:text-5xl md:text-6xl">
-                        From Ex-Offender to Community Catalyst
+                        Building Leaders, Transforming Communities
                     </h1>
                     <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground md:text-xl">
-                        We are dedicated to reframing the narrative for the millions of Americans impacted by the justice system. We believe that a past mistake does not define a person's future potential. Our mission is to unlock that potential, transforming returning citizens into leaders, entrepreneurs, and pillars of their communities.
+                        We are dedicated to reframing the narrative for anyone seeking a profound transformation. While expertly tailored for returning citizens, our universal principles of leadership, resilience, and entrepreneurship empower all individuals to unlock their potential and become pillars of their communities.
                     </p>
                      <div className="mt-8 flex justify-center gap-4">
                         <GlowingButton asChild>
@@ -201,7 +201,7 @@ export default function AboutPage() {
                                 <GlowingButton asChild>
                                     <Link href="/enroll">Enroll Now</Link>
                                 </GlowingButton>
-                                <Link href="/support" className="inline-flex items-center justify-center rounded-md bg-primary-foreground text-primary px-6 py-3 font-bold transition-colors hover:bg-primary-foreground/90">
+                                <Link href="/sponsorship" className="inline-flex items-center justify-center rounded-md bg-primary-foreground text-primary px-6 py-3 font-bold transition-colors hover:bg-primary-foreground/90">
                                     Partner With Us
                                 </Link>
                             </div>
