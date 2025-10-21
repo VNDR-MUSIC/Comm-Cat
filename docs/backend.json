@@ -364,7 +364,7 @@
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Stores user profiles. Includes standard user information. Path-based ownership ensures only the authenticated user can access their own profile.",
+          "description": "Stores user profile information. Path-based ownership ensures only the user can access their data.",
           "params": [
             {
               "name": "userId",
@@ -380,7 +380,7 @@
           "schema": {
             "$ref": "#/backend/entities/Course"
           },
-          "description": "Stores course information. Accessible to all users for browsing course details.",
+          "description": "Stores course details.",
           "params": [
             {
               "name": "courseId",
@@ -396,7 +396,7 @@
           "schema": {
             "$ref": "#/backend/entities/Module"
           },
-          "description": "Stores modules for each course. Accessible to all users who can view the course.",
+          "description": "Stores modules within a course. Includes courseId for relationship.",
           "params": [
             {
               "name": "courseId",
@@ -416,7 +416,7 @@
           "schema": {
             "$ref": "#/backend/entities/Lesson"
           },
-          "description": "Stores lessons for each module. Accessible to users enrolled in the course.",
+          "description": "Stores lessons within a module. Includes moduleId for relationship.",
           "params": [
             {
               "name": "courseId",
@@ -434,13 +434,13 @@
         }
       },
       {
-        "path": "/users/{userId}/course_progress/{courseProgressId}",
+        "path": "/users/{userId}/courseProgress/{courseProgressId}",
         "definition": {
           "entityName": "UserCourseProgress",
           "schema": {
             "$ref": "#/backend/entities/UserCourseProgress"
           },
-          "description": "Stores user's progress in a specific course. Path-based ownership ensures only the authenticated user can access their own progress data.",
+          "description": "Stores user's progress in a course. Path-based ownership ensures only the user can access their progress data.",
           "params": [
             {
               "name": "userId",
@@ -448,19 +448,19 @@
             },
             {
               "name": "courseProgressId",
-              "description": "The unique identifier for the user course progress."
+              "description": "The unique identifier for the course progress."
             }
           ]
         }
       },
       {
-        "path": "/courses/{courseId}/discussion_threads/{threadId}",
+        "path": "/courses/{courseId}/discussionThreads/{threadId}",
         "definition": {
           "entityName": "DiscussionThread",
           "schema": {
             "$ref": "#/backend/entities/DiscussionThread"
           },
-          "description": "Stores discussion threads for each course. Accessible to users enrolled in the course.",
+          "description": "Stores discussion threads within a course. Includes courseId for relationship.",
           "params": [
             {
               "name": "courseId",
@@ -474,13 +474,13 @@
         }
       },
       {
-        "path": "/courses/{courseId}/discussion_threads/{threadId}/discussion_posts/{postId}",
+        "path": "/courses/{courseId}/discussionThreads/{threadId}/posts/{postId}",
         "definition": {
           "entityName": "DiscussionPost",
           "schema": {
             "$ref": "#/backend/entities/DiscussionPost"
           },
-          "description": "Stores discussion posts for each thread. Includes denormalized 'userId' for authorization independence.",
+          "description": "Stores posts within a discussion thread. Includes denormalized 'members' map for authorization independence.  The 'members' map stores user IDs who have access to the course.",
           "params": [
             {
               "name": "courseId",
@@ -504,7 +504,7 @@
           "schema": {
             "$ref": "#/backend/entities/Resource"
           },
-          "description": "Stores resources available to students. Publicly accessible.",
+          "description": "Stores general resources available to students.",
           "params": [
             {
               "name": "resourceId",
@@ -520,7 +520,7 @@
           "schema": {
             "$ref": "#/backend/entities/Certificate"
           },
-          "description": "Stores certificates awarded to a user. Path-based ownership ensures only the authenticated user can access their own certificates.",
+          "description": "Stores certificates awarded to users. Path-based ownership ensures only the user can access their certificates.",
           "params": [
             {
               "name": "userId",
@@ -540,7 +540,7 @@
           "schema": {
             "$ref": "#/backend/entities/Badge"
           },
-          "description": "Stores the list of badges that can be awarded to users. Publicly accessible.",
+          "description": "Stores information about badges that can be awarded to users.",
           "params": [
             {
               "name": "badgeId",
@@ -550,13 +550,13 @@
         }
       },
       {
-        "path": "/users/{userId}/user_badges/{userBadgeId}",
+        "path": "/users/{userId}/badges/{userBadgeId}",
         "definition": {
           "entityName": "UserBadge",
           "schema": {
             "$ref": "#/backend/entities/UserBadge"
           },
-          "description": "Stores the badges awarded to specific users. Path-based ownership ensures only the authenticated user can access their own badges.",
+          "description": "Stores the relationship between users and badges they have earned. Path-based ownership ensures only the user can access their badges.",
           "params": [
             {
               "name": "userId",
@@ -570,6 +570,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to support a SCORM-compatible course website and student dashboard application, focusing on authorization independence, clarity, and scalability. User-specific data is stored under the `/users/{userId}` path, ensuring private access. Course-related data, including modules, lessons, discussion threads, and user progress, is organized to facilitate efficient data retrieval and secure access control. Collaborative data like discussion posts are stored in subcollections under discussion threads. Resources and Badges are stored in root level collections. Certificates awarded to users are stored under the user profile. The structure prioritizes denormalization, especially for collaborative data, ensuring authorization independence by including relevant authorization context within documents, avoiding the need for `get()` calls in security rules.\n\nTo achieve Authorization Independence (CRITICAL), the design denormalizes authorization data. For instance, in DiscussionPosts, the userId is included, thus associating the user who owns the post within the document. This avoids the need for security rules to traverse up the data hierarchy to determine ownership and permissions.\n\nTo enable secure `list` operations (QAPs), Structural Segregation is used to ensure that all documents in a collection have the same security requirements. For example, user-specific data like `/users/{userId}/course_progress` can be listed securely with rules that only allow the authenticated user (`request.auth.uid`) to access their own progress documents. Collaborative data is secured via membership maps, which can be denormalized if needed.  Global data can be accessed in root collections (e.g. resources)."
+    "reasoning": "The Firestore structure is designed to support the Catalyst Academy platform, focusing on courses, user progress, discussions, and resources. It prioritizes authorization independence, clarity, and scalability. Path-based ownership is used where applicable to simplify security rules. For collaborative data, a membership map approach is adopted.\n\nAuthorization Independence is achieved by denormalizing access control data where needed. For example, if access to DiscussionPosts needs to be controlled based on course membership, the relevant course members data would be copied into each DiscussionPost document. This eliminates the need for `get()` calls in security rules, supporting atomic operations.\n\nQAPs (Rules are not Filters) are supported through structural segregation and membership models.  Data with different access requirements are stored in separate collections.  List operations can be secured based on path-based ownership or the presence of the user ID in a membership map."
   }
 }
