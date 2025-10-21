@@ -5,10 +5,11 @@ import { useParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, FileText, Download, PlayCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, FileText, Download, PlayCircle, Loader2, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, useDoc } from '@/firebase';
 import { collection, query, where, serverTimestamp, doc } from 'firebase/firestore';
+import resourcesData from '@/data/resources.json';
 
 interface LessonData {
     id: string;
@@ -16,6 +17,7 @@ interface LessonData {
     videoUrl?: string;
     description: string;
     moduleId: string;
+    resourceIds?: string[];
 }
 
 interface ModuleData {
@@ -28,6 +30,23 @@ interface UserLessonProgress {
     lessonId: string;
     completedAt: any;
 }
+
+interface Resource {
+    id: string;
+    title: string;
+    type: 'Document' | 'Spreadsheet' | 'PDF Guide' | 'External Link';
+    url?: string;
+}
+
+const getIconForType = (type: string) => {
+    switch (type) {
+        case 'External Link':
+            return <LinkIcon />;
+        default:
+            return <FileText />;
+    }
+}
+
 
 export default function LessonPage() {
     const params = useParams();
@@ -50,6 +69,11 @@ export default function LessonPage() {
 
     const { data: lesson, isLoading: isLessonLoading } = useDoc<LessonData>(lessonDocRef);
     const { data: moduleData, isLoading: isModuleLoading } = useDoc<ModuleData>(moduleDocRef);
+    
+    const lessonResources = useMemoFirebase(() => {
+        if (!lesson || !lesson.resourceIds) return [];
+        return resourcesData.resources.filter(res => lesson.resourceIds?.includes(res.id));
+    }, [lesson]) as Resource[];
 
     const progressQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
@@ -119,7 +143,7 @@ export default function LessonPage() {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="md:col-span-2">
+                    <div className="md:col-span-2 space-y-8">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Lesson Video</CardTitle>
@@ -145,6 +169,36 @@ export default function LessonPage() {
                                 </AspectRatio>
                             </CardContent>
                         </Card>
+                        
+                        {lessonResources.length > 0 && (
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle>Resources</CardTitle>
+                                    <CardDescription>Downloadable materials and links for this lesson.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                     <ul className="space-y-4">
+                                        {lessonResources.map((resource) => (
+                                            <li key={resource.id} className="flex justify-between items-center p-4 bg-secondary/50 rounded-md">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-accent">{getIconForType(resource.type)}</div>
+                                                    <div>
+                                                        <h3 className="font-bold">{resource.title}</h3>
+                                                        <p className="text-sm text-muted-foreground">{resource.type}</p>
+                                                    </div>
+                                                </div>
+                                                <Button variant="outline" asChild>
+                                                    <a href={resource.url || '#'} target="_blank" rel="noopener noreferrer">
+                                                    {resource.type === "External Link" ? "Visit" : <Download />}
+                                                    <span className="sr-only">Access {resource.title}</span>
+                                                    </a>
+                                                </Button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </CardContent>
+                            </Card>
+                        )}
                     </div>
                     <div className="space-y-6">
                         <Card>
@@ -157,7 +211,6 @@ export default function LessonPage() {
                                     <span>{isCompleted ? 'Completed' : 'Mark as Complete'}</span>
                                 </Button>
                                 <Button variant="outline" className="w-full justify-start"><FileText /> Reflect (Journal)</Button>
-                                <Button variant="outline" className="w-full justify-start"><Download /> Download Resources</Button>
                             </CardContent>
                         </Card>
                         <Card>

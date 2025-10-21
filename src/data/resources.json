@@ -1,0 +1,29 @@
+
+{
+    "resources": [
+        {
+            "id": "res-001",
+            "title": "Module 1 Workbook",
+            "type": "PDF Guide",
+            "url": "#"
+        },
+        {
+            "id": "res-002",
+            "title": "Goal Setting Template",
+            "type": "Document",
+            "url": "#"
+        },
+        {
+            "id": "res-003",
+            "title": "Budgeting Spreadsheet",
+            "type": "Spreadsheet",
+            "url": "#"
+        },
+        {
+            "id": "res-004",
+            "title": "Credit Karma",
+            "type": "External Link",
+            "url": "https://creditkarma.com"
+        }
+    ]
+}
