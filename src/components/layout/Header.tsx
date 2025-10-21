@@ -18,6 +18,7 @@ const navLinks = [
   { href: '/founder', label: 'Founder' },
   { href: '/curriculum', label: 'Curriculum' },
   { href: '/community', label: 'Community' },
+  { href: '/sponsorship', label: 'Sponsorship' },
 ];
 
 const Header = () => {

@@ -1,5 +1,3 @@
-// This component provides a more detailed and context-aware application form.
-
 "use client";
 
 import { useState } from 'react';
@@ -9,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import GlowingButton from '@/components/shared/GlowingButton';
-import { CheckCircle2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { CheckCircle2, Info } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
 
 export default function EnrollPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -18,7 +17,8 @@ export default function EnrollPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate API call and enrollment
+        // In a real app, you would handle form submission to your backend here.
+        // Dr. Warren O. Crabb personally reviews all applications.
         setIsSubmitted(true);
     };
 
@@ -34,10 +34,10 @@ export default function EnrollPage() {
                                 Thank you for taking this courageous step, {name || "Catalyst"}.
                             </p>
                             <p>
-                                We've received your application. Our team will review it with the care and attention it deserves. You'll receive an email regarding next steps within the next 7 business days. Your journey is important to us.
+                                We've received your application. Our founder, Dr. Warren O. Crabb, personally reviews every submission with the care and attention it deserves. You will receive an email regarding next steps within the next 7-10 business days. Your journey is important to us.
                             </p>
                             <GlowingButton asChild>
-                                <Link href="/dashboard">Return to Dashboard</Link>
+                                <Link href="/dashboard">Return to Home</Link>
                             </GlowingButton>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ export default function EnrollPage() {
     return (
         <div className="min-h-[90vh] flex items-center justify-center bg-background">
             <div className="container mx-auto px-4 md:px-6 py-16">
-                <Card className="max-w-2xl mx-auto shadow-2xl">
+                <Card className="max-w-3xl mx-auto shadow-2xl">
                     <CardHeader className="text-center space-y-2">
                         <p className="text-accent font-semibold">APPLICATION</p>
                         <CardTitle className="text-3xl md:text-4xl font-headline">Become a Community Catalyst</CardTitle>
@@ -57,6 +57,15 @@ export default function EnrollPage() {
                     </CardHeader>
                     <form onSubmit={handleSubmit}>
                         <CardContent className="space-y-8">
+                             <Alert className="bg-blue-500/10 border-blue-500/50 text-foreground">
+                                <Info className="h-4 w-4 !text-blue-400" />
+                                <AlertTitle className="font-bold !text-blue-300">Our Commitment: No Cost for Returning Citizens</AlertTitle>
+                                <AlertDescription className="!text-blue-300/80">
+                                    Catalyst Academy is <span className="font-bold">completely free</span> for all accepted participants. Our program is funded by generous sponsors who believe in your potential. Your application is a commitment of time and effort, not money.
+                                    <Link href="/sponsorship" className="underline font-semibold ml-2 hover:text-accent">Learn more about our model.</Link>
+                                </AlertDescription>
+                            </Alert>
+
                             {/* Personal Information */}
                             <div className="space-y-6 p-6 border rounded-lg">
                                 <h3 className="font-headline text-lg font-bold">Personal Information</h3>
@@ -102,11 +111,11 @@ export default function EnrollPage() {
                         </CardContent>
                         <CardFooter className="flex flex-col gap-4 p-6">
                             <GlowingButton type="submit" className="w-full">
-                                Submit Application
+                                Submit My Application
                             </GlowingButton>
                             <p className="text-xs text-muted-foreground text-center px-4">
                                 By submitting this application, you affirm that all information is accurate and you agree to our{' '}
-                                <Link href="#" className="underline hover:text-accent">Community Covenant</Link> and{' '}
+                                <Link href="/community" className="underline hover:text-accent">Community Covenant</Link> and{' '}
                                 <Link href="#" className="underline hover:text-accent">Terms of Service</Link>.
                             </p>
                         </CardFooter>

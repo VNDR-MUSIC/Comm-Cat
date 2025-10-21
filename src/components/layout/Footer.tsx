@@ -17,22 +17,25 @@ const Footer = () => {
       <div className="relative py-12">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-blue-500 to-cyan-400 bg-400% animate-gradient-flow" style={{backgroundSize: "400%"}} />
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="space-y-4 md:col-span-2">
                 <Link href="/" className="flex items-center gap-2" prefetch={false}>
                     <University className="h-8 w-8 text-accent" />
                     <span className="font-headline text-xl font-bold">
                         Catalyst Academy
                     </span>
                 </Link>
-                <p className="text-sm text-primary-foreground/70">
-                    Empowering Returning Citizens to Rise and Lead.
+                <p className="text-sm text-primary-foreground/70 max-w-md">
+                    Empowering Returning Citizens to Rise and Lead. A 52-week, no-cost program funded by community sponsors who believe in second chances.
                 </p>
-                <div className="flex items-center gap-2 text-sm">
-                    <div className="relative p-1 rounded-full bg-gradient-to-r from-yellow-400 to-blue-500">
-                        <svg className="w-5 h-5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
+                 <div className="flex items-center gap-4 text-sm pt-2">
+                    <div className="flex items-center gap-2">
+                        <div className="relative p-1 rounded-full bg-gradient-to-r from-yellow-400 to-blue-500">
+                            <svg className="w-5 h-5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
+                        </div>
+                        <span className="font-semibold">Firebase Verified</span>
                     </div>
-                    <span className="font-semibold">Verified by Firebase</span>
+                     <p className="text-primary-foreground/70">Path to 501(c)(3) Status</p>
                 </div>
             </div>
 
@@ -41,8 +44,10 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li><Link href="/about" className="text-sm text-primary-foreground/70 hover:text-accent">About Us</Link></li>
                 <li><Link href="/curriculum" className="text-sm text-primary-foreground/70 hover:text-accent">Curriculum</Link></li>
+                <li><Link href="/sponsorship" className="text-sm text-primary-foreground/70 hover:text-accent">Sponsorship</Link></li>
+                <li><Link href="/community" className="text-sm text-primary-foreground/70 hover:text-accent">Community</Link></li>
                 <li><Link href="#" className="text-sm text-primary-foreground/70 hover:text-accent">Press</Link></li>
-                <li><Link href="#" className="text-sm text-primary-foreground/70 hover:text-accent">Contact</Link></li>
+                <li><Link href="/support" className="text-sm text-primary-foreground/70 hover:text-accent">Contact</Link></li>
               </ul>
             </div>
             
@@ -53,26 +58,29 @@ const Footer = () => {
                     <Link href="#" className="text-primary-foreground/70 hover:text-accent"><XIcon className="w-6 h-6" /></Link>
                     <Link href="#" className="text-primary-foreground/70 hover:text-accent"><Youtube className="w-6 h-6" /></Link>
                 </div>
-                <div className="grid grid-cols-3 gap-4 pt-4">
-                    {partnerLogos.slice(0, 6).map(logo => (
-                        <div key={logo.id} className="flex justify-center items-center bg-white/10 rounded-md p-2">
-                             <Image
-                                src={logo.imageUrl}
-                                alt={logo.description}
-                                width={150}
-                                height={60}
-                                data-ai-hint={logo.imageHint}
-                                className="object-contain w-full h-8 invert brightness-0 "
-                            />
-                        </div>
-                    ))}
+                <div className="pt-4">
+                     <h4 className="font-bold text-lg mb-2">Accreditation & Partners</h4>
+                     <div className="grid grid-cols-3 gap-4">
+                        {partnerLogos.slice(0, 6).map(logo => (
+                            <div key={logo.id} className="flex justify-center items-center bg-white/10 rounded-md p-2">
+                                 <Image
+                                    src={logo.imageUrl}
+                                    alt={logo.description}
+                                    width={150}
+                                    height={60}
+                                    data-ai-hint={logo.imageHint}
+                                    className="object-contain w-full h-8 invert brightness-0 "
+                                />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
           </div>
 
           <div className="mt-8 pt-8 border-t border-primary-foreground/10 text-center text-sm text-primary-foreground/50">
-            <p>&copy; {new Date().getFullYear()} Catalyst Academy. All Rights Reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Catalyst Academy by The Doctor Project Corporation. All Rights Reserved.</p>
             <div className="space-x-4 mt-2">
                 <Link href="#" className="hover:text-accent">Privacy Policy</Link>
                 <span>|</span>

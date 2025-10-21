@@ -43,6 +43,14 @@ export default function CommunityPage() {
                     <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground md:text-xl">
                         Catalyst Academy was born from a simple, powerful belief: a person's past does not dictate their future. We exist to provide a structured pathway for returning citizens to transform their lives, not just by finding a job, but by rediscovering their purpose, reclaiming their narrative, and becoming leaders in their own communities.
                     </p>
+                     <div className="mt-8 flex justify-center gap-4">
+                        <GlowingButton asChild>
+                            <Link href="/enroll">Apply Now (Free)</Link>
+                        </GlowingButton>
+                        <Link href="/sponsorship" className="inline-flex items-center justify-center rounded-md bg-primary-foreground text-primary px-6 py-3 font-bold transition-colors hover:bg-primary-foreground/90">
+                            Sponsor a Student
+                        </Link>
+                    </div>
                 </div>
             </section>
 
@@ -52,12 +60,15 @@ export default function CommunityPage() {
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="space-y-4">
                             <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">
-                                This Journey is For You If...
+                                A Program for Transformation
                             </h2>
+                            <p className="text-lg text-muted-foreground">
+                                While our curriculum is tailored to address the unique challenges and opportunities faced by returning citizens, the principles of renewal, leadership, and community-building are universal. This journey is for you if:
+                            </p>
                             <ul className="space-y-3 text-lg text-muted-foreground">
                                 <li className="flex items-start gap-3">
                                     <Shield className="w-6 h-6 text-accent mt-1 shrink-0" />
-                                    <span>You are a returning citizen ready to build a new future.</span>
+                                    <span>You are ready to build a new future, regardless of your past.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <Rocket className="w-6 h-6 text-accent mt-1 shrink-0" />
@@ -74,13 +85,13 @@ export default function CommunityPage() {
                             </ul>
                              <div className="pt-6">
                                 <GlowingButton asChild>
-                                    <Link href="/enroll">If This Is You, Enroll Today</Link>
+                                    <Link href="/enroll">If This Is You, Apply Today</Link>
                                 </GlowingButton>
                             </div>
                         </div>
                         <div className="bg-card p-8 rounded-lg shadow-lg">
                             <h3 className="font-headline text-2xl font-bold">Our Commitment to You</h3>
-                            <p className="text-muted-foreground mt-4">We commit to providing you with a world-class curriculum, dedicated mentorship, and a supportive, lifelong network. In return, we ask for your full commitment to the process, to yourself, and to the community we build together. This is a partnership in your success.</p>
+                            <p className="text-muted-foreground mt-4">We commit to providing you with a world-class curriculum, dedicated mentorship, and a supportive, lifelong network. In return, we ask for your full commitment to the process, to yourself, and to the community we build together. This is a partnership in your success. Dr. Warren O. Crabb personally reviews every application to ensure each cohort is filled with individuals truly ready for this transformative journey.</p>
                         </div>
                     </div>
                 </div>
