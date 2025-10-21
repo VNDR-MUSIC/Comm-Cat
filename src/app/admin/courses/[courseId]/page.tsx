@@ -117,12 +117,14 @@ export default function CourseDetailPage() {
                            {modules && modules.length > 0 ? (
                                <div className="border rounded-md">
                                    {modules.map((module, index) => (
-                                        <div key={module.id} className={`flex items-center justify-between p-4 ${index < modules.length - 1 ? 'border-b' : ''}`}>
-                                            <p className="font-medium">{module.title}</p>
-                                            <Button variant="ghost" size="icon">
-                                                <ChevronRight className="w-4 h-4" />
-                                            </Button>
-                                        </div>
+                                        <Link key={module.id} href={`/admin/courses/${courseId}/modules/${module.id}`}>
+                                            <div className={`flex items-center justify-between p-4 hover:bg-accent/10 ${index < modules.length - 1 ? 'border-b' : ''}`}>
+                                                <p className="font-medium">{module.title}</p>
+                                                <Button variant="ghost" size="icon">
+                                                    <ChevronRight className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+                                        </Link>
                                    ))}
                                </div>
                            ) : (

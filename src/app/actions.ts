@@ -264,3 +264,67 @@ export async function addModuleToCourse(prevState: ModuleState, formData: FormDa
     };
   }
 }
+
+const lessonSchema = z.object({
+  title: z.string().min(5, { message: "Title must be at least 5 characters long." }),
+  duration: z.string().min(1, { message: "Duration is required." }),
+  activityType: z.string().min(3, { message: "Activity type is required." }),
+  courseId: z.string(),
+  moduleId: z.string(),
+});
+
+export type LessonState = {
+    errors?: {
+        title?: string[];
+        duration?: string[];
+        activityType?: string[];
+    };
+    message?: string | null;
+    success: boolean;
+};
+
+export async function addLessonToModule(prevState: LessonState, formData: FormData): Promise<LessonState> {
+    const validatedFields = lessonSchema.safeParse({
+        title: formData.get('title'),
+        duration: formData.get('duration'),
+        activityType: formData.get('activityType'),
+        courseId: formData.get('courseId'),
+        moduleId: formData.get('moduleId'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            success: false,
+        };
+    }
+    
+    const { firestore } = initializeFirebase();
+    const { title, courseId, moduleId, duration, activityType } = validatedFields.data;
+
+    try {
+        const lessonCollectionRef = collection(firestore, `courses/${courseId}/modules/${moduleId}/lessons`);
+        const newLessonDocRef = await addDoc(lessonCollectionRef, {
+            title,
+            moduleId,
+            duration,
+            activityType,
+            resourceIds: [],
+        });
+
+        const moduleDocRef = doc(firestore, `courses/${courseId}/modules`, moduleId);
+        await updateDoc(moduleDocRef, {
+            lessons: arrayUnion(newLessonDocRef.id)
+        });
+
+        revalidatePath(`/admin/courses/${courseId}/modules/${moduleId}`);
+        return { success: true, message: "Lesson added successfully!" };
+
+    } catch (error) {
+        console.error("Error adding lesson:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred while adding the lesson.",
+        };
+    }
+}
