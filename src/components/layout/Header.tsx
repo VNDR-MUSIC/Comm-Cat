@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, University, X } from 'lucide-react';
+import { ChevronDown, Menu, University, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -12,17 +12,35 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import GlowingButton from '@/components/shared/GlowingButton';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
-const navLinks = [
+const navItems = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/founder', label: 'Founder' },
-  { href: '/journey', label: 'The Journey' },
-  { href: '/curriculum', label: 'Curriculum' },
-  { href: '/community', label: 'Community' },
+  {
+    label: 'The Program',
+    items: [
+      { href: '/about', label: 'About Us' },
+      { href: '/founder', label: 'Founder' },
+      { href: '/journey', label: 'The Journey' },
+      { href: '/curriculum', label: 'Curriculum' },
+      { href: '/community', label: 'Community' },
+    ],
+  },
+  { href: '/returning-citizens', label: 'For Returning Citizens' },
   { href: '/sponsorship', label: 'Sponsorship' },
 ];
 
@@ -55,11 +73,27 @@ const Header = () => {
           </span>
         </Link>
         
-        <nav className="hidden md:flex items-center gap-4">
-            {navLinks.map(link => (
-                <Link key={link.href} href={link.href} className="text-sm font-medium hover:text-accent transition-colors">
-                    {link.label}
-                </Link>
+        <nav className="hidden md:flex items-center gap-2">
+            {navItems.map(item => (
+                item.href ? (
+                     <Link key={item.label} href={item.href} className="text-sm font-medium hover:text-accent transition-colors px-3 py-2">
+                        {item.label}
+                    </Link>
+                ) : (
+                    <DropdownMenu key={item.label}>
+                        <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors px-3 py-2 focus:outline-none">
+                            {item.label}
+                            <ChevronDown className="h-4 w-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            {item.items?.map(subItem => (
+                                <DropdownMenuItem key={subItem.href} asChild>
+                                    <Link href={subItem.href}>{subItem.label}</Link>
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )
             ))}
         </nav>
 
@@ -67,7 +101,7 @@ const Header = () => {
             <Button variant="ghost" asChild className="hidden md:inline-flex">
                 <Link href="/login">Login</Link>
             </Button>
-            <GlowingButton asChild className="hidden md:inline-flex">
+            <GlowingButton asChild>
                 <Link href="/enroll">Enroll Now</Link>
             </GlowingButton>
 
@@ -79,32 +113,57 @@ const Header = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="full" className="p-0">
-                 <SheetHeader>
-                    <SheetTitle className="hidden">Navigation Menu</SheetTitle>
+                 <SheetHeader className='p-6'>
+                    <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                  </SheetHeader>
-                 <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                    <nav className="grid gap-6 text-2xl font-medium">
-                        {navLinks.map((link) => (
-                        <SheetClose asChild key={link.href}>
-                            <Link
-                                href={link.href}
-                                className="transition-colors hover:text-accent"
-                                prefetch={false}
-                            >
-                                {link.label}
-                            </Link>
-                        </SheetClose>
+                 <div className="flex flex-col h-full p-6 pt-0">
+                    <nav className="flex flex-col gap-4 text-xl font-medium">
+                        {navItems.map((item) => (
+                           item.href ? (
+                                <SheetClose asChild key={item.label}>
+                                    <Link
+                                        href={item.href}
+                                        className="transition-colors hover:text-accent"
+                                        prefetch={false}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                </SheetClose>
+                           ) : (
+                               <Accordion type="single" collapsible key={item.label}>
+                                 <AccordionItem value={item.label} className="border-b-0">
+                                   <AccordionTrigger className="hover:no-underline text-xl font-medium py-2">
+                                     {item.label}
+                                   </AccordionTrigger>
+                                   <AccordionContent className="pl-4">
+                                     <div className="flex flex-col gap-4 mt-2">
+                                       {item.items?.map((subItem) => (
+                                         <SheetClose asChild key={subItem.href}>
+                                           <Link
+                                             href={subItem.href}
+                                             className="text-muted-foreground transition-colors hover:text-accent"
+                                             prefetch={false}
+                                           >
+                                             {subItem.label}
+                                           </Link>
+                                         </SheetClose>
+                                       ))}
+                                     </div>
+                                   </AccordionContent>
+                                 </AccordionItem>
+                               </Accordion>
+                           )
                         ))}
                     </nav>
 
-                    <div className="mt-12 flex flex-col gap-4 w-full max-w-xs">
+                    <div className="mt-auto flex flex-col gap-4 w-full">
                         <SheetClose asChild>
                             <Button variant="outline" asChild size="lg">
                                 <Link href="/login">Login</Link>
                             </Button>
                         </SheetClose>
                         <SheetClose asChild>
-                            <GlowingButton asChild>
+                            <GlowingButton asChild size="lg">
                                 <Link href="/enroll">Enroll Now</Link>
                             </GlowingButton>
                         </SheetClose>
