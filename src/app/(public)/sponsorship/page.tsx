@@ -1,5 +1,5 @@
 
-import { Handshake, Heart, TrendingUp, Sparkles, ShieldCheck } from 'lucide-react';
+import { Handshake, Heart, TrendingUp, Sparkles, ShieldCheck, Phone, Users, Siren } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import GlowingButton from '@/components/shared/GlowingButton';
 import Link from 'next/link';
@@ -38,6 +38,13 @@ const impactStats = [
   { icon: <Sparkles className="h-10 w-10 text-accent" />, title: 'Generational Change', description: 'Your sponsorship breaks cycles, creating a ripple effect of stability and hope for families and communities.' },
   { icon: <ShieldCheck className="h-10 w-10 text-accent" />, title: 'Reduced Recidivism', description: 'A 92% reduction in recidivism among program graduates, creating safer communities for everyone.' },
 ];
+
+const commitmentSteps = [
+    { icon: <Siren className="h-10 w-10 text-accent" />, title: 'Real-Time Risk Detection', description: 'Our admin dashboard immediately flags students who are not engaging with course material. We don’t wait for them to fall behind; we see it the moment it happens.' },
+    { icon: <Users className="h-10 w-10 text-accent" />, title: 'Peer Mentor Outreach', description: 'The first line of support is a peer mentor—someone with shared experience who can offer encouragement and guidance in a relatable, non-judgmental way.' },
+    { icon: <Phone className="h-10 w-10 text-accent" />, title: 'Direct Staff Intervention', description: 'If a student remains disengaged, a program facilitator will personally reach out to offer one-on-one support, schedule a counseling session, and create a personalized plan to get them back on track.' },
+];
+
 
 export default function SponsorshipPage() {
     const heroImage = PlaceHolderImages.find(p => p.id === 'testimonial-2');
@@ -99,9 +106,36 @@ export default function SponsorshipPage() {
                 </div>
             </section>
 
+             {/* Our Commitment Section */}
+            <section className="py-20 md:py-24 bg-secondary/30 section-glow-border">
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="text-center max-w-3xl mx-auto">
+                         <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                            Our Commitment to Your Investment
+                        </h2>
+                        <p className="mt-4 text-muted-foreground md:text-xl">
+                           We believe a sponsorship is a partnership. We honor your investment by ensuring every student has a robust support system. We don't let anyone fall through the cracks. Here's how:
+                        </p>
+                    </div>
+                    <div className="mt-12 grid md:grid-cols-3 gap-8">
+                        {commitmentSteps.map(value => (
+                             <Card key={value.title} className="text-center bg-card border-border/50 shadow-sm">
+                                <CardHeader className="items-center space-y-4">
+                                    {value.icon}
+                                    <CardTitle className="font-headline text-2xl">{value.title}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-muted-foreground">{value.description}</p>
+                                </CardContent>
+                             </Card>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
 
             {/* Sponsorship Tiers Section */}
-            <section className="py-20 md:py-32 bg-secondary/30 section-glow-border">
+            <section className="py-20 md:py-32">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="text-center max-w-3xl mx-auto">
                         <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -141,7 +175,7 @@ export default function SponsorshipPage() {
             </section>
             
             {/* 501c3 Status Section */}
-             <section className="py-20 md:py-24">
+             <section className="py-20 md:py-24 bg-secondary/30 section-glow-border">
                 <div className="container mx-auto px-4 md:px-6 max-w-4xl">
                    <Card className="bg-primary/5 border-primary/20">
                         <CardHeader className="flex-row gap-4 items-center">
