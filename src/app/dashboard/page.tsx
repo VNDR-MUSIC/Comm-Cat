@@ -20,6 +20,8 @@ import { BookText, FileText, HelpCircle, Download, MessageSquare, CheckCircle2, 
 import Link from "next/link"
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
+import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 const modules = [
     { id: "m1", title: "Module 1: Foundations of Self-Worth & Vision", lessons: [{ id: "l1", title: "Reclaiming Your Narrative" }, { id: "l2", title: "Goal Setting with Purpose" }], discussionCompleted: true },
@@ -140,5 +142,3 @@ export default function DashboardPage() {
         </div>
     )
 }
-
-    
