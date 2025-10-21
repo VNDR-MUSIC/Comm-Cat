@@ -373,3 +373,19 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
         };
     }
 }
+
+export async function toggleAdminStatus(userId: string, isAdmin: boolean) {
+    const { firestore } = initializeFirebase();
+    const userDocRef = doc(firestore, "users", userId);
+  
+    try {
+      await updateDoc(userDocRef, {
+        isAdmin: !isAdmin,
+      });
+      revalidatePath("/admin/users");
+      return { success: true, message: "User admin status updated." };
+    } catch (error) {
+      console.error("Error updating admin status:", error);
+      return { success: false, message: "An unexpected error occurred." };
+    }
+}

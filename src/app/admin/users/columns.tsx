@@ -5,7 +5,9 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Timestamp } from "firebase/firestore"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { ArrowUpDown } from "lucide-react"
+import { UserActions } from "./UserActions"
 
 export interface UserData {
   id: string;
@@ -13,6 +15,7 @@ export interface UserData {
   lastName: string;
   email: string;
   enrollmentDate: Timestamp;
+  isAdmin?: boolean;
 }
 
 
@@ -56,5 +59,20 @@ export const columns: ColumnDef<UserData>[] = [
       const date = row.original.enrollmentDate?.toDate();
       return date ? format(date, "MM/dd/yyyy") : "N/A";
     }
+  },
+  {
+    accessorKey: "isAdmin",
+    header: "Role",
+    cell: ({ row }) => {
+      const isAdmin = row.original.isAdmin;
+      return isAdmin ? <Badge variant="secondary">Admin</Badge> : <Badge variant="outline">Student</Badge>
+    }
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const user = row.original
+      return <UserActions user={user} />
+    },
   },
 ]
