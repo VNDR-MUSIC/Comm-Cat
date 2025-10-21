@@ -8,19 +8,39 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import GlowingButton from '@/components/shared/GlowingButton';
-import { CheckCircle2, Info } from 'lucide-react';
+import { CheckCircle2, Info, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useAuth, initiateEmailSignUp } from '@/firebase';
 
 
 export default function EnrollPage() {
+    const auth = useAuth();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // In a real app, you would handle form submission to your backend here.
-        // Dr. Warren O. Crabb personally reviews all applications.
-        setIsSubmitted(true);
+        setError(null);
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+
+        try {
+            initiateEmailSignUp(auth, email, password);
+            // In a real app, you would also save the other form data to Firestore here
+            // associated with the new user's UID.
+            // For now, we'll just show the success message.
+            setIsSubmitted(true);
+        } catch (err: any) {
+             setError(err.message || "An error occurred during sign-up.");
+        }
     };
 
     if (isSubmitted) {
@@ -66,10 +86,16 @@ export default function EnrollPage() {
                                     <Link href="/sponsorship" className="underline font-semibold ml-2 hover:text-accent">Learn more about our model.</Link>
                                 </AlertDescription>
                             </Alert>
+                             {error && (
+                                <Alert variant="destructive">
+                                    <AlertTriangle className="h-4 w-4" />
+                                    <AlertDescription>{error}</AlertDescription>
+                                </Alert>
+                            )}
 
                             {/* Personal Information */}
                             <div className="space-y-6 p-6 border rounded-lg">
-                                <h3 className="font-headline text-lg font-bold">Personal Information</h3>
+                                <h3 className="font-headline text-lg font-bold">Account & Personal Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="name">Full Name</Label>
@@ -77,7 +103,15 @@ export default function EnrollPage() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="email">Email Address</Label>
-                                        <Input id="email" type="email" placeholder="you@example.com" required />
+                                        <Input id="email" type="email" placeholder="you@example.com" required value={email} onChange={(e) => setEmail(e.target.value)}/>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password">Password</Label>
+                                        <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    </div>
+                                     <div className="space-y-2">
+                                        <Label htmlFor="confirm-password">Confirm Password</Label>
+                                        <Input id="confirm-password" type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
