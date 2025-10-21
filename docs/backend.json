@@ -23,6 +23,10 @@
           "type": "string",
           "description": "User's last name."
         },
+        "bio": {
+          "type": "string",
+          "description": "A short bio for the user."
+        },
         "enrollmentDate": {
           "type": "string",
           "description": "Date when the user enrolled.",
@@ -184,76 +188,47 @@
         "category"
       ]
     },
-    "DiscussionThread": {
+    "DiscussionPost": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "DiscussionThread",
+      "title": "DiscussionPost",
       "type": "object",
-      "description": "Represents a discussion thread within a module.",
+      "description": "Represents a single post in a discussion forum.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the discussion thread entity."
-        },
         "moduleId": {
           "type": "string",
-          "description": "Reference to Module. (Relationship: Module 1:N DiscussionThread)"
+          "description": "The ID of the module this post belongs to."
         },
-        "title": {
+        "authorId": {
           "type": "string",
-          "description": "Title of the discussion thread."
+          "description": "The ID of the user who created the post."
         },
-        "creatorId": {
+        "authorName": {
           "type": "string",
-          "description": "Reference to User who created the thread. (Relationship: User 1:N DiscussionThread)"
+          "description": "The name of the user who created the post."
         },
-        "createdDate": {
+        "authorAvatar": {
           "type": "string",
-          "description": "Date the thread was created.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "moduleId",
-        "title",
-        "creatorId",
-        "createdDate"
-      ]
-    },
-    "DiscussionReply": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "DiscussionReply",
-      "type": "object",
-      "description": "Represents a reply to a discussion thread.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the discussion reply entity."
+          "description": "The avatar URL of the user who created the post."
         },
-        "threadId": {
-          "type": "string",
-          "description": "Reference to DiscussionThread. (Relationship: DiscussionThread 1:N DiscussionReply)"
-        },
-        "creatorId": {
-          "type": "string",
-          "description": "Reference to User who created the reply. (Relationship: User 1:N DiscussionReply)"
-        },
-        "createdDate": {
-          "type": "string",
-          "description": "Date the reply was created.",
-          "format": "date-time"
+        "isFacilitator": {
+          "type": "boolean",
+          "description": "Whether the author is a facilitator."
         },
         "content": {
           "type": "string",
-          "description": "Content of the reply."
+          "description": "The content of the post."
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "The timestamp when the post was created."
         }
       },
       "required": [
-        "id",
-        "threadId",
-        "creatorId",
-        "createdDate",
-        "content"
+        "moduleId",
+        "authorId",
+        "authorName",
+        "content",
+        "createdAt"
       ]
     },
     "UserCourseProgress": {
@@ -388,7 +363,11 @@
           "description": "The timestamp when the notebook was created."
         }
       },
-      "required": ["name", "userId", "createdAt"]
+      "required": [
+        "name",
+        "userId",
+        "createdAt"
+      ]
     },
     "Note": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -417,7 +396,12 @@
           "description": "The timestamp when the note was created."
         }
       },
-      "required": ["notebookId", "userId", "title", "createdAt"]
+      "required": [
+        "notebookId",
+        "userId",
+        "title",
+        "createdAt"
+      ]
     }
   },
   "auth": {
@@ -521,53 +505,17 @@
         }
       },
       {
-        "path": "/courses/{courseId}/modules/{moduleId}/discussionThreads/{threadId}",
+        "path": "/discussionPosts/{postId}",
         "definition": {
-          "entityName": "DiscussionThread",
+          "entityName": "DiscussionPost",
           "schema": {
-            "$ref": "#/backend/entities/DiscussionThread"
+            "$ref": "#/backend/entities/DiscussionPost"
           },
-          "description": "Stores discussion threads within a module.  Access is typically restricted to users enrolled in the course.  Includes denormalized 'creatorId' for authorization independence.",
+          "description": "Stores all discussion posts across all modules. Accessible to all authenticated users.",
           "params": [
             {
-              "name": "courseId",
-              "description": "The unique identifier for the course."
-            },
-            {
-              "name": "moduleId",
-              "description": "The unique identifier for the module."
-            },
-            {
-              "name": "threadId",
-              "description": "The unique identifier for the discussion thread."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/courses/{courseId}/modules/{moduleId}/discussionThreads/{threadId}/discussionReplies/{replyId}",
-        "definition": {
-          "entityName": "DiscussionReply",
-          "schema": {
-            "$ref": "#/backend/entities/DiscussionReply"
-          },
-          "description": "Stores replies to discussion threads. Access is restricted to enrolled users. Includes denormalized 'creatorId' for authorization independence.",
-          "params": [
-            {
-              "name": "courseId",
-              "description": "The unique identifier for the course."
-            },
-            {
-              "name": "moduleId",
-              "description": "The unique identifier for the module."
-            },
-            {
-              "name": "threadId",
-              "description": "The unique identifier for the discussion thread."
-            },
-            {
-              "name": "replyId",
-              "description": "The unique identifier for the discussion reply."
+              "name": "postId",
+              "description": "The unique identifier for the discussion post."
             }
           ]
         }
