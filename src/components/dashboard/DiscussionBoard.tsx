@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useFormState, useFormStatus } from "react-dom";
@@ -144,6 +145,7 @@ export function DiscussionBoard() {
           <input type="hidden" name="moduleId" value={moduleId} />
           <input type="hidden" name="authorName" value={`${user?.displayName || 'Anonymous'}`} />
           <input type="hidden" name="authorAvatar" value={user?.photoURL || ''} />
+          <input type="hidden" name="authorId" value={user?.uid || ''} />
           <Textarea
             name="post"
             placeholder="Share your thoughts constructively..."
@@ -167,5 +169,3 @@ export function DiscussionBoard() {
     </div>
   );
 }
-
-    

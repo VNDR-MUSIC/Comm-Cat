@@ -4,7 +4,7 @@
 import { moderateDiscussionBoard } from "@/ai/flows/moderate-discussion-board";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getFirestore, collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from 'firebase/firestore/lite';
+import { getFirestore, collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { initializeFirebase } from "@/firebase";
 import { redirect } from "next/navigation";
 
@@ -13,6 +13,7 @@ const postSchema = z.object({
   moduleId: z.string(),
   authorName: z.string(),
   authorAvatar: z.string().optional(),
+  authorId: z.string(),
 });
 
 export type PostState = {
@@ -29,6 +30,7 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
     moduleId: formData.get("moduleId"),
     authorName: formData.get("authorName"),
     authorAvatar: formData.get("authorAvatar"),
+    authorId: formData.get("authorId"),
   });
 
   if (!validatedFields.success) {
@@ -39,7 +41,7 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
     };
   }
 
-  const { post, moduleId, authorName, authorAvatar } = validatedFields.data;
+  const { post, moduleId, authorName, authorAvatar, authorId } = validatedFields.data;
 
   try {
     const moderationResult = await moderateDiscussionBoard({ text: post });
@@ -51,12 +53,9 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
       };
     }
 
-    // In a real app, you would get the user ID from the session
-    const { firestore, auth } = initializeFirebase();
-    const user = auth.currentUser;
-
-
-    if (!user) {
+    const { firestore } = initializeFirebase();
+    
+    if (!authorId) {
         return {
             message: "You must be logged in to post.",
             success: false,
@@ -65,9 +64,9 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
 
     const postData = {
         moduleId,
-        authorId: user.uid,
+        authorId: authorId,
         authorName,
-        authorAvatar: authorAvatar || `https://picsum.photos/seed/${user.uid}/40/40`,
+        authorAvatar: authorAvatar || `https://picsum.photos/seed/${authorId}/40/40`,
         isFacilitator: false, // In a real app, this would be based on user roles
         content: post,
         createdAt: serverTimestamp(),
@@ -75,7 +74,6 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
 
     await addDoc(collection(firestore, "discussionPosts"), postData);
     
-    // We are revalidating the path to trigger data refetch on the client.
     revalidatePath(`/dashboard/discussion/${moduleId}`);
     return { message: "Your post has been successfully submitted and is now live!", success: true };
 
