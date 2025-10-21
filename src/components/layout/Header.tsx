@@ -53,10 +53,10 @@ const Header = () => {
         </Link>
         
         <div className="flex items-center gap-2">
-            <Button variant="ghost" asChild className="hidden md:inline-flex">
+            <Button variant="ghost" asChild>
                 <Link href="/login">Login</Link>
             </Button>
-            <GlowingButton asChild className="hidden md:inline-flex">
+            <GlowingButton asChild>
                 <Link href="/enroll">Enroll Now</Link>
             </GlowingButton>
 
@@ -69,13 +69,6 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent side="full" className="p-0">
                  <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                    <SheetClose asChild>
-                        <Button variant="ghost" size="icon" className="absolute top-6 right-6">
-                            <X className="h-8 w-8" />
-                            <span className="sr-only">Close menu</span>
-                        </Button>
-                    </SheetClose>
-
                     <nav className="grid gap-6 text-2xl font-medium">
                         {navLinks.map((link) => (
                         <SheetClose asChild key={link.href}>
