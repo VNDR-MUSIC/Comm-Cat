@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
@@ -11,6 +12,20 @@ export const metadata: Metadata = {
   description: 'Empowering Returning Citizens to Rise and Lead.',
 };
 
+const fontHeadline = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-headline',
+  weight: ['700', '900'],
+});
+
+const fontBody = Poppins({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body',
+  weight: ['300', '400'],
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,13 +33,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet" />
-      </head>
-      <body className={cn("font-body antialiased")}>
+      <head />
+      <body className={cn("font-body antialiased", fontHeadline.variable, fontBody.variable)}>
         <div className="flex flex-col min-h-dvh bg-background text-foreground">
           <Header />
           <main className="flex-1">{children}</main>
