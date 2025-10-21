@@ -54,7 +54,7 @@ export default function EnrollPage() {
                     enrollmentDate: serverTimestamp(),
                     bio: 'Welcome to Catalyst Academy! Tell us a bit about yourself.'
                 };
-                // Use a non-blocking write, as we don't need to wait for it to complete to show the success message.
+                
                 setDocumentNonBlocking(userDocRef, userProfileData, { merge: true });
                 setIsSubmitted(true);
             }
