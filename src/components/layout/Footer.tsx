@@ -14,7 +14,7 @@ const Footer = () => {
     const partnerLogos = PlaceHolderImages.filter(img => img.id.startsWith("logo-"));
 
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-secondary text-secondary-foreground">
       <div className="relative py-12">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-blue-500 to-cyan-400 bg-400% animate-gradient-flow" style={{backgroundSize: "400%"}} />
         <div className="container mx-auto px-4 md:px-6">
@@ -26,23 +26,23 @@ const Footer = () => {
                         Catalyst Academy
                     </span>
                 </Link>
-                <p className="text-sm text-primary-foreground/70 max-w-md">
+                <p className="text-sm text-secondary-foreground/70 max-w-md">
                     Empowering individuals to rise and lead. Our program is offered at no-cost to returning citizens, funded by community sponsors who believe in second chances.
                 </p>
                  <div className="flex items-center gap-4 text-sm pt-2">
-                    <p className="text-primary-foreground/70">Path to 501(c)(3) Status</p>
+                    <p className="text-secondary-foreground/70">Path to 501(c)(3) Status</p>
                 </div>
             </div>
 
             <div className="space-y-4">
               <h4 className="font-bold text-lg">Quick Links</h4>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-sm text-primary-foreground/70 hover:text-accent">About Us</Link></li>
-                <li><Link href="/curriculum" className="text-sm text-primary-foreground/70 hover:text-accent">Curriculum</Link></li>
-                <li><Link href="/sponsorship" className="text-sm text-primary-foreground/70 hover:text-accent">Sponsorship</Link></li>
-                <li><Link href="/community" className="text-sm text-primary-foreground/70 hover:text-accent">Community</Link></li>
-                 <li><Link href="/returning-citizens" className="text-sm text-primary-foreground/70 hover:text-accent">For Returning Citizens</Link></li>
-                <li><Link href="/support" className="text-sm text-primary-foreground/70 hover:text-accent">Contact</Link></li>
+                <li><Link href="/about" className="text-sm text-secondary-foreground/70 hover:text-accent">About Us</Link></li>
+                <li><Link href="/curriculum" className="text-sm text-secondary-foreground/70 hover:text-accent">Curriculum</Link></li>
+                <li><Link href="/sponsorship" className="text-sm text-secondary-foreground/70 hover:text-accent">Sponsorship</Link></li>
+                <li><Link href="/community" className="text-sm text-secondary-foreground/70 hover:text-accent">Community</Link></li>
+                 <li><Link href="/returning-citizens" className="text-sm text-secondary-foreground/70 hover:text-accent">For Returning Citizens</Link></li>
+                <li><Link href="/support" className="text-sm text-secondary-foreground/70 hover:text-accent">Contact</Link></li>
               </ul>
             </div>
             
@@ -51,17 +51,17 @@ const Footer = () => {
                  <div className="space-y-2">
                     <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4 text-accent" />
-                        <a href="tel:+15615627222" className="text-sm text-primary-foreground/70 hover:text-accent">+1 (561) 562-7222</a>
+                        <a href="tel:+15615627222" className="text-sm text-secondary-foreground/70 hover:text-accent">+1 (561) 562-7222</a>
                     </div>
                     <div className="flex items-center gap-2">
                         <Mail className="w-4 h-4 text-accent" />
-                        <a href="mailto:support@catalyst.edu" className="text-sm text-primary-foreground/70 hover:text-accent">support@catalyst.edu</a>
+                        <a href="mailto:support@catalyst.edu" className="text-sm text-secondary-foreground/70 hover:text-accent">support@catalyst.edu</a>
                     </div>
                 </div>
                 <div className="flex space-x-4 pt-2">
-                    <Link href="#" className="text-primary-foreground/70 hover:text-accent"><Linkedin className="w-6 h-6" /></Link>
-                    <Link href="#" className="text-primary-foreground/70 hover:text-accent"><XIcon className="w-6 h-6" /></Link>
-                    <Link href="#" className="text-primary-foreground/70 hover:text-accent"><Youtube className="w-6 h-6" /></Link>
+                    <Link href="#" className="text-secondary-foreground/70 hover:text-accent"><Linkedin className="w-6 h-6" /></Link>
+                    <Link href="#" className="text-secondary-foreground/70 hover:text-accent"><XIcon className="w-6 h-6" /></Link>
+                    <Link href="#" className="text-secondary-foreground/70 hover:text-accent"><Youtube className="w-6 h-6" /></Link>
                 </div>
                 <div className="pt-4">
                      <h4 className="font-bold text-lg mb-2">Accreditation & Partners</h4>
@@ -74,7 +74,7 @@ const Footer = () => {
                                     width={150}
                                     height={60}
                                     data-ai-hint={logo.imageHint}
-                                    className="object-contain w-full h-8 invert brightness-0 "
+                                    className="object-contain w-full h-8 invert"
                                 />
                             </div>
                         ))}
@@ -84,21 +84,21 @@ const Footer = () => {
 
           </div>
 
-          <div className="mt-8 pt-8 border-t border-primary-foreground/10 text-center text-sm text-primary-foreground/50">
+          <div className="mt-8 pt-8 border-t border-secondary-foreground/10 text-center text-sm text-secondary-foreground/50">
             <div className="flex justify-center items-center gap-6 mb-6">
                 <div className="text-right">
                     <p className="font-bold">Powered by:</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <a href="https://blaque.tech" target="_blank" rel="noopener noreferrer">
-                        <Image src="https://i.ibb.co/r2QMqgJG/Blaque-Tech.png" alt="Blaque Tech Logo" width={100} height={40} className="object-contain invert brightness-0" />
+                        <Image src="https://i.ibb.co/r2QMqgJG/Blaque-Tech.png" alt="Blaque Tech Logo" width={100} height={40} className="object-contain invert" />
                     </a>
                      <a href="https://indieMedia.llc" target="_blank" rel="noopener noreferrer">
-                        <Image src="https://i.ibb.co/v64ZGh4m/logo-full-256x.png" alt="IMG Independent Media Group Logo" width={100} height={40} className="object-contain invert brightness-0" />
+                        <Image src="https://i.ibb.co/v64ZGh4m/logo-full-256x.png" alt="IMG Independent Media Group Logo" width={100} height={40} className="object-contain invert" />
                     </a>
                 </div>
             </div>
-            <p className="text-xs text-primary-foreground/40 mb-4">Blaque Tech is a subsidiary of IMG Independent Media Group</p>
+            <p className="text-xs text-secondary-foreground/40 mb-4">Blaque Tech is a subsidiary of IMG Independent Media Group</p>
             <p>&copy; {new Date().getFullYear()} Catalyst Academy by The Doctor Project Corporation. All Rights Reserved.</p>
             <div className="space-x-4 mt-2">
                 <Link href="#" className="hover:text-accent">Privacy Policy</Link>
