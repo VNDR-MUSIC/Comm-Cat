@@ -52,51 +52,60 @@ const Header = () => {
           </span>
         </Link>
         
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle navigation menu</span>
+        <div className="flex items-center gap-2">
+            <Button variant="ghost" asChild className="hidden md:inline-flex">
+                <Link href="/login">Login</Link>
             </Button>
-          </SheetTrigger>
-          <SheetContent side="full" className="p-0">
-             <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <SheetClose asChild>
-                    <Button variant="ghost" size="icon" className="absolute top-6 right-6">
-                        <X className="h-8 w-8" />
-                        <span className="sr-only">Close menu</span>
-                    </Button>
-                </SheetClose>
+            <GlowingButton asChild className="hidden md:inline-flex">
+                <Link href="/enroll">Enroll Now</Link>
+            </GlowingButton>
 
-                <nav className="grid gap-6 text-2xl font-medium">
-                    {navLinks.map((link) => (
-                    <SheetClose asChild key={link.href}>
-                        <Link
-                            href={link.href}
-                            className="transition-colors hover:text-accent"
-                            prefetch={false}
-                        >
-                            {link.label}
-                        </Link>
-                    </SheetClose>
-                    ))}
-                </nav>
-
-                <div className="mt-12 flex flex-col gap-4 w-full max-w-xs">
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="full" className="p-0">
+                 <div className="flex flex-col items-center justify-center h-full text-center p-8">
                     <SheetClose asChild>
-                        <Button variant="outline" asChild size="lg">
-                            <Link href="/login">Login</Link>
+                        <Button variant="ghost" size="icon" className="absolute top-6 right-6">
+                            <X className="h-8 w-8" />
+                            <span className="sr-only">Close menu</span>
                         </Button>
                     </SheetClose>
-                    <SheetClose asChild>
-                        <GlowingButton asChild>
-                            <Link href="/enroll">Enroll Now</Link>
-                        </GlowingButton>
-                    </SheetClose>
+
+                    <nav className="grid gap-6 text-2xl font-medium">
+                        {navLinks.map((link) => (
+                        <SheetClose asChild key={link.href}>
+                            <Link
+                                href={link.href}
+                                className="transition-colors hover:text-accent"
+                                prefetch={false}
+                            >
+                                {link.label}
+                            </Link>
+                        </SheetClose>
+                        ))}
+                    </nav>
+
+                    <div className="mt-12 flex flex-col gap-4 w-full max-w-xs md:hidden">
+                        <SheetClose asChild>
+                            <Button variant="outline" asChild size="lg">
+                                <Link href="/login">Login</Link>
+                            </Button>
+                        </SheetClose>
+                        <SheetClose asChild>
+                            <GlowingButton asChild>
+                                <Link href="/enroll">Enroll Now</Link>
+                            </GlowingButton>
+                        </SheetClose>
+                    </div>
                 </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+              </SheetContent>
+            </Sheet>
+        </div>
       </div>
     </header>
   );
