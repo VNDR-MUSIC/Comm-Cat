@@ -36,11 +36,11 @@ const pillars = [
     }
 ];
 
-const chartData = [
-  { name: 'Employment Rate', value: 85, fill: 'hsl(var(--chart-2))' },
-  { name: 'Recidivism Reduction', value: 92, fill: 'hsl(var(--chart-1))' },
-  { name: 'New Businesses Started', value: 120, fill: 'hsl(var(--chart-4))', absolute: true },
-  { name: 'Graduates Empowered', value: 500, fill: 'hsl(var(--chart-5))', absolute: true },
+const programStats = [
+    { name: 'Employment Rate Post-Program', value: 85, fill: 'hsl(var(--chart-2))' },
+    { name: 'Reduction in Recidivism', value: 92, fill: 'hsl(var(--chart-1))' },
+    { name: 'New Businesses Started', value: 120, fill: 'hsl(var(--chart-4))', absolute: true },
+    { name: 'Graduates Empowered', value: 500, fill: 'hsl(var(--chart-5))', absolute: true },
 ];
 
 export default function ReturningCitizensPage() {
@@ -120,7 +120,7 @@ export default function ReturningCitizensPage() {
                             <CardContent>
                                 <div className="w-full h-[400px]">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={chartData} layout="vertical" margin={{ top: 20, right: 30, left: 30, bottom: 5 }}>
+                                        <BarChart data={programStats} layout="vertical" margin={{ top: 20, right: 30, left: 30, bottom: 5 }}>
                                             <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                                             <XAxis type="number" stroke="hsl(var(--muted-foreground))" domain={[0, 100]} tickFormatter={(tick) => tick > 100 ? `${tick}` : `${tick}%`} />
                                             <YAxis type="category" width={150} dataKey="name" stroke="hsl(var(--muted-foreground))" />
@@ -135,7 +135,7 @@ export default function ReturningCitizensPage() {
                                                 }}
                                             />
                                             <Bar dataKey="value" name="Success Metric">
-                                                {chartData.map((entry, index) => (
+                                                {programStats.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={entry.fill} />
                                                 ))}
                                             </Bar>
