@@ -6,7 +6,6 @@ import { ChevronDown, Menu, University, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -112,22 +111,27 @@ const Header = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="full" className="p-0">
-                 <SheetHeader className='p-6'>
-                    <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                 <SheetHeader className='p-6 border-b'>
+                    <SheetTitle className="flex items-center gap-2">
+                         <University className="h-8 w-8 text-accent" />
+                        <span className="font-headline text-xl font-bold text-foreground">
+                            Catalyst Academy
+                        </span>
+                    </SheetTitle>
                  </SheetHeader>
-                 <div className="flex flex-col h-full p-6 pt-0">
+                 <div className="flex flex-col h-full p-6">
                     <nav className="flex flex-col gap-4 text-xl font-medium">
                         {navItems.map((item) => (
                            item.href ? (
-                                <SheetClose asChild key={item.label}>
-                                    <Link
-                                        href={item.href}
-                                        className="transition-colors hover:text-accent"
-                                        prefetch={false}
-                                    >
-                                        {item.label}
-                                    </Link>
-                                </SheetClose>
+                                <Link
+                                    key={item.label}
+                                    href={item.href}
+                                    className="transition-colors hover:text-accent"
+                                    prefetch={false}
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    {item.label}
+                                </Link>
                            ) : (
                                <Accordion type="single" collapsible key={item.label}>
                                  <AccordionItem value={item.label} className="border-b-0">
@@ -137,15 +141,15 @@ const Header = () => {
                                    <AccordionContent className="pl-4">
                                      <div className="flex flex-col gap-4 mt-2">
                                        {item.items?.map((subItem) => (
-                                         <SheetClose asChild key={subItem.href}>
                                            <Link
+                                             key={subItem.href}
                                              href={subItem.href}
                                              className="text-muted-foreground transition-colors hover:text-accent"
                                              prefetch={false}
+                                             onClick={() => setIsMenuOpen(false)}
                                            >
                                              {subItem.label}
                                            </Link>
-                                         </SheetClose>
                                        ))}
                                      </div>
                                    </AccordionContent>
@@ -156,16 +160,16 @@ const Header = () => {
                     </nav>
 
                     <div className="mt-auto flex flex-col gap-4 w-full">
-                        <SheetClose asChild>
-                            <Button variant="outline" asChild size="lg">
-                                <Link href="/login">Login</Link>
+                        <Link href="/login" className='w-full' onClick={() => setIsMenuOpen(false)}>
+                            <Button variant="outline" size="lg" className="w-full">
+                                Login
                             </Button>
-                        </SheetClose>
-                        <SheetClose asChild>
-                            <GlowingButton asChild size="lg">
-                                <Link href="/enroll">Enroll Now</Link>
+                        </Link>
+                        <Link href="/enroll" className='w-full' onClick={() => setIsMenuOpen(false)}>
+                            <GlowingButton asChild size="lg" className="w-full">
+                                <span className='w-full'>Enroll Now</span>
                             </GlowingButton>
-                        </SheetClose>
+                        </Link>
                     </div>
                 </div>
               </SheetContent>
