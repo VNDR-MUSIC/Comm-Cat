@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useParams } from 'next/navigation';
@@ -6,57 +7,21 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, FileText, Download, PlayCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
-import { collection, query, where, serverTimestamp } from 'firebase/firestore';
+import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, useDoc } from '@/firebase';
+import { collection, query, where, serverTimestamp, doc } from 'firebase/firestore';
 
-// This hardcoded data will be replaced by a Firestore fetch in a future step.
-const lessons: { [key: string]: { title: string, module: string, videoUrl?: string, description: string, courseId: string, moduleId: string } } = {
-    l1: { 
-        title: "Reclaiming Your Narrative", 
-        module: "Module 1", 
-        description: "Understand the power of your personal story and learn how to reframe your past to build a powerful future.",
-        videoUrl: "https://www.youtube.com/embed/videoseries?list=PLX_2g75xA94CMY1r3f-A-S2f-G4z_w_fC",
-        courseId: "your-course-id", // Placeholder
-        moduleId: "your-module-id-1" // Placeholder
-    },
-    l2: { 
-        title: "Goal Setting with Purpose", 
-        module: "Module 1", 
-        description: "Define meaningful short-term and long-term goals that align with your vision for a successful and fulfilling life.",
-        courseId: "your-course-id", // Placeholder
-        moduleId: "your-module-id-1" // Placeholder
-    },
-    l3: { 
-        title: "Budgeting for a New Beginning", 
-        module: "Module 2", 
-        videoUrl: "https://www.youtube.com/embed/fK33dABa_CM",
-        description: "Master the fundamentals of personal finance. Create a realistic budget, track expenses, and develop a savings plan.",
-        courseId: "your-course-id", // Placeholder
-        moduleId: "your-module-id-2" // Placeholder
-    },
-    l4: { 
-        title: "Repairing Credit", 
-        module: "Module 2", 
-        description: "Learn the steps to understand your credit report, dispute inaccuracies, and build a positive credit history over time.",
-        courseId: "your-course-id", // Placeholder
-        moduleId: "your-module-id-2" // Placeholder
-    },
-    l5: { 
-        title: "Crafting Your Resume", 
-        module: "Module 3", 
-        description: "Translate your life experiences and skills into a compelling resume that stands out to employers.",
-        videoUrl: "https://www.youtube.com/embed/uG2aEh6D_wc",
-        courseId: "your-course-id", // Placeholder
-        moduleId: "your-module-id-3" // Placeholder
-    },
-    l6: { 
-        title: "Mastering the Interview", 
-        module: "Module 3", 
-        description: "Gain confidence and learn strategies to effectively answer common interview questions, including those about your past.",
-        courseId: "your-course-id", // Placeholder
-        moduleId: "your-module-id-3" // Placeholder
-    },
-};
+interface LessonData {
+    id: string;
+    title: string;
+    videoUrl?: string;
+    description: string;
+    moduleId: string;
+}
+
+interface ModuleData {
+    title: string;
+    lessons: string[]; // array of lesson IDs
+}
 
 interface UserLessonProgress {
     userId: string;
@@ -64,25 +29,27 @@ interface UserLessonProgress {
     completedAt: any;
 }
 
-const getNextLesson = (currentId: string) => {
-    const lessonKeys = Object.keys(lessons);
-    const currentIndex = lessonKeys.indexOf(currentId);
-    if (currentIndex > -1 && currentIndex < lessonKeys.length - 1) {
-        const nextId = lessonKeys[currentIndex + 1];
-        return { id: nextId, ...lessons[nextId] };
-    }
-    return null;
-}
-
 export default function LessonPage() {
     const params = useParams();
+    const courseId = params.courseId as string;
+    const moduleId = params.moduleId as string;
     const lessonId = params.lessonId as string;
+    
     const { user } = useUser();
     const firestore = useFirestore();
 
-    // In a future step, this will fetch from Firestore
-    const lesson = lessons[lessonId] || { title: "Lesson Not Found", module: "Unknown Module", description: "This lesson does not exist." };
-    const nextLesson = getNextLesson(lessonId);
+    const lessonDocRef = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return doc(firestore, `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`);
+    }, [firestore, courseId, moduleId, lessonId]);
+
+    const moduleDocRef = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return doc(firestore, `courses/${courseId}/modules/${moduleId}`);
+    }, [firestore, courseId, moduleId]);
+
+    const { data: lesson, isLoading: isLessonLoading } = useDoc<LessonData>(lessonDocRef);
+    const { data: moduleData, isLoading: isModuleLoading } = useDoc<ModuleData>(moduleDocRef);
 
     const progressQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
@@ -93,9 +60,22 @@ export default function LessonPage() {
         );
     }, [firestore, user?.uid, lessonId]);
 
-    const { data: progress, isLoading } = useCollection<UserLessonProgress>(progressQuery);
+    const { data: progress, isLoading: isProgressLoading } = useCollection<UserLessonProgress>(progressQuery);
 
+    const isLoading = isLessonLoading || isProgressLoading || isModuleLoading;
     const isCompleted = progress && progress.length > 0;
+
+    const getNextLesson = () => {
+        if (!moduleData || !moduleData.lessons) return null;
+        const currentIndex = moduleData.lessons.indexOf(lessonId);
+        if (currentIndex > -1 && currentIndex < moduleData.lessons.length - 1) {
+            const nextId = moduleData.lessons[currentIndex + 1];
+            return { id: nextId };
+        }
+        return null;
+    }
+
+    const nextLesson = getNextLesson();
 
     const handleMarkComplete = () => {
         if (!firestore || !user?.uid || isCompleted) return;
@@ -109,16 +89,33 @@ export default function LessonPage() {
         const collectionRef = collection(firestore, 'userLessonProgress');
         addDocumentNonBlocking(collectionRef, progressData);
     };
+    
+    if (isLoading) {
+        return <div className="flex h-screen items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-accent" /></div>
+    }
+
+    if (!lesson) {
+        return (
+            <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h1 className="text-3xl font-bold text-destructive">Lesson Not Found</h1>
+                    <p className="mt-4">The lesson you are looking for does not exist or you do not have permission to view it.</p>
+                    <Button asChild className="mt-6">
+                        <Link href="/dashboard/courses">Go to My Courses</Link>
+                    </Button>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
             <div className="max-w-4xl mx-auto">
                 <header className="mb-8">
-                     <p className="text-accent font-semibold">{lesson.module}</p>
+                     <p className="text-accent font-semibold">{moduleData?.title || 'Module'}</p>
                     <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground">
                         {lesson.title}
                     </h1>
-                    <p className="text-muted-foreground mt-2">{lesson.description}</p>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -171,8 +168,8 @@ export default function LessonPage() {
                                 {nextLesson ? (
                                     <p className="text-muted-foreground">
                                         Up next:
-                                        <Link href={`/dashboard/courses/${nextLesson.id}`} className="font-bold text-accent hover:underline ml-1">
-                                            {nextLesson.title}
+                                        <Link href={`/dashboard/courses/${courseId}/modules/${moduleId}/lessons/${nextLesson.id}`} className="font-bold text-accent hover:underline ml-1">
+                                            Continue
                                         </Link>
                                     </p>
                                 ) : (
@@ -188,3 +185,4 @@ export default function LessonPage() {
         </div>
     );
 }
+

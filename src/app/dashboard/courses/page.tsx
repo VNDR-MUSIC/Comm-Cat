@@ -10,19 +10,17 @@ import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebas
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { useMemo } from 'react';
 
-// This data will eventually be fully dynamic, but for now, we map fetched courses to this structure.
-const courseStructure = {
+const courseStructure: { [key: string]: { id: string, modules: { moduleId: string, lessons: { id: string, title: string }[] }[] } } = {
     "Community Catalyst: Empowering Returning Citizens": {
-        lessons: [
-            { id: "l1", title: "Reclaiming Your Narrative" },
-            { id: "l2", title: "Goal Setting with Purpose" },
-            { id: "l3", title: "Budgeting for a New Beginning" },
-            { id: "l4", title: "Repairing Credit" },
-            { id: "l5", title: "Crafting Your Resume" },
-            { id: "l6", title: "Mastering the Interview" },
+        id: "AZgwb4n8k5g4z8E4o4y1",
+        modules: [
+            { moduleId: "JmDTSkaxJo3S6C6kTC8S", lessons: [{ id: "l1", title: "Reclaiming Your Narrative" }, { id: "l2", title: "Goal Setting with Purpose" }] },
+            { moduleId: "e065bf1f", lessons: [{ id: "l3", title: "Budgeting for a New Beginning" }, { id: "l4", title: "Repairing Credit" }] },
+            { moduleId: "a39b4b02", lessons: [{ id: "l5", title: "Crafting Your Resume" }, { id: "l6", title: "Mastering the Interview" }] },
         ]
     }
-}
+};
+
 
 interface UserLessonProgress {
     lessonId: string;
@@ -40,8 +38,6 @@ export default function CoursesPage() {
 
     const coursesQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        // In a real app, you might query a user's specific enrollments.
-        // For now, we fetch all courses.
         return query(collection(firestore, 'courses'), orderBy('title', 'asc'));
     }, [firestore]);
 
@@ -85,15 +81,30 @@ export default function CoursesPage() {
                 {courses && courses.length > 0 ? (
                     <div className="grid gap-6">
                         {courses.map(course => {
-                            const structure = courseStructure[course.title as keyof typeof courseStructure] || { lessons: [] };
-                            const totalLessons = structure.lessons.length;
-                            const completedLessonsCount = structure.lessons.filter(l => completedLessons.has(l.id)).length;
+                            const structure = courseStructure[course.title as keyof typeof courseStructure];
+                            if (!structure) return null;
+
+                            const allLessons = structure.modules.flatMap(m => m.lessons);
+                            const totalLessons = allLessons.length;
+                            const completedLessonsCount = allLessons.filter(l => completedLessons.has(l.id)).length;
                             const overallProgress = totalLessons > 0 ? (completedLessonsCount / totalLessons) * 100 : 0;
 
-                            const lastCompletedLessonIndex = structure.lessons.findLastIndex(l => completedLessons.has(l.id));
-                            const nextLesson = lastCompletedLessonIndex < structure.lessons.length - 1 
-                                ? structure.lessons[lastCompletedLessonIndex + 1] 
-                                : structure.lessons[0];
+                            const findNextLesson = () => {
+                                for (const module of structure.modules) {
+                                    for (const lesson of module.lessons) {
+                                        if (!completedLessons.has(lesson.id)) {
+                                            return { ...lesson, moduleId: module.moduleId };
+                                        }
+                                    }
+                                }
+                                // If all lessons are complete, return the first lesson
+                                if (structure.modules.length > 0 && structure.modules[0].lessons.length > 0) {
+                                    return { ...structure.modules[0].lessons[0], moduleId: structure.modules[0].moduleId };
+                                }
+                                return null;
+                            };
+
+                            const nextLessonInfo = findNextLesson();
 
                             return (
                                 <Card key={course.id} className="shadow-lg">
@@ -108,17 +119,17 @@ export default function CoursesPage() {
                                                 <Progress value={overallProgress} className="w-full" />
                                                 <span className="font-bold text-lg text-foreground">{Math.round(overallProgress)}%</span>
                                             </div>
-                                            {nextLesson && (
+                                            {nextLessonInfo && (
                                                 <p className="text-sm text-muted-foreground pt-4">
-                                                    Next up: <span className="font-bold text-foreground">{nextLesson.title}</span>
+                                                    Next up: <span className="font-bold text-foreground">{nextLessonInfo.title}</span>
                                                 </p>
                                             )}
                                         </div>
                                     </CardContent>
                                     <CardFooter>
-                                        {nextLesson && (
+                                        {nextLessonInfo && (
                                             <GlowingButton asChild>
-                                                <Link href={`/dashboard/courses/${nextLesson.id}`}>
+                                                <Link href={`/dashboard/courses/${course.id}/modules/${nextLessonInfo.moduleId}/lessons/${nextLessonInfo.id}`}>
                                                     <PlayCircle className="mr-2 h-4 w-4" />
                                                     Continue Course
                                                 </Link>
