@@ -85,6 +85,20 @@ const Footer = () => {
           </div>
 
           <div className="mt-8 pt-8 border-t border-primary-foreground/10 text-center text-sm text-primary-foreground/50">
+            <div className="flex justify-center items-center gap-6 mb-6">
+                <div className="text-right">
+                    <p className="font-bold">Powered by:</p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <a href="https://blaque.tech" target="_blank" rel="noopener noreferrer">
+                        <Image src="https://i.ibb.co/r2QMqgJG/Blaque-Tech.png" alt="Blaque Tech Logo" width={100} height={40} className="object-contain invert brightness-0" />
+                    </a>
+                     <a href="https://indieMedia.llc" target="_blank" rel="noopener noreferrer">
+                        <Image src="https://i.ibb.co/v64ZGh4m/logo-full-256x.png" alt="IMG Independent Media Group Logo" width={100} height={40} className="object-contain invert brightness-0" />
+                    </a>
+                </div>
+            </div>
+            <p className="text-xs text-primary-foreground/40 mb-4">Blaque Tech is a subsidiary of IMG Independent Media Group</p>
             <p>&copy; {new Date().getFullYear()} Catalyst Academy by The Doctor Project Corporation. All Rights Reserved.</p>
             <div className="space-x-4 mt-2">
                 <Link href="#" className="hover:text-accent">Privacy Policy</Link>
