@@ -41,7 +41,7 @@ export function DashboardSidebar() {
             <SidebarMenuItem key={item.href}>
                 <Link href={item.href} className="w-full">
                     <SidebarMenuButton 
-                        isActive={pathname === item.href}
+                        isActive={pathname.startsWith(item.href) && (item.href !== "/dashboard" || pathname === "/dashboard")}
                         className="w-full"
                     >
                         {item.icon}

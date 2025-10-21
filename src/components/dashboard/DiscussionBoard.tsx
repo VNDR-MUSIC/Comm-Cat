@@ -20,9 +20,9 @@ interface Post {
 }
 
 const initialPosts: Post[] = [
-    { id: 1, author: "Marcus Reid", avatar: "https://picsum.photos/seed/facilitator2/40/40", initials: "MR", isFacilitator: true, content: "Welcome to the Module 3 discussion! Let's talk about community building. What's one small action you can take this week to build a bridge?", timestamp: "2 hours ago" },
+    { id: 1, author: "Marcus Reid", avatar: "https://picsum.photos/seed/facilitator-2/40/40", initials: "MR", isFacilitator: true, content: "Welcome to the Module 3 discussion! Let's talk about community building. What's one small action you can take this week to build a bridge?", timestamp: "2 hours ago" },
     { id: 2, author: "A. Student", avatar: "https://picsum.photos/seed/student1/40/40", initials: "AS", isFacilitator: false, content: "I'm planning to volunteer at the local food bank this weekend. It's a small step, but it's about being present and contributing.", timestamp: "1 hour ago" },
-    { id: 3, author: "Dr. Aliyah Khan", avatar: "https://picsum.photos/seed/facilitator1/40/40", initials: "AK", isFacilitator: true, content: "That's a fantastic start! Presence is powerful. Remember, leadership begins with service.", timestamp: "45 mins ago" },
+    { id: 3, author: "Dr. Aliyah Khan", avatar: "https://picsum.photos/seed/facilitator-3/40/40", initials: "AK", isFacilitator: true, content: "That's a fantastic start! Presence is powerful. Remember, leadership begins with service.", timestamp: "45 mins ago" },
 ];
 
 function SubmitButton() {
