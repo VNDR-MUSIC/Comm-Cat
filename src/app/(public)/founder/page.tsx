@@ -14,7 +14,7 @@ export default function FounderPage() {
     name: 'Dr. Warren O. Crabb',
     titles: 'Founder | Executive Producer | Media Personality',
     location: 'Pinellas Park, FL',
-    phone: '954-288-8982',
+    phone: '+1 (561) 562-7222',
     email: 'doctorcrabb@tcsup.c',
     website: 'thedrproject.com',
     imageUrl: founderImage?.imageUrl || '',
@@ -88,7 +88,7 @@ export default function FounderPage() {
                         <CardContent className="space-y-4 text-sm">
                             <div className="flex items-center gap-4">
                                 <Phone className="w-5 h-5 text-accent" />
-                                <a href={`tel:${founder.phone}`} className="hover:underline">{founder.phone}</a>
+                                <a href={`tel:${founder.phone.replace(/\s/g, '')}`} className="hover:underline">{founder.phone}</a>
                             </div>
                             <div className="flex items-center gap-4">
                                 <Mail className="w-5 h-5 text-accent" />
