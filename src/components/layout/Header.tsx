@@ -40,7 +40,6 @@ const navItems = [
       { href: '/community', label: 'Community' },
     ],
   },
-  { href: '/returning-citizens', label: 'For Returning Citizens' },
   { href: '/sponsorship', label: 'Sponsorship' },
 ];
 
