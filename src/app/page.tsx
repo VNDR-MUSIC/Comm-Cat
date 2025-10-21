@@ -208,6 +208,7 @@ export default function HomePage() {
                                     <p className="text-sm font-bold text-accent">{item.quarter}</p>
                                     <h3 className="font-headline text-xl font-bold mt-1">{item.title}</h3>
                                     <p className="text-muted-foreground mt-2">{item.description}</p>
+
                                 </div>
                             </div>
                             <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-accent rounded-full border-4 border-background"></div>
@@ -238,10 +239,6 @@ export default function HomePage() {
                     </Accordion>
                 </div>
             </div>
-        </section>
-
-        <section className="bg-secondary/30 section-glow-border">
-          <LogoCloud title="Trusted by Leading Organizations" />
         </section>
         
       </main>
