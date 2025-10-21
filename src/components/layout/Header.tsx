@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, University } from 'lucide-react';
+import { Menu, University, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
@@ -24,6 +25,7 @@ const navLinks = [
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -49,59 +51,49 @@ const Header = () => {
             Catalyst Academy
           </span>
         </Link>
-        <nav className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium transition-colors hover:text-accent"
-              prefetch={false}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="hidden items-center gap-4 md:flex">
-          <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-          <GlowingButton asChild>
-            <Link href="/enroll">Enroll Now</Link>
-          </GlowingButton>
-        </div>
-        <Sheet>
+        
+        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="md:hidden">
+            <Button variant="outline" size="icon">
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right">
-            <div className="grid gap-4 p-4">
-              <Link href="/" className="flex items-center gap-2" prefetch={false}>
-                <University className="h-6 w-6 text-accent" />
-                <span className="font-bold">Catalyst Academy</span>
-              </Link>
-              <nav className="grid gap-2">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
-                    prefetch={false}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="flex flex-col gap-2">
-                 <Button variant="ghost" asChild>
-                    <Link href="/login">Login</Link>
-                </Button>
-                <GlowingButton asChild>
-                    <Link href="/enroll">Enroll Now</Link>
-                </GlowingButton>
-              </div>
+          <SheetContent side="full" className="p-0">
+             <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                <SheetClose asChild>
+                    <Button variant="ghost" size="icon" className="absolute top-6 right-6">
+                        <X className="h-8 w-8" />
+                        <span className="sr-only">Close menu</span>
+                    </Button>
+                </SheetClose>
+
+                <nav className="grid gap-6 text-2xl font-medium">
+                    {navLinks.map((link) => (
+                    <SheetClose asChild key={link.href}>
+                        <Link
+                            href={link.href}
+                            className="transition-colors hover:text-accent"
+                            prefetch={false}
+                        >
+                            {link.label}
+                        </Link>
+                    </SheetClose>
+                    ))}
+                </nav>
+
+                <div className="mt-12 flex flex-col gap-4 w-full max-w-xs">
+                    <SheetClose asChild>
+                        <Button variant="outline" asChild size="lg">
+                            <Link href="/login">Login</Link>
+                        </Button>
+                    </SheetClose>
+                    <SheetClose asChild>
+                        <GlowingButton asChild>
+                            <Link href="/enroll">Enroll Now</Link>
+                        </GlowingButton>
+                    </SheetClose>
+                </div>
             </div>
           </SheetContent>
         </Sheet>
