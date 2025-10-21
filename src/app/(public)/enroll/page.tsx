@@ -100,9 +100,9 @@ export default function EnrollPage() {
                         <CardContent className="space-y-8">
                              <Alert className="bg-blue-500/10 border-blue-500/50 text-foreground">
                                 <Info className="h-4 w-4 !text-blue-400" />
-                                <AlertTitle className="font-bold !text-blue-300">Our Commitment: No Cost for Returning Citizens</AlertTitle>
+                                <AlertTitle className="font-bold !text-blue-300">Our Commitment to Accessibility</AlertTitle>
                                 <AlertDescription className="!text-blue-300/80">
-                                    Catalyst Academy is <span className="font-bold">completely free</span> for all accepted participants. Our program is funded by generous sponsors who believe in your potential. Your application is a commitment of time and effort, not money.
+                                    Catalyst Academy is <span className="font-bold">offered at no cost</span> for all accepted participants. Our program is fully funded by generous sponsors who believe in your potential. Your application is a commitment of time and effort, not money.
                                     <Link href="/sponsorship" className="underline font-semibold ml-2 hover:text-accent">Learn more about our model.</Link>
                                 </AlertDescription>
                             </Alert>

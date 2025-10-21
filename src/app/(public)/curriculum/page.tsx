@@ -1,3 +1,4 @@
+
 import {
   Accordion,
   AccordionContent,
@@ -85,7 +86,7 @@ export default function CurriculumPage() {
                 </p>
                  <div className="mt-8 flex justify-center gap-4">
                     <GlowingButton asChild>
-                        <Link href="/enroll">Start Your Journey (It's Free)</Link>
+                        <Link href="/enroll">Start Your Journey</Link>
                     </GlowingButton>
                 </div>
             </div>

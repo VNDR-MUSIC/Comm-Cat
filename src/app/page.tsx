@@ -58,12 +58,12 @@ const journey = [
 
 const faqs = [
     {
-        question: "Is this program really free?",
-        answer: "Yes. Thanks to our generous partners and donors, Catalyst Academy is offered at no cost to all accepted participants. Our goal is to remove financial barriers to success."
+        question: "What is the cost of the program?",
+        answer: "Catalyst Academy is offered at no cost to all selected participants. Our program is fully sponsored by generous partners and donors who are investing in your future. Your primary commitment is your time and dedication."
     },
     {
         question: "What are the requirements to apply?",
-        answer: "We welcome applications from any individual who is returning to the community after a period of incarceration. The key requirement is a deep commitment to personal transformation and community leadership. The application process includes an essay and an interview."
+        answer: "We welcome applications from any individual who is returning to the community after a period of incarceration. The key requirement is a deep commitment to personal transformation and community leadership. The application process includes an essay and an interview to ensure each selected participant is ready for this intensive journey."
     },
     {
         question: "Is this an online or in-person program?",
@@ -144,7 +144,7 @@ export default function HomePage() {
               </p>
               <div className="flex justify-center">
                 <GlowingButton asChild>
-                  <Link href="/enroll">Enroll Now - It's Free</Link>
+                  <Link href="/enroll">Apply for Sponsorship</Link>
                 </GlowingButton>
               </div>
             </div>
@@ -340,4 +340,3 @@ export default function HomePage() {
     </div>
   );
 }
-

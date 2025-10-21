@@ -1,3 +1,4 @@
+
 import { Handshake, Rocket, Megaphone, Eye, Users, Shield, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import GlowingButton from '@/components/shared/GlowingButton';
@@ -45,7 +46,7 @@ export default function CommunityPage() {
                     </p>
                      <div className="mt-8 flex justify-center gap-4">
                         <GlowingButton asChild>
-                            <Link href="/enroll">Apply Now (Free)</Link>
+                            <Link href="/enroll">Apply Today</Link>
                         </GlowingButton>
                         <Link href="/sponsorship" className="inline-flex items-center justify-center rounded-md bg-primary-foreground text-primary px-6 py-3 font-bold transition-colors hover:bg-primary-foreground/90">
                             Sponsor a Student

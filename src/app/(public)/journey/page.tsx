@@ -183,7 +183,7 @@ export default function JourneyPage() {
                             </p>
                             <div className="mt-8 flex justify-center gap-4">
                                 <GlowingButton asChild>
-                                    <Link href="/enroll">Enroll Now (Free Application)</Link>
+                                    <Link href="/enroll">Enroll Now (Application)</Link>
                                 </GlowingButton>
                                 <Link href="/sponsorship" className="inline-flex items-center justify-center rounded-md bg-primary-foreground text-primary px-6 py-3 font-bold transition-colors hover:bg-primary-foreground/90">
                                     Sponsor a Journey
