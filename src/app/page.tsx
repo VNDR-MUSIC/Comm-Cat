@@ -57,7 +57,7 @@ const journey = [
     { quarter: 'Q1', title: 'Module 1 & 2: Foundations of Self & Finance', description: 'Weeks 1-13: Reclaim your narrative, master your finances, and build a rock-solid foundation for personal growth.' },
     { quarter: 'Q2', title: 'Module 3 & 4: Professional & Personal Wellness', description: 'Weeks 14-26: Develop career-ready skills, master interviews, and prioritize your mental and physical well-being.' },
     { quarter: 'Q3', title: 'Module 5: Community & Civic Engagement', description: 'Weeks 27-39: Understand your rights, learn to advocate for change, and find your voice as a community leader.' },
-    { quarter: 'Q4', title: 'Module 6: Leadership & Capstone', description: 'Weeks 40-52: Solidify your leadership style and launch a real-world capstone project that leaves a lasting legacy.' },
+    { quarter: 'Q4', title: 'Module 6: Leadership & Capstone', description: 'Weeks 40-52: Solidify your leadership style and launch a real-world community project or business plan with seed funding available.' },
 ]
 
 const faqs = [
@@ -177,46 +177,7 @@ export default function HomePage() {
             </div>
         </section>
 
-        <section id="testimonials" className="py-16 md:py-24 bg-primary text-primary-foreground section-glow-border">
-          <div className="container mx-auto px-4 md:px-6">
-             <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
-                <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl text-primary-foreground">Stories of Transformation</h2>
-                <p className="text-primary-foreground/80 md:text-xl">Don't just take our word for it. Hear from the catalysts who have graduated from our program.</p>
-            </div>
-            <Carousel className="w-full max-w-4xl mx-auto" opts={{ loop: true }}>
-              <CarouselContent>
-                {testimonialDetails.map((testimonial) => {
-                    const image = testimonials.find(img => img.id === testimonial.imageId);
-                    return (
-                        <CarouselItem key={testimonial.name} className="md:basis-1/2">
-                        <div className="p-4">
-                            <Card className="bg-primary-foreground/10 border-primary-foreground/20 shadow-lg h-full">
-                            <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-4">
-                                <Avatar className="w-24 h-24 border-4 border-accent">
-                                    {image && <AvatarImage src={image.imageUrl} alt={image.description} data-ai-hint={image.imageHint} />}
-                                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <blockquote className="text-lg italic">
-                                &ldquo;{testimonial.text}&rdquo;
-                                </blockquote>
-                                <div>
-                                    <p className="font-bold font-headline text-lg">{testimonial.name}</p>
-                                    <p className="text-sm text-primary-foreground/70">{testimonial.cohort}</p>
-                                </div>
-                            </CardContent>
-                            </Card>
-                        </div>
-                        </CarouselItem>
-                    )
-                })}
-              </CarouselContent>
-              <CarouselPrevious className="text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 border-primary-foreground/20" />
-              <CarouselNext className="text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20 border-primary-foreground/20" />
-            </Carousel>
-          </div>
-        </section>
-
-         <section id="faq" className="py-16 md:py-24 bg-background section-glow-border">
+         <section id="faq" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
             <div className="container mx-auto px-4 md:px-6">
                  <div className="text-center max-w-3xl mx-auto space-y-4">
                     <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Frequently Asked Questions</h2>
@@ -239,7 +200,6 @@ export default function HomePage() {
             </div>
         </section>
         
-        <LogoCloud title="Our Partners, Supporters, & Accreditation" />
       </main>
     </div>
   );
