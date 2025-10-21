@@ -171,9 +171,10 @@ export type CourseState = {
     duration?: string[];
   };
   message?: string | null;
+  success: boolean;
 };
 
-export async function createCourse(prevState: CourseState, formData: FormData): Promise<CourseState> {
+export async function createCourse(prevState: any, formData: FormData): Promise<CourseState> {
   const validatedFields = courseSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description"),
@@ -183,6 +184,7 @@ export async function createCourse(prevState: CourseState, formData: FormData): 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
+      success: false
     };
   }
 
@@ -200,6 +202,49 @@ export async function createCourse(prevState: CourseState, formData: FormData): 
     console.error("Error creating course:", error);
     return {
       message: "An unexpected error occurred. Please try again.",
+      success: false
+    };
+  }
+
+  revalidatePath("/admin/courses");
+  redirect("/admin/courses");
+}
+
+
+const updateCourseSchema = courseSchema.extend({
+  courseId: z.string(),
+});
+
+export async function updateCourse(prevState: any, formData: FormData): Promise<CourseState> {
+  const validatedFields = updateCourseSchema.safeParse({
+    title: formData.get("title"),
+    description: formData.get("description"),
+    duration: formData.get("duration"),
+    courseId: formData.get("courseId"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      success: false,
+    };
+  }
+
+  const { firestore } = initializeFirebase();
+  const { title, description, duration, courseId } = validatedFields.data;
+
+  try {
+    const courseDocRef = doc(firestore, "courses", courseId);
+    await updateDoc(courseDocRef, {
+      title,
+      description,
+      duration,
+    });
+  } catch (error) {
+    console.error("Error updating course:", error);
+    return {
+      message: "An unexpected error occurred. Please try again.",
+      success: false
     };
   }
 
@@ -389,3 +434,5 @@ export async function toggleAdminStatus(userId: string, isAdmin: boolean) {
       return { success: false, message: "An unexpected error occurred." };
     }
 }
+
+    

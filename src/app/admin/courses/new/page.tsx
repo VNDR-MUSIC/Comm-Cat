@@ -15,7 +15,7 @@ import { AlertTriangle } from 'lucide-react';
 
 
 export default function NewCoursePage() {
-    const initialState: CourseState = { message: null, errors: {} };
+    const initialState: CourseState = { message: null, errors: {}, success: false };
     const [state, dispatch] = useFormState(createCourse, initialState);
 
     return (
@@ -72,3 +72,5 @@ export default function NewCoursePage() {
         </div>
     )
 }
+
+    

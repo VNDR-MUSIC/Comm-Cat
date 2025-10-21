@@ -153,7 +153,9 @@ export default function CourseDetailPage() {
                                 <h4 className="font-semibold">Course ID</h4>
                                 <p className="text-muted-foreground text-sm break-all">{courseId}</p>
                             </div>
-                            <Button variant="outline" className="w-full">Edit Course Details</Button>
+                            <Button variant="outline" className="w-full" asChild>
+                                <Link href={`/admin/courses/${courseId}/edit`}>Edit Course Details</Link>
+                            </Button>
                         </CardContent>
                     </Card>
                 </div>
@@ -161,3 +163,5 @@ export default function CourseDetailPage() {
         </div>
     )
 }
+
+    
