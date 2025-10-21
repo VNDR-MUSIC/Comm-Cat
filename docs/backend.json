@@ -29,7 +29,7 @@
           "description": "A short bio for the user."
         },
         "enrollmentDate": {
-          "type": "string",
+          "type": "object",
           "description": "Date when the user enrolled.",
           "format": "date-time"
         },

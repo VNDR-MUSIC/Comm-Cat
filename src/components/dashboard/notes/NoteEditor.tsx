@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -137,5 +136,3 @@ export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
     </div>
   );
 }
-
-    

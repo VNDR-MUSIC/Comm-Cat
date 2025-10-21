@@ -65,5 +65,3 @@ export function NoteList({ notes, selectedNote, onSelectNote }: NoteListProps) {
     </ScrollArea>
   );
 }
-
-    

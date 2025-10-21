@@ -192,5 +192,3 @@ const NotesPageSkeleton = () => (
         </ResizablePanelGroup>
     </div>
 )
-
-    
