@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
@@ -30,6 +31,7 @@ export default function RootLayout({
           <Footer />
         </div>
         <Toaster />
+        <Script src="https://app.aminos.ai/js/chat_plugin.js" data-bot-id="55174" strategy="afterInteractive" />
       </body>
     </html>
   );
