@@ -5,6 +5,18 @@ import GlowingButton from "@/components/shared/GlowingButton";
 import { CheckCircle, BookOpen, Users, CalendarDays, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+const fellowStudents = [
+  { name: 'Sarah Johnson', avatarSeed: 'student1' },
+  { name: 'David Chen', avatarSeed: 'student2' },
+  { name: 'Maria Garcia', avatarSeed: 'student3' },
+  { name: 'Kevin Smith', avatarSeed: 'student4' },
+  { name: 'Aisha Williams', avatarSeed: 'student5' },
+  { name: 'Roberto Rodriguez', avatarSeed: 'student6' },
+  { name: 'Emily White', avatarSeed: 'student7' },
+  { name: 'Michael Brown', avatarSeed: 'student8' },
+];
 
 export default function WelcomePage() {
     const cohortStartDate = new Date();
@@ -30,6 +42,14 @@ export default function WelcomePage() {
             action: { href: "/community", text: "Read the Covenant" }
         },
     ];
+
+    const formatName = (name: string) => {
+        const parts = name.split(' ');
+        if (parts.length > 1) {
+            return `${parts[0]} ${parts[parts.length - 1].charAt(0)}.`;
+        }
+        return name;
+    }
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center bg-secondary/30 py-12">
@@ -62,6 +82,21 @@ export default function WelcomePage() {
                                 </li>
                             ))}
                         </ul>
+
+                        <div className="pt-6 border-t">
+                            <h3 className="text-center font-headline font-bold text-xl mb-4">Meet Your Fellow Catalysts</h3>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                {fellowStudents.map(student => (
+                                    <div key={student.name} className="flex flex-col items-center text-center">
+                                        <Avatar className="w-16 h-16 mb-2">
+                                            <AvatarImage src={`https://picsum.photos/seed/${student.avatarSeed}/64/64`} />
+                                            <AvatarFallback>{student.name.split(' ').map(n=>n[0]).join('')}</AvatarFallback>
+                                        </Avatar>
+                                        <p className="text-sm font-medium">{formatName(student.name)}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
                         <div className="text-center pt-6">
                              <p className="text-muted-foreground mb-4">Ready to get started? Head to your student dashboard.</p>
