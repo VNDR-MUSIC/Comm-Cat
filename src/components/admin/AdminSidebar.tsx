@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarFooter
 } from "@/components/ui/sidebar"
-import { University, LayoutDashboard, BookOpen, Users, Handshake, LogOut, UserCircle, Settings } from "lucide-react"
+import { University, LayoutDashboard, BookOpen, Users, Handshake, LogOut, UserCircle, Settings, Folder } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 
@@ -19,6 +19,7 @@ const navItems = [
     { href: "/admin/users", icon: <Users />, label: "Users" },
     { href: "/admin/sponsorships", icon: <Handshake />, label: "Sponsorships" },
     { href: "/admin/courses", icon: <BookOpen />, label: "Courses" },
+    { href: "/admin/resources", icon: <Folder />, label: "Resources" },
 ]
 
 export function AdminSidebar() {

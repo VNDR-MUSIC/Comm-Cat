@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle, FileText, Download, PlayCircle, Loader2, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, useDoc } from '@/firebase';
-import { collection, query, where, serverTimestamp, doc } from 'firebase/firestore';
-import resourcesData from '@/data/resources.json';
+import { collection, query, where, serverTimestamp, doc, getDocs } from 'firebase/firestore';
+import { useEffect, useMemo, useState } from 'react';
 
 interface LessonData {
     id: string;
@@ -57,6 +57,8 @@ export default function LessonPage() {
     const { user } = useUser();
     const firestore = useFirestore();
 
+    const [lessonResources, setLessonResources] = useState<Resource[]>([]);
+
     const lessonDocRef = useMemoFirebase(() => {
         if (!firestore) return null;
         return doc(firestore, `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`);
@@ -70,10 +72,26 @@ export default function LessonPage() {
     const { data: lesson, isLoading: isLessonLoading } = useDoc<LessonData>(lessonDocRef);
     const { data: moduleData, isLoading: isModuleLoading } = useDoc<ModuleData>(moduleDocRef);
     
-    const lessonResources = useMemoFirebase(() => {
-        if (!lesson || !lesson.resourceIds) return [];
-        return resourcesData.resources.filter(res => lesson.resourceIds?.includes(res.id));
-    }, [lesson]) as Resource[];
+    useEffect(() => {
+        if (!firestore || !lesson?.resourceIds || lesson.resourceIds.length === 0) {
+            setLessonResources([]);
+            return;
+        }
+
+        const fetchResources = async () => {
+            const resourcesQuery = query(
+                collection(firestore, 'resources'), 
+                where('__name__', 'in', lesson.resourceIds)
+            );
+            const querySnapshot = await getDocs(resourcesQuery);
+            const resources = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Resource));
+            setLessonResources(resources);
+        };
+
+        fetchResources();
+
+    }, [firestore, lesson]);
+
 
     const progressQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
