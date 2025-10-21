@@ -421,6 +421,55 @@
         "lessonId",
         "completedAt"
       ]
+    },
+     "Sponsorship": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Sponsorship",
+      "type": "object",
+      "description": "Represents a sponsorship application submitted by an individual or organization.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The full name of the sponsor."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the sponsor.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the sponsor (optional)."
+        },
+        "sponsorshipType": {
+          "type": "string",
+          "description": "The type of sponsorship.",
+          "enum": ["individual", "corporate"]
+        },
+        "organizationName": {
+          "type": "string",
+          "description": "The name of the organization, if corporate sponsorship."
+        },
+        "sponsorshipLevel": {
+          "type": "string",
+          "description": "The selected sponsorship level or custom amount."
+        },
+        "motivation": {
+          "type": "string",
+          "description": "The sponsor's motivation for supporting the academy (optional)."
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "The timestamp when the sponsorship application was submitted."
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "sponsorshipType",
+        "sponsorshipLevel",
+        "createdAt"
+      ]
     }
   },
   "auth": {
@@ -658,10 +707,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/sponsorships/{sponsorshipId}",
+        "definition": {
+          "entityName": "Sponsorship",
+          "schema": {
+            "$ref": "#/backend/entities/Sponsorship"
+          },
+          "description": "Stores sponsorship applications from individuals and organizations. Accessible only by admins.",
+          "params": [
+            {
+              "name": "sponsorshipId",
+              "description": "The unique identifier for the sponsorship application."
+            }
+          ]
+        }
       }
     ],
     "reasoning": "The Firestore structure is designed to support the Catalyst Academy platform, focusing on courses, user progress, and community interaction. It emphasizes authorization independence and clear security rules. User-specific data (progress, certificates) is stored under the `/users/{userId}` path for private access. Course-related data (courses, modules, lessons, resources) is stored in top-level collections, enabling efficient listing and querying. Discussion threads and replies are nested under modules to maintain context and facilitate moderation. The structure uses denormalization where necessary to avoid complex security rules that require `get()` calls.\n\n**Authorization Independence:** User-specific data like `UserCourseProgress`, `ModuleProgress`, and `Certificate` are nested under `/users/{userId}`. This inherently ties the data's access control to the user's ID, removing the need for `get()` calls in security rules. For collaborative content like `DiscussionThread` and `DiscussionReply`, the `creatorId` field is used, which, although not strictly a membership map, allows simple checks against `request.auth.uid` for creation and modification.\n\n**QAPs (Rules are not Filters):** Segregation is used extensively. User data is separated from course content. Private user data resides under `/users/{userId}`, ensuring that listing operations are always secure. Public course content is stored in top-level collections, and its access is controlled based on user authentication (e.g., only authenticated users can access certain course details)."
   }
 }
-
-    

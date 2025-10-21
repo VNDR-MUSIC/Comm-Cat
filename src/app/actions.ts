@@ -1,3 +1,4 @@
+
 "use server";
 
 import { moderateDiscussionBoard } from "@/ai/flows/moderate-discussion-board";
@@ -5,7 +6,6 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { initializeFirebase } from "@/firebase";
-import { getAuth } from "firebase/auth";
 
 const postSchema = z.object({
   post: z.string().min(10, { message: "Your post must be at least 10 characters long to be meaningful." }),
@@ -87,4 +87,75 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
   }
 }
 
-    
+const sponsorshipSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters long.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  phone: z.string().optional(),
+  sponsorshipType: z.enum(['individual', 'corporate']),
+  organizationName: z.string().optional(),
+  sponsorshipLevel: z.string().min(1, { message: 'Please select a sponsorship level.' }),
+  motivation: z.string().optional(),
+}).refine(data => data.sponsorshipType !== 'corporate' || (data.sponsorshipType === 'corporate' && data.organizationName), {
+  message: 'Organization name is required for corporate sponsorships.',
+  path: ['organizationName'],
+});
+
+export type SponsorshipState = {
+    errors?: {
+        name?: string[];
+        email?: string[];
+        organizationName?: string[];
+        sponsorshipLevel?: string[];
+    };
+    message?: string | null;
+    success: boolean;
+};
+
+
+export async function submitSponsorship(prevState: SponsorshipState, formData: FormData): Promise<SponsorshipState> {
+  const validatedFields = sponsorshipSchema.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    sponsorshipType: formData.get('sponsorshipType'),
+    organizationName: formData.get('organizationName'),
+    sponsorshipLevel: formData.get('sponsorshipLevel'),
+    motivation: formData.get('motivation'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Please correct the errors below.',
+      success: false,
+    };
+  }
+
+  const { firestore } = initializeFirebase();
+  const { name, email, phone, sponsorshipType, organizationName, sponsorshipLevel, motivation } = validatedFields.data;
+
+  try {
+    await addDoc(collection(firestore, 'sponsorships'), {
+      name,
+      email,
+      phone,
+      sponsorshipType,
+      organizationName,
+      sponsorshipLevel,
+      motivation,
+      createdAt: serverTimestamp(),
+    });
+
+    return {
+      success: true,
+      message: 'Your sponsorship application has been submitted!',
+    };
+  } catch (error) {
+    console.error('Error submitting sponsorship:', error);
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again.',
+    };
+  }
+}
+
