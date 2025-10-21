@@ -2,19 +2,24 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
+import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, Loader2, BookOpen } from 'lucide-react';
+import { ArrowLeft, Loader2, BookOpen, ChevronRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-
+import { AddModuleDialog } from './AddModuleDialog';
 
 interface CourseData {
   title: string;
   description: string;
   duration: string;
+}
+
+interface ModuleData {
+    id: string;
+    title: string;
 }
 
 export default function CourseDetailPage() {
@@ -26,8 +31,16 @@ export default function CourseDetailPage() {
         if (!firestore || !courseId) return null;
         return doc(firestore, `courses/${courseId}`);
     }, [firestore, courseId]);
+    
+    const modulesQuery = useMemoFirebase(() => {
+        if (!firestore || !courseId) return null;
+        return query(collection(firestore, `courses/${courseId}/modules`), orderBy('title', 'asc'));
+    }, [firestore, courseId]);
 
-    const { data: course, isLoading } = useDoc<CourseData>(courseDocRef);
+    const { data: course, isLoading: isCourseLoading } = useDoc<CourseData>(courseDocRef);
+    const { data: modules, isLoading: areModulesLoading } = useCollection<ModuleData>(modulesQuery);
+
+    const isLoading = isCourseLoading || areModulesLoading;
 
     if (isLoading) {
         return (
@@ -98,16 +111,29 @@ export default function CourseDetailPage() {
                                 <CardTitle>Modules</CardTitle>
                                 <CardDescription>The modules that make up this course.</CardDescription>
                             </div>
-                            <Button>Add New Module</Button>
+                           <AddModuleDialog courseId={courseId} />
                         </CardHeader>
                         <CardContent>
-                           <div className="flex flex-col items-center justify-center text-center py-12 border-2 border-dashed rounded-lg">
+                           {modules && modules.length > 0 ? (
+                               <div className="border rounded-md">
+                                   {modules.map((module, index) => (
+                                        <div key={module.id} className={`flex items-center justify-between p-4 ${index < modules.length - 1 ? 'border-b' : ''}`}>
+                                            <p className="font-medium">{module.title}</p>
+                                            <Button variant="ghost" size="icon">
+                                                <ChevronRight className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                   ))}
+                               </div>
+                           ) : (
+                             <div className="flex flex-col items-center justify-center text-center py-12 border-2 border-dashed rounded-lg">
                                 <BookOpen className="w-16 h-16 text-muted-foreground mb-4" />
                                 <h3 className="text-xl font-bold">No Modules Yet</h3>
                                 <p className="text-muted-foreground mt-2">
                                     Click "Add New Module" to start building your course.
                                 </p>
                             </div>
+                           )}
                         </CardContent>
                     </Card>
                 </div>

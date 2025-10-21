@@ -4,7 +4,7 @@
 import { moderateDiscussionBoard } from "@/ai/flows/moderate-discussion-board";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
+import { getFirestore, collection, addDoc, serverTimestamp, doc, updateDoc, arrayUnion } from 'firebase/firestore/lite';
 import { initializeFirebase } from "@/firebase";
 import { redirect } from "next/navigation";
 
@@ -207,4 +207,60 @@ export async function createCourse(prevState: CourseState, formData: FormData): 
 
   revalidatePath("/admin/courses");
   redirect("/admin/courses");
+}
+
+const moduleSchema = z.object({
+  title: z.string().min(5, { message: "Title must be at least 5 characters long." }),
+  courseId: z.string(),
+});
+
+export type ModuleState = {
+  errors?: {
+    title?: string[];
+  };
+  message?: string | null;
+  success: boolean;
+};
+
+export async function addModuleToCourse(prevState: ModuleState, formData: FormData): Promise<ModuleState> {
+  const validatedFields = moduleSchema.safeParse({
+    title: formData.get("title"),
+    courseId: formData.get("courseId"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      success: false,
+    };
+  }
+
+  const { firestore } = initializeFirebase();
+  const { title, courseId } = validatedFields.data;
+  
+  try {
+    // 1. Add the new module to the subcollection
+    const moduleCollectionRef = collection(firestore, `courses/${courseId}/modules`);
+    const newModuleDocRef = await addDoc(moduleCollectionRef, {
+      title,
+      courseId,
+      lessons: [],
+    });
+
+    // 2. Update the parent course document with the new module's ID
+    const courseDocRef = doc(firestore, "courses", courseId);
+    await updateDoc(courseDocRef, {
+      modules: arrayUnion(newModuleDocRef.id),
+    });
+
+    revalidatePath(`/admin/courses/${courseId}`);
+    return { success: true, message: "Module added successfully!" };
+
+  } catch (error) {
+    console.error("Error adding module:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred while adding the module.",
+    };
+  }
 }
