@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { SubmitButton } from '@/components/shared/SubmitButton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
-import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
+import { AlertTriangle, Loader2 } from 'lucide-react';
+import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, collection, query, orderBy } from 'firebase/firestore';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
@@ -25,6 +25,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
+import { Checklist, type ChecklistOption } from '@/components/shared/Checklist';
 
 interface LessonData {
   title: string;
@@ -32,6 +33,12 @@ interface LessonData {
   activityType: string;
   description?: string;
   videoUrl?: string;
+  resourceIds?: string[];
+}
+
+interface ResourceData {
+    id: string;
+    title: string;
 }
 
 export default function EditLessonPage() {
@@ -50,7 +57,13 @@ export default function EditLessonPage() {
         return doc(firestore, `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`);
     }, [firestore, courseId, moduleId, lessonId]);
 
-    const { data: lesson, isLoading } = useDoc<LessonData>(lessonDocRef);
+    const resourcesQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'resources'), orderBy('title', 'asc'));
+    }, [firestore]);
+
+    const { data: lesson, isLoading: isLessonLoading } = useDoc<LessonData>(lessonDocRef);
+    const { data: resources, isLoading: areResourcesLoading } = useCollection<ResourceData>(resourcesQuery);
 
     const initialState: LessonState = { message: null, errors: {}, success: false };
     const [state, dispatch] = useFormState(updateLesson, initialState);
@@ -60,6 +73,9 @@ export default function EditLessonPage() {
     const [activityType, setActivityType] = useState('');
     const [description, setDescription] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
+    const [selectedResourceIds, setSelectedResourceIds] = useState<string[]>([]);
+    
+    const resourceOptions: ChecklistOption[] = resources?.map(r => ({ id: r.id, label: r.title })) || [];
 
     useEffect(() => {
         if (lesson) {
@@ -68,6 +84,7 @@ export default function EditLessonPage() {
             setActivityType(lesson.activityType);
             setDescription(lesson.description || '');
             setVideoUrl(lesson.videoUrl || '');
+            setSelectedResourceIds(lesson.resourceIds || []);
         }
     }, [lesson]);
 
@@ -82,7 +99,7 @@ export default function EditLessonPage() {
     }, [state, toast, router, courseId, moduleId]);
 
 
-    if (isLoading) {
+    if (isLessonLoading || areResourcesLoading) {
         return (
             <div className="p-4 sm:p-6 lg:p-8">
                  <header className="mb-8">
@@ -140,6 +157,7 @@ export default function EditLessonPage() {
                         <input type="hidden" name="courseId" value={courseId} />
                         <input type="hidden" name="moduleId" value={moduleId} />
                         <input type="hidden" name="lessonId" value={lessonId} />
+                        <input type="hidden" name="resourceIds" value={JSON.stringify(selectedResourceIds)} />
                         {state.message && !state.success &&(
                             <Alert variant="destructive">
                                 <AlertTriangle className="h-4 w-4" />
@@ -186,6 +204,18 @@ export default function EditLessonPage() {
                                 </SelectContent>
                             </Select>
                             {state.errors?.activityType && <p className="text-sm text-destructive">{state.errors.activityType[0]}</p>}
+                        </div>
+                         <div className="space-y-2">
+                            <Label>Associated Resources</Label>
+                            {areResourcesLoading ? (
+                                <Loader2 className="animate-spin" />
+                            ) : (
+                                <Checklist
+                                    options={resourceOptions}
+                                    selectedIds={selectedResourceIds}
+                                    onChange={setSelectedResourceIds}
+                                />
+                            )}
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-end gap-4">

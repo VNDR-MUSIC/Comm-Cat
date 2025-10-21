@@ -377,6 +377,7 @@ export async function addLessonToModule(prevState: LessonState, formData: FormDa
 
 const updateLessonSchema = lessonSchema.extend({
   lessonId: z.string(),
+  resourceIds: z.string().transform((val) => JSON.parse(val)),
 });
 
 export async function updateLesson(prevState: LessonState, formData: FormData): Promise<LessonState> {
@@ -389,6 +390,7 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
         courseId: formData.get('courseId'),
         moduleId: formData.get('moduleId'),
         lessonId: formData.get('lessonId'),
+        resourceIds: formData.get('resourceIds'),
     });
 
     if (!validatedFields.success) {
@@ -400,7 +402,7 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
     }
     
     const { firestore } = initializeFirebase();
-    const { title, courseId, moduleId, lessonId, duration, activityType, description, videoUrl } = validatedFields.data;
+    const { title, courseId, moduleId, lessonId, duration, activityType, description, videoUrl, resourceIds } = validatedFields.data;
 
     try {
         const lessonDocRef = doc(firestore, `courses/${courseId}/modules/${moduleId}/lessons`, lessonId);
@@ -410,6 +412,7 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
             activityType,
             description,
             videoUrl,
+            resourceIds,
             updatedAt: serverTimestamp(),
         });
 
