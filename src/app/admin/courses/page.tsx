@@ -1,8 +1,24 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+'use client';
+
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { DataTable } from '@/components/shared/data-table';
+import { columns, type CourseData } from './columns';
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function AdminCoursesPage() {
+    const firestore = useFirestore();
+
+    const coursesQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'courses'), orderBy('title', 'asc'));
+    }, [firestore]);
+
+    const { data: courses, isLoading } = useCollection<CourseData>(coursesQuery);
+
     return (
         <div className="p-4 sm:p-6 lg:p-8">
             <header className="mb-8 flex items-center justify-between">
@@ -19,13 +35,19 @@ export default function AdminCoursesPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Coming Soon!</CardTitle>
+                    <CardTitle>All Courses</CardTitle>
                     <CardDescription>
-                        This section will allow you to manage all aspects of your courses, modules, and lessons.
+                        A list of all courses offered on the Catalyst Academy platform.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>Full course management functionality is under construction.</p>
+                     {isLoading ? (
+                         <div className="flex justify-center items-center h-64">
+                            <Loader2 className="h-8 w-8 animate-spin text-accent" />
+                         </div>
+                    ) : (
+                        <DataTable columns={columns} data={courses || []} filterColumnId="title" filterPlaceholder="Filter by title..." />
+                    )}
                 </CardContent>
             </Card>
         </div>
