@@ -3,8 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Briefcase, Building, Mail, MapPin, Mic, Phone, Link as LinkIcon, Award, Users, BookOpen } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function FounderPage() {
+  const founderImage = PlaceHolderImages.find(p => p.id === 'facilitator-1');
+  
   const founder = {
     name: 'Dr. Warren O. Crabb',
     titles: 'Founder | Executive Producer | Media Personality',
@@ -12,7 +15,8 @@ export default function FounderPage() {
     phone: '954-288-8982',
     email: 'doctorcrabb@tcsup.c',
     website: 'thedrproject.com',
-    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYWxlJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYxMTEzMzMxfDA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageUrl: founderImage?.imageUrl || '',
+    imageHint: founderImage?.imageHint || 'male portrait',
     summary:
       'Dynamic and visionary media leader with a strong background in television, radio, and community-based programming. Founder of Transcontinental Society Unlimited Productions, LLC and The Doctor Project Corporation, (a non-profit organization). Executive Producer/Host of The Doctor Project! TV Show. Committed to creating platforms that amplify underserved voices, including returning citizens, through powerful storytelling and advocacy. Experienced Radio Personality with Black Power 96.3 FM, delivering impactful radio content centered on justice, health, and empowerment. Recognition by local organizations for reentry advocacy and creative leadership.',
     competencies: [
@@ -46,28 +50,28 @@ export default function FounderPage() {
   return (
     <div className="bg-secondary/30 min-h-dvh">
       <div className="container mx-auto px-4 md:px-6 py-16">
-        <Card className="max-w-4xl mx-auto shadow-2xl overflow-hidden">
+        <Card className="max-w-4xl mx-auto shadow-2xl overflow-hidden border-0">
           <div className="relative h-48 bg-gradient-to-r from-yellow-400 via-blue-500 to-cyan-400">
             <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2">
+                <Avatar className="w-32 h-32 border-4 border-background shadow-lg">
+                <AvatarImage src={founder.imageUrl} alt={founder.name} data-ai-hint={founder.imageHint} />
+                <AvatarFallback>{founder.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                </Avatar>
+            </div>
           </div>
-          <CardHeader className="relative -mt-20 flex flex-col md:flex-row items-center gap-8 p-8">
-            <Avatar className="w-32 h-32 border-4 border-background shadow-lg">
-              <AvatarImage src={founder.imageUrl} alt={founder.name} data-ai-hint="male portrait" />
-              <AvatarFallback>{founder.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-            </Avatar>
-            <div className="text-center md:text-left">
+          <div className="pt-20 pb-8 px-6 text-center">
               <h1 className="text-4xl font-headline font-bold text-foreground">{founder.name}</h1>
               <p className="text-lg font-medium text-accent">{founder.titles}</p>
-              <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 mt-2 text-sm text-muted-foreground">
+              <div className="flex flex-wrap justify-center md:justify-center gap-x-4 gap-y-2 mt-2 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {founder.location}</span>
               </div>
-            </div>
-          </CardHeader>
+          </div>
           <CardContent className="p-8 pt-0">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Left Column: Contact & Competencies */}
               <div className="md:col-span-1 space-y-8">
-                <Card className="bg-secondary/30">
+                <Card className="bg-card">
                   <CardHeader>
                     <CardTitle className="font-headline text-xl">Contact Information</CardTitle>
                   </CardHeader>
@@ -87,7 +91,7 @@ export default function FounderPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-secondary/30">
+                <Card className="bg-card">
                   <CardHeader>
                     <CardTitle className="font-headline text-xl">Core Competencies</CardTitle>
                   </CardHeader>
@@ -106,15 +110,16 @@ export default function FounderPage() {
 
               {/* Right Column: Summary & Experience */}
               <div className="md:col-span-2 space-y-8">
-                <Card className="bg-secondary/30">
+                <Card className="bg-card">
                   <CardHeader>
-                    <CardTitle className="font-headline text-xl">Professional Summary</CardTitle>                  </CardHeader>
+                    <CardTitle className="font-headline text-xl">Professional Summary</CardTitle>                  
+                  </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground whitespace-pre-wrap">{founder.summary}</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-secondary/30">
+                <Card className="bg-card">
                   <CardHeader>
                     <CardTitle className="font-headline text-xl">Professional Experience</CardTitle>
                   </CardHeader>
