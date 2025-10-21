@@ -38,7 +38,7 @@ async function getAtRiskStudents() {
 
         const atRiskStudents = allUsers.filter(user => !user.isAdmin && !activeStudentIds.has(user.id));
         
-        return at-risk-students;
+        return atRiskStudents;
 
     } catch (error) {
         console.error("Error fetching students at risk:", error);
