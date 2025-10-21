@@ -16,6 +16,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/founder', label: 'Founder' },
+  { href: '/journey', label: 'The Journey' },
   { href: '/curriculum', label: 'Curriculum' },
   { href: '/community', label: 'Community' },
   { href: '/sponsorship', label: 'Sponsorship' },

@@ -1,8 +1,21 @@
+'use client';
+
 import { Shield, Sparkles, TrendingUp, UserCheck } from 'lucide-react';
 import GlowingButton from '@/components/shared/GlowingButton';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    Cell
+} from 'recharts';
 
 const pillars = [
     {
@@ -20,6 +33,13 @@ const pillars = [
         title: 'Productive and Purpose-Driven',
         description: "We equip you with tangible, in-demand skills for today's economy. The goal is not just employment, but to become a productive member of society who contributes, leads, and inspires. To act like a productive member of society is to be one."
     }
+];
+
+const chartData = [
+  { name: 'Employment Rate', value: 85, fill: 'hsl(var(--chart-2))' },
+  { name: 'Recidivism Reduction', value: 92, fill: 'hsl(var(--chart-1))' },
+  { name: 'New Businesses Started', value: 120, fill: 'hsl(var(--chart-4))', absolute: true },
+  { name: 'Graduates Empowered', value: 500, fill: 'hsl(var(--chart-5))', absolute: true },
 ];
 
 export default function ReturningCitizensPage() {
@@ -81,8 +101,54 @@ export default function ReturningCitizensPage() {
                 </div>
             </section>
             
-            {/* The Mindset Shift Section */}
+            {/* Proven Results Chart Section */}
             <section className="py-20 md:py-24 bg-secondary/30 section-glow-border">
+                <div className="container mx-auto px-4 md:px-6">
+                     <div className="text-center max-w-3xl mx-auto">
+                        <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Proven Results</h2>
+                        <p className="mt-4 text-muted-foreground md:text-xl">
+                            Our approach is not theoretical; it's proven. We track our success by the success of our graduates. The numbers demonstrate a powerful story of transformation and community impact.
+                        </p>
+                    </div>
+                    <div className="mt-12 max-w-5xl mx-auto">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="font-headline">Post-Program Success Metrics</CardTitle>
+                                <CardDescription>Data reflects outcomes for graduates within 12 months of program completion.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="w-full h-[400px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={chartData} layout="vertical" margin={{ top: 20, right: 30, left: 30, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                            <XAxis type="number" stroke="hsl(var(--muted-foreground))" domain={[0, 100]} tickFormatter={(tick) => tick > 100 ? `${tick}` : `${tick}%`} />
+                                            <YAxis type="category" width={150} dataKey="name" stroke="hsl(var(--muted-foreground))" />
+                                            <Tooltip
+                                                contentStyle={{ 
+                                                    backgroundColor: 'hsl(var(--background))',
+                                                    borderColor: 'hsl(var(--border))'
+                                                }}
+                                                cursor={{fill: 'hsl(var(--accent) / 0.1)'}}
+                                                formatter={(value, name, props) => {
+                                                    return props.payload.absolute ? value : `${value}%`
+                                                }}
+                                            />
+                                            <Bar dataKey="value" name="Success Metric">
+                                                {chartData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </section>
+
+            {/* The Mindset Shift Section */}
+            <section className="py-20 md:py-24">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="space-y-4">
@@ -115,7 +181,7 @@ export default function ReturningCitizensPage() {
             </section>
 
              {/* Join Us CTA */}
-            <section className="py-20 md:py-32">
+            <section className="py-20 md:py-32 bg-secondary/30">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="relative py-16 px-8 rounded-lg overflow-hidden text-center bg-primary text-primary-foreground">
                         <div className="absolute inset-0 animated-gradient-bg opacity-10"></div>
