@@ -108,8 +108,7 @@ export default function FounderPage() {
               <div className="md:col-span-2 space-y-8">
                 <Card className="bg-secondary/30">
                   <CardHeader>
-                    <CardTitle className="font-headline text-xl">Professional Summary</CardTitle>
-                  </CardHeader>
+                    <CardTitle className="font-headline text-xl">Professional Summary</CardTitle>                  </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground whitespace-pre-wrap">{founder.summary}</p>
                   </CardContent>
