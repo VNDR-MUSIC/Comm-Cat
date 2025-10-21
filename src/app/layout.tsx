@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <Script src="https://app.aminos.ai/js/chat_plugin.js" data-bot-id="55174" strategy="beforeInteractive" />
+        <Script src="https://app.aminos.ai/js/chat_plugin.js" data-bot-id="55174" data-position="right" strategy="beforeInteractive" />
       </head>
       <body className={cn("font-body antialiased", fontHeadline.variable, fontBody.variable)}>
         <FirebaseClientProvider>
