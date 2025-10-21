@@ -37,7 +37,7 @@ export default function EnrollPage() {
                                 We've received your application. Our founder, Dr. Warren O. Crabb, personally reviews every submission with the care and attention it deserves. You will receive an email regarding next steps within the next 7-10 business days. Your journey is important to us.
                             </p>
                             <GlowingButton asChild>
-                                <Link href="/dashboard">Return to Home</Link>
+                                <Link href="/dashboard">Go to Dashboard</Link>
                             </GlowingButton>
                         </div>
                     </div>
