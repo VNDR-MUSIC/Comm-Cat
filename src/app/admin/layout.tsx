@@ -8,6 +8,7 @@ import { doc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import Footer from '@/components/layout/Footer';
 
 
 interface UserProfile {
@@ -52,11 +53,12 @@ export default function AdminLayout({
   return (
       <SidebarProvider>
           <AdminSidebar />
-          <SidebarInset>
-              <div className="min-h-dvh">
-                  {children}
-              </div>
-          </SidebarInset>
+          <div className="flex flex-col min-h-dvh">
+            <SidebarInset>
+                {children}
+            </SidebarInset>
+            <Footer />
+          </div>
       </SidebarProvider>
   );
 }

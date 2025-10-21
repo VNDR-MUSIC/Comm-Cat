@@ -5,8 +5,6 @@ import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
@@ -40,16 +38,8 @@ export default function RootLayout({
       </head>
       <body className={cn("font-body antialiased", fontHeadline.variable, fontBody.variable)}>
         <FirebaseClientProvider>
-          <div className="flex flex-col min-h-dvh bg-background text-foreground">
-            <div className="relative z-50">
-                <Header />
-            </div>
-            <main className="flex-1">{children}</main>
-            <div className="relative z-40">
-                <Footer />
-            </div>
-          </div>
-          <Toaster />
+            {children}
+            <Toaster />
         </FirebaseClientProvider>
       </body>
     </html>

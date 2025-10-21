@@ -25,7 +25,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
+    <Sidebar variant="inset">
       <SidebarHeader>
         <Link href="/admin" className="flex items-center gap-2" prefetch={false}>
           <University className="h-8 w-8 text-accent" />
