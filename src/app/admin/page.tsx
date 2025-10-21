@@ -1,8 +1,8 @@
 
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Handshake, Users, BookOpen, Activity } from "lucide-react";
 import Link from "next/link";
+import { StudentsAtRisk } from "@/components/admin/StudentsAtRisk";
 
 const overviewCards = [
     { title: "Users", icon: <Users />, value: "Manage all student and facilitator accounts.", href: "/admin/users" },
@@ -39,7 +39,8 @@ export default function AdminDashboardPage() {
                 ))}
             </div>
 
-             <div className="mt-8">
+             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                 <StudentsAtRisk />
                  <Card>
                     <CardHeader>
                         <CardTitle>Recent Activity</CardTitle>
