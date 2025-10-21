@@ -375,6 +375,7 @@ export async function addLessonToModule(prevState: LessonState, formData: FormDa
 
 const updateLessonSchema = lessonSchema.extend({
   lessonId: z.string(),
+  htmlCourseUrl: z.string().optional(),
   resourceIds: z.string().transform((val) => JSON.parse(val)),
 });
 
@@ -385,6 +386,7 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
         activityType: formData.get('activityType'),
         description: formData.get('description'),
         videoUrl: formData.get('videoUrl'),
+        htmlCourseUrl: formData.get('htmlCourseUrl'),
         courseId: formData.get('courseId'),
         moduleId: formData.get('moduleId'),
         lessonId: formData.get('lessonId'),
@@ -400,7 +402,7 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
     }
     
     const { firestore } = initializeFirebase();
-    const { title, courseId, moduleId, lessonId, duration, activityType, description, videoUrl, resourceIds } = validatedFields.data;
+    const { title, courseId, moduleId, lessonId, duration, activityType, description, videoUrl, htmlCourseUrl, resourceIds } = validatedFields.data;
 
     try {
         const lessonDocRef = doc(firestore, `courses/${courseId}/modules/${moduleId}/lessons`, lessonId);
@@ -410,6 +412,7 @@ export async function updateLesson(prevState: LessonState, formData: FormData): 
             activityType,
             description,
             videoUrl,
+            htmlCourseUrl,
             resourceIds,
             updatedAt: serverTimestamp(),
         });
@@ -492,5 +495,7 @@ export async function createResource(prevState: any, formData: FormData): Promis
   revalidatePath("/admin/resources");
   redirect("/admin/resources");
 }
+
+    
 
     

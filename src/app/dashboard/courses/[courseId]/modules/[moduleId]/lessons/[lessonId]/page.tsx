@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, FileText, Download, PlayCircle, Loader2, Link as LinkIcon } from 'lucide-react';
+import { CheckCircle, FileText, Download, PlayCircle, Loader2, Link as LinkIcon, MonitorPlay } from 'lucide-react';
 import Link from 'next/link';
 import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, useDoc } from '@/firebase';
 import { collection, query, where, serverTimestamp, doc, getDocs } from 'firebase/firestore';
@@ -15,6 +15,7 @@ interface LessonData {
     id: string;
     title: string;
     videoUrl?: string;
+    htmlCourseUrl?: string;
     description: string;
     moduleId: string;
     resourceIds?: string[];
@@ -150,6 +151,8 @@ export default function LessonPage() {
         )
     }
 
+    const hasContent = lesson.htmlCourseUrl || lesson.videoUrl;
+
     return (
         <div className="p-4 sm:p-6 lg:p-8 bg-secondary/30 min-h-dvh">
             <div className="max-w-4xl mx-auto">
@@ -164,11 +167,20 @@ export default function LessonPage() {
                     <div className="md:col-span-2 space-y-8">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Lesson Video</CardTitle>
+                                <CardTitle>Lesson Content</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <AspectRatio ratio={16 / 9} className="bg-muted rounded-md overflow-hidden flex items-center justify-center">
-                                {lesson.videoUrl ? (
+                                {lesson.htmlCourseUrl ? (
+                                     <iframe
+                                        src={lesson.htmlCourseUrl}
+                                        title="Interactive Lesson Content"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        className="w-full h-full"
+                                    ></iframe>
+                                ) : lesson.videoUrl ? (
                                     <iframe
                                         src={lesson.videoUrl}
                                         title="Lesson Video Player"
@@ -179,9 +191,9 @@ export default function LessonPage() {
                                     ></iframe>
                                     ) : (
                                     <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-4">
-                                        <PlayCircle className="w-12 h-12 mb-4" />
-                                        <h3 className="font-bold">Video Coming Soon</h3>
-                                        <p className="text-sm">This lesson's video content is currently in production. Please check back later.</p>
+                                        <MonitorPlay className="w-12 h-12 mb-4" />
+                                        <h3 className="font-bold">Content Coming Soon</h3>
+                                        <p className="text-sm">This lesson's content is currently in production. Please check back later.</p>
                                     </div>
                                 )}
                                 </AspectRatio>
@@ -269,3 +281,5 @@ export default function LessonPage() {
         </div>
     );
 }
+
+    

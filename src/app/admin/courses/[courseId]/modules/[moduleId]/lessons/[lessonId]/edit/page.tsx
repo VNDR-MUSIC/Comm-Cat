@@ -33,6 +33,7 @@ interface LessonData {
   activityType: string;
   description?: string;
   videoUrl?: string;
+  htmlCourseUrl?: string;
   resourceIds?: string[];
 }
 
@@ -73,6 +74,7 @@ export default function EditLessonPage() {
     const [activityType, setActivityType] = useState('');
     const [description, setDescription] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
+    const [htmlCourseUrl, setHtmlCourseUrl] = useState('');
     const [selectedResourceIds, setSelectedResourceIds] = useState<string[]>([]);
     
     const resourceOptions: ChecklistOption[] = resources?.map(r => ({ id: r.id, label: r.title })) || [];
@@ -84,6 +86,7 @@ export default function EditLessonPage() {
             setActivityType(lesson.activityType);
             setDescription(lesson.description || '');
             setVideoUrl(lesson.videoUrl || '');
+            setHtmlCourseUrl(lesson.htmlCourseUrl || '');
             setSelectedResourceIds(lesson.resourceIds || []);
         }
     }, [lesson]);
@@ -114,7 +117,6 @@ export default function EditLessonPage() {
                     <CardContent className="space-y-6">
                         <Skeleton className="h-10 w-full" />
                         <Skeleton className="h-24 w-full" />
-                        <Skeleton className="h-10 w-full" />
                          <Skeleton className="h-10 w-full" />
                     </CardContent>
                     <CardFooter className="flex justify-end gap-4">
@@ -176,7 +178,11 @@ export default function EditLessonPage() {
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="videoUrl">Video URL</Label>
-                            <Input id="videoUrl" name="videoUrl" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="e.g., https://www.youtube.com/embed/..." />
+                            <Input id="videoUrl" name="videoUrl" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="e.g., https://www.youtube.com/embed/... (Use this for video lessons)" />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="htmlCourseUrl">HTML Course URL</Label>
+                            <Input id="htmlCourseUrl" name="htmlCourseUrl" value={htmlCourseUrl} onChange={(e) => setHtmlCourseUrl(e.target.value)} placeholder="e.g., https://my-course.com/index.html (Use this for HTML courses)" />
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="duration">Duration</Label>
@@ -190,6 +196,7 @@ export default function EditLessonPage() {
                                     <SelectValue placeholder="Select activity type" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="HTML Course">HTML Course</SelectItem>
                                     <SelectItem value="Video & Reflection">Video & Reflection</SelectItem>
                                     <SelectItem value="Interactive Workshop">Interactive Workshop</SelectItem>
                                     <SelectItem value="Expert Session">Expert Session</SelectItem>
@@ -229,3 +236,5 @@ export default function EditLessonPage() {
         </div>
     )
 }
+
+    
