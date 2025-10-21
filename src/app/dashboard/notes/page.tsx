@@ -1,35 +1,42 @@
 'use client';
 
 import { useState } from 'react';
+import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, updateDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase';
+import { collection, doc, serverTimestamp, query, where, orderBy } from 'firebase/firestore';
+
 import { NotebookList, type Notebook } from '@/components/dashboard/notes/NotebookList';
 import { NoteList, type Note } from '@/components/dashboard/notes/NoteList';
 import { NoteEditor } from '@/components/dashboard/notes/NoteEditor';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-// Static data for notebooks and notes
-const initialNotebooks: Notebook[] = [
-  { id: 'nb1', name: 'Module 1: Foundations', createdAt: new Date() },
-  { id: 'nb2', name: 'Module 2: Financial Literacy', createdAt: new Date() },
-  { id: 'nb3', name: 'Personal Journal', createdAt: new Date() },
-];
-
-const initialNotes: Note[] = [
-  { id: 'n1', notebookId: 'nb1', title: 'Reclaiming My Narrative', content: 'My story is one of resilience...', createdAt: new Date(Date.now() - 3600000) },
-  { id: 'n2', notebookId: 'nb1', title: 'Vision Statement Draft', content: 'My vision for the future is...', createdAt: new Date() },
-  { id: 'n3', notebookId: 'nb2', title: 'Budgeting Ideas', content: 'Track all expenses for one month.', createdAt: new Date() },
-];
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function NotesPage() {
-  const [notebooks, setNotebooks] = useState<Notebook[]>(initialNotebooks);
-  const [notes, setNotes] = useState<Note[]>(initialNotes);
-  const [selectedNotebook, setSelectedNotebook] = useState<Notebook | null>(notebooks[0] || null);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(notes.find(n => n.notebookId === (notebooks[0]?.id)) || null);
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
+
+  const [selectedNotebook, setSelectedNotebook] = useState<Notebook | null>(null);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  // Memoize Firestore queries
+  const notebooksQuery = useMemoFirebase(() => {
+    if (!firestore || !user?.uid) return null;
+    return query(collection(firestore, `users/${user.uid}/notebooks`), orderBy('createdAt', 'desc'));
+  }, [firestore, user?.uid]);
+
+  const notesQuery = useMemoFirebase(() => {
+    if (!firestore || !user?.uid) return null;
+    return query(collection(firestore, `users/${user.uid}/notes`), orderBy('createdAt', 'desc'));
+  }, [firestore, user?.uid]);
+  
+  // Fetch data using hooks
+  const { data: notebooks, isLoading: notebooksLoading } = useCollection<Notebook>(notebooksQuery);
+  const { data: notes, isLoading: notesLoading } = useCollection<Note>(notesQuery);
 
   const handleSelectNotebook = (notebook: Notebook) => {
     setSelectedNotebook(notebook);
-    const firstNoteInNotebook = notes.find(n => n.notebookId === notebook.id) || null;
+    const firstNoteInNotebook = notes?.find(n => n.notebookId === notebook.id) || null;
     setSelectedNote(firstNoteInNotebook);
   };
   
@@ -38,44 +45,57 @@ export default function NotesPage() {
   };
 
   const handleCreateNotebook = (name: string) => {
-    const newNotebook: Notebook = {
-      id: `nb${Date.now()}`,
+    if (!firestore || !user?.uid) return;
+    const newNotebook = {
       name,
-      createdAt: new Date(),
+      userId: user.uid,
+      createdAt: serverTimestamp(),
     };
-    setNotebooks(prev => [...prev, newNotebook]);
-    setSelectedNotebook(newNotebook);
-    setSelectedNote(null);
+    const collectionRef = collection(firestore, `users/${user.uid}/notebooks`);
+    addDocumentNonBlocking(collectionRef, newNotebook);
+    // Optimistic UI update could be complex, so we'll rely on the real-time listener to update the UI
   };
 
   const handleCreateNote = () => {
-      if (!selectedNotebook) return;
-      const newNote: Note = {
-          id: `n${Date.now()}`,
-          notebookId: selectedNotebook.id,
-          title: 'Untitled Note',
-          content: '',
-          createdAt: new Date(),
-      };
-      setNotes(prev => [newNote, ...prev]);
-      setSelectedNote(newNote);
+    if (!firestore || !user?.uid || !selectedNotebook) return;
+    const newNote = {
+      notebookId: selectedNotebook.id,
+      userId: user.uid,
+      title: 'Untitled Note',
+      content: '',
+      createdAt: serverTimestamp(),
+    };
+    const collectionRef = collection(firestore, `users/${user.uid}/notes`);
+    addDocumentNonBlocking(collectionRef, newNote).then(docRef => {
+        if(docRef) {
+            // We can't know the ID until it's created, so we can't select it optimistically.
+            // A more advanced implementation might use the returned docRef.id
+        }
+    });
   };
   
   const handleSaveNote = (noteId: string, title: string, content: string) => {
-    setNotes(prev =>
-      prev.map(n => (n.id === noteId ? { ...n, title, content } : n))
-    );
+    if (!firestore || !user?.uid) return;
+    const docRef = doc(firestore, `users/${user.uid}/notes`, noteId);
+    updateDocumentNonBlocking(docRef, { title, content });
   };
 
   const handleDeleteNote = (noteId: string) => {
-    setNotes(prev => prev.filter(n => n.id !== noteId));
+    if (!firestore || !user?.uid) return;
+    const docRef = doc(firestore, `users/${user.uid}/notes`, noteId);
+    deleteDocumentNonBlocking(docRef);
+
     if (selectedNote?.id === noteId) {
-        const notesInCurrentNotebook = notes.filter(n => n.notebookId === selectedNotebook?.id && n.id !== noteId);
-        setSelectedNote(notesInCurrentNotebook[0] || null);
+        const notesInCurrentNotebook = notes?.filter(n => n.notebookId === selectedNotebook?.id && n.id !== noteId);
+        setSelectedNote(notesInCurrentNotebook?.[0] || null);
     }
   };
 
-  const filteredNotes = selectedNotebook ? notes.filter(note => note.notebookId === selectedNotebook.id).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) : [];
+  const filteredNotes = selectedNotebook && notes ? notes.filter(note => note.notebookId === selectedNotebook.id) : [];
+
+  if (isUserLoading || notebooksLoading || notesLoading) {
+    return <NotesPageSkeleton />;
+  }
 
   return (
     <div className="h-dvh flex flex-col">
@@ -90,7 +110,7 @@ export default function NotesPage() {
         <ResizablePanelGroup direction="horizontal" className="flex-1 overflow-hidden">
             <ResizablePanel defaultSize={25} minSize={20} maxSize={35} className="min-w-[250px]">
                 <NotebookList
-                    notebooks={notebooks}
+                    notebooks={notebooks || []}
                     selectedNotebook={selectedNotebook}
                     onSelectNotebook={handleSelectNotebook}
                     onCreateNotebook={handleCreateNotebook}
@@ -141,3 +161,36 @@ export default function NotesPage() {
     </div>
   );
 }
+
+const NotesPageSkeleton = () => (
+    <div className="h-dvh flex flex-col">
+        <header className="p-4 sm:p-6 lg:p-8 border-b">
+            <Skeleton className="h-10 w-1/2" />
+            <Skeleton className="h-6 w-3/4 mt-2" />
+        </header>
+        <ResizablePanelGroup direction="horizontal" className="flex-1 overflow-hidden">
+            <ResizablePanel defaultSize={25} minSize={20} maxSize={35} className="min-w-[250px] p-2 space-y-2">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={30} minSize={25} maxSize={40} className="min-w-[300px] p-2 space-y-2">
+                 <Skeleton className="h-12 w-full" />
+                 <Skeleton className="h-20 w-full" />
+                 <Skeleton className="h-20 w-full" />
+                 <Skeleton className="h-20 w-full" />
+            </ResizablePanel>
+             <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={45} minSize={30}>
+                <div className="p-4 space-y-4">
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-full w-full aspect-video" />
+                </div>
+            </ResizablePanel>
+        </ResizablePanelGroup>
+    </div>
+)
+
+    

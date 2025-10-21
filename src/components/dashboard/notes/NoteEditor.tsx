@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Trash2, Save, Undo } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import type { Note } from './NoteList';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -32,6 +32,15 @@ interface NoteEditorProps {
 function useDebounce(callback: (...args: any[]) => void, delay: number) {
     const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
+    useEffect(() => {
+        // Cleanup the timeout if the component unmounts
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+
     return (...args: any[]) => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -49,11 +58,9 @@ export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
   const { toast } = useToast();
 
   const debouncedSave = useDebounce(() => {
-    onSave(note.id, title, content);
-     toast({
-        title: "Note Saved",
-        description: `"${title || 'Untitled Note'}" has been saved automatically.`,
-    });
+    // This function will be called by the effect, but we need to pass the current values
+    // To do this, we'll read from the state inside the debounced function, but we can't pass them as params
+    // Let's adjust the onSave call to get the latest state
   }, 1500);
 
   useEffect(() => {
@@ -62,19 +69,24 @@ export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
     setContent(note.content);
   }, [note]);
   
-  useEffect(() => {
-    if (title !== note.title || content !== note.content) {
-        debouncedSave();
-    }
-  }, [title, content, note, debouncedSave]);
+  const handleSave = useCallback(onSave, [onSave, note.id]);
 
-  const handleManualSave = () => {
-    onSave(note.id, title, content);
-    toast({
-        title: "Note Saved",
-        description: `"${title || 'Untitled Note'}" has been saved.`,
-    });
-  }
+  useEffect(() => {
+    const handler = setTimeout(() => {
+        if (title !== note.title || content !== note.content) {
+            handleSave(note.id, title, content);
+             toast({
+                title: "Note Autosaved",
+                description: `"${title || 'Untitled Note'}" has been saved.`,
+            });
+        }
+    }, 1500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [title, content, note, handleSave, toast]);
+
   
   const handleDelete = () => {
     onDelete(note.id);
@@ -106,7 +118,7 @@ export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone. This will permanently delete your note.
-                    </AlertDialogDescription>
+                    </CADlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -125,3 +137,5 @@ export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
     </div>
   );
 }
+
+    

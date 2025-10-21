@@ -368,6 +368,56 @@
         "issueDate",
         "certificateUrl"
       ]
+    },
+    "Notebook": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Notebook",
+      "type": "object",
+      "description": "A user's notebook for storing notes.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the notebook."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns the notebook."
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "The timestamp when the notebook was created."
+        }
+      },
+      "required": ["name", "userId", "createdAt"]
+    },
+    "Note": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Note",
+      "type": "object",
+      "description": "A single note within a notebook.",
+      "properties": {
+        "notebookId": {
+          "type": "string",
+          "description": "The ID of the notebook this note belongs to."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns the note."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the note."
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the note."
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "The timestamp when the note was created."
+        }
+      },
+      "required": ["notebookId", "userId", "title", "createdAt"]
     }
   },
   "auth": {
@@ -585,8 +635,49 @@
             }
           ]
         }
+      },
+      {
+        "path": "/users/{userId}/notebooks/{notebookId}",
+        "definition": {
+          "entityName": "Notebook",
+          "schema": {
+            "$ref": "#/backend/entities/Notebook"
+          },
+          "description": "Stores user's notebooks. Accessible only by the user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "notebookId",
+              "description": "The unique identifier for the notebook."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/notes/{noteId}",
+        "definition": {
+          "entityName": "Note",
+          "schema": {
+            "$ref": "#/backend/entities/Note"
+          },
+          "description": "Stores user's notes. Accessible only by the user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "noteId",
+              "description": "The unique identifier for the note."
+            }
+          ]
+        }
       }
     ],
     "reasoning": "The Firestore structure is designed to support the Catalyst Academy platform, focusing on courses, user progress, and community interaction. It emphasizes authorization independence and clear security rules. User-specific data (progress, certificates) is stored under the `/users/{userId}` path for private access. Course-related data (courses, modules, lessons, resources) is stored in top-level collections, enabling efficient listing and querying. Discussion threads and replies are nested under modules to maintain context and facilitate moderation. The structure uses denormalization where necessary to avoid complex security rules that require `get()` calls.\n\n**Authorization Independence:** User-specific data like `UserCourseProgress`, `ModuleProgress`, and `Certificate` are nested under `/users/{userId}`. This inherently ties the data's access control to the user's ID, removing the need for `get()` calls in security rules. For collaborative content like `DiscussionThread` and `DiscussionReply`, the `creatorId` field is used, which, although not strictly a membership map, allows simple checks against `request.auth.uid` for creation and modification.\n\n**QAPs (Rules are not Filters):** Segregation is used extensively. User data is separated from course content. Private user data resides under `/users/{userId}`, ensuring that listing operations are always secure. Public course content is stored in top-level collections, and its access is controlled based on user authentication (e.g., only authenticated users can access certain course details)."
   }
 }
+    

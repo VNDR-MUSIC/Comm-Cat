@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button';
 import { PlusCircle, Book } from 'lucide-react';
 import { CreateNotebookDialog } from './CreateNotebookDialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Timestamp } from 'firebase/firestore';
+
 
 export interface Notebook {
   id: string;
   name: string;
-  createdAt: Date;
+  createdAt: Timestamp;
+  userId: string;
 }
 
 interface NotebookListProps {
@@ -28,8 +31,6 @@ export function NotebookList({
 }: NotebookListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  const sortedNotebooks = [...notebooks].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
   return (
     <div className="flex flex-col h-full bg-secondary/30">
       <div className="p-4 border-b flex items-center justify-between">
@@ -40,7 +41,7 @@ export function NotebookList({
       </div>
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-1">
-          {sortedNotebooks.map(notebook => (
+          {notebooks.map(notebook => (
             <button
               key={notebook.id}
               onClick={() => onSelectNotebook(notebook)}
@@ -65,3 +66,5 @@ export function NotebookList({
     </div>
   );
 }
+
+    

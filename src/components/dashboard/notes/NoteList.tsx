@@ -3,13 +3,15 @@
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNow } from 'date-fns';
+import { Timestamp } from 'firebase/firestore';
 
 export interface Note {
   id: string;
   notebookId: string;
+  userId: string;
   title: string;
   content: string;
-  createdAt: Date;
+  createdAt: Timestamp;
 }
 
 interface NoteListProps {
@@ -26,6 +28,14 @@ export function NoteList({ notes, selectedNote, onSelectNote }: NoteListProps) {
             <p className="text-sm">Click "New Note" to get started.</p>
         </div>
     )
+  }
+
+  const getNoteDate = (note: Note) => {
+    if (note.createdAt && typeof note.createdAt.toDate === 'function') {
+      return note.createdAt.toDate();
+    }
+    // Fallback for cases where it might not be a Timestamp object during optimistic updates
+    return new Date();
   }
 
   return (
@@ -47,7 +57,7 @@ export function NoteList({ notes, selectedNote, onSelectNote }: NoteListProps) {
               {note.content.substring(0, 80) || 'No additional content'}
             </p>
             <p className="text-xs text-muted-foreground mt-2">
-              {formatDistanceToNow(note.createdAt, { addSuffix: true })}
+              {formatDistanceToNow(getNoteDate(note), { addSuffix: true })}
             </p>
           </button>
         ))}
@@ -55,3 +65,5 @@ export function NoteList({ notes, selectedNote, onSelectNote }: NoteListProps) {
     </ScrollArea>
   );
 }
+
+    
