@@ -322,6 +322,11 @@ export default function HomePage() {
                         </div>
                     ))}
                 </div>
+                <div className="text-center mt-8">
+                    <GlowingButton asChild>
+                        <Link href="/journey">View the Full Journey</Link>
+                    </GlowingButton>
+                </div>
             </div>
         </section>
 
