@@ -64,10 +64,10 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" asChild className="hidden md:inline-flex">
                 <Link href="/login">Login</Link>
             </Button>
-            <GlowingButton asChild>
+            <GlowingButton asChild className="hidden md:inline-flex">
                 <Link href="/enroll">Enroll Now</Link>
             </GlowingButton>
 
@@ -79,8 +79,8 @@ const Header = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="full" className="p-0">
-                 <SheetHeader className='hidden'>
-                    <SheetTitle>Navigation Menu</SheetTitle>
+                 <SheetHeader>
+                    <SheetTitle className="hidden">Navigation Menu</SheetTitle>
                  </SheetHeader>
                  <div className="flex flex-col items-center justify-center h-full text-center p-8">
                     <nav className="grid gap-6 text-2xl font-medium">
