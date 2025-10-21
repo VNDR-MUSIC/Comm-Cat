@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Award, BarChart, CalendarDays, Target, Users, BookOpen, Lightbulb, TrendingUp } from 'lucide-react';
+import { Award, BarChart, CalendarDays, Target, Users, BookOpen, Lightbulb, TrendingUp, Trophy, Video } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -45,14 +45,6 @@ const courseFeatures = [
   },
 ];
 
-const testimonials = PlaceHolderImages.filter(img => img.id.startsWith("testimonial-"));
-const testimonialDetails = [
-    { name: 'James P.', cohort: 'Cohort 2023', text: "This program didn't just give me skills; it gave me back my voice and my worth. I'm now a small business owner and a mentor to young men in my community.", imageId: 'testimonial-1' },
-    { name: 'Sarah L.', cohort: 'Cohort 2023', text: "Catalyst Academy believed in me when I didn't believe in myself. The support system is unmatched, and I've built relationships that will last a lifetime. I start my new career next month!", imageId: 'testimonial-2' },
-    { name: 'Michael B.', cohort: 'Cohort 2022', text: "From a returning citizen to a community catalyst. That's my story, thanks to this program. I'm now leading a non-profit to help others on their journey of restoration.", imageId: 'testimonial-1' },
-    { name: 'David G.', cohort: 'Cohort 2022', text: "I learned more about finance and business in this program than I ever did in school. It gave me the confidence to launch my own landscaping company, which now employs three other returning citizens.", imageId: 'testimonial-1' },
-];
-
 const journey = [
     { quarter: 'Q1', title: 'Module 1 & 2: Foundations of Self & Finance', description: 'Weeks 1-13: Reclaim your narrative, master your finances, and build a rock-solid foundation for personal growth.' },
     { quarter: 'Q2', title: 'Module 3 & 4: Professional & Personal Wellness', description: 'Weeks 14-26: Develop career-ready skills, master interviews, and prioritize your mental and physical well-being.' },
@@ -79,7 +71,21 @@ const faqs = [
     }
 ]
 
+const AnimatedCounter = ({ to }: { to: number }) => {
+    // This is a placeholder for a counter animation.
+    // A full implementation would use a client component with hooks.
+    return <span className="font-headline font-bold">{to.toLocaleString()}</span>
+}
+
+const stats = [
+    { value: 500, label: 'Graduates Empowered' },
+    { value: 85, label: 'Employment Rate Post-Program', unit: '%' },
+    { value: 120, label: 'New Businesses Started', unit: '+' },
+    { value: 92, label: 'Reduction in Recidivism', unit: '%' },
+];
+
 export default function HomePage() {
+  const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image-1');
   return (
     <div className="flex flex-col">
       <main className="flex-1">
@@ -121,39 +127,73 @@ export default function HomePage() {
           </div>
         </section>
 
-         <section id="how-it-works" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
+         <section id="methodology" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">How It Works</h2>
+              <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Our Learning Methodology</h2>
               <p className="text-muted-foreground md:text-xl">A holistic, three-pronged approach to sustainable success.</p>
             </div>
             <div className="mt-12 grid md:grid-cols-3 gap-8 text-center">
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center p-6 bg-card rounded-lg shadow-sm">
                 <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-accent text-primary-foreground mb-4">
-                  <BookOpen className="w-10 h-10" />
+                  <Video className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-headline font-bold">1. Transformative Curriculum</h3>
-                <p className="text-muted-foreground mt-2">Engage in weekly online modules covering everything from financial literacy and mental wellness to public speaking and entrepreneurship.</p>
+                <h3 className="text-xl font-headline font-bold">Blended Learning</h3>
+                <p className="text-muted-foreground mt-2">Engaging video lectures, live virtual workshops, and self-paced projects to fit your learning style.</p>
               </div>
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center p-6 bg-card rounded-lg shadow-sm">
                 <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-accent text-primary-foreground mb-4">
                   <Users className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-headline font-bold">2. Dedicated Mentorship</h3>
+                <h3 className="text-xl font-headline font-bold">Peer & Expert Mentorship</h3>
                 <p className="text-muted-foreground mt-2">Get paired with an industry leader and a peer mentor for weekly check-ins, guidance, and unwavering support.</p>
               </div>
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center p-6 bg-card rounded-lg shadow-sm">
                 <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-accent text-primary-foreground mb-4">
-                  <TrendingUp className="w-10 h-10" />
+                  <Trophy className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-headline font-bold">3. Capstone Project</h3>
+                <h3 className="text-xl font-headline font-bold">Project-Based Application</h3>
                 <p className="text-muted-foreground mt-2">Apply your new skills by designing and launching a real-world community project or business plan with seed funding available.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="journey" className="py-16 md:py-24 bg-background">
+        <section id="impact" className="py-16 md:py-24 bg-background">
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                     <div className="relative h-96">
+                         <Image
+                            src={heroImage?.imageUrl || ''}
+                            alt={heroImage?.description || ''}
+                            fill
+                            className="object-cover rounded-lg shadow-xl"
+                            data-ai-hint={heroImage?.imageHint}
+                        />
+                    </div>
+                    <div className="space-y-4">
+                        <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl">
+                           Our Proven Impact
+                        </h2>
+                        <p className="text-lg text-muted-foreground">
+                            Our evidence-based approach delivers life-changing results for our participants, their families, and their communities. The numbers speak for themselves.
+                        </p>
+                        <div className="mt-8 grid grid-cols-2 gap-8 text-center">
+                            {stats.map(stat => (
+                                <div key={stat.label} className="p-4 bg-card rounded-lg shadow-md">
+                                    <p className="text-4xl animated-gradient-text">
+                                        <AnimatedCounter to={stat.value} />{stat.unit}
+                                    </p>
+                                    <p className="mt-2 text-xs text-muted-foreground">{stat.label}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="journey" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-3xl mx-auto space-y-4">
                     <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">The 52-Week Journey</h2>
@@ -177,7 +217,7 @@ export default function HomePage() {
             </div>
         </section>
 
-         <section id="faq" className="py-16 md:py-24 bg-secondary/30 section-glow-border">
+         <section id="faq" className="py-16 md:py-24 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                  <div className="text-center max-w-3xl mx-auto space-y-4">
                     <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-4xl md:text-5xl">Frequently Asked Questions</h2>
@@ -198,6 +238,10 @@ export default function HomePage() {
                     </Accordion>
                 </div>
             </div>
+        </section>
+
+        <section className="bg-secondary/30 section-glow-border">
+          <LogoCloud title="Trusted by Leading Organizations" />
         </section>
         
       </main>
