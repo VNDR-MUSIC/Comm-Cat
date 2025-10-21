@@ -1,0 +1,72 @@
+
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { Loader2 } from 'lucide-react';
+
+interface UserProfile {
+    isAdmin?: boolean;
+}
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+  const firestore = useFirestore();
+
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !user?.uid) return null;
+    return doc(firestore, `users/${user.uid}`);
+  }, [firestore, user?.uid]);
+
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userDocRef);
+
+  useEffect(() => {
+    const isLoading = isUserLoading || isProfileLoading;
+    
+    // If loading is finished and we determine the user is not an admin, redirect.
+    if (!isLoading && (!user || !userProfile?.isAdmin)) {
+      router.push('/dashboard');
+    }
+  }, [user, userProfile, isUserLoading, isProfileLoading, router]);
+
+  // While checking auth state and profile, show a loading indicator.
+  if (isUserLoading || isProfileLoading) {
+    return (
+        <div className="flex h-dvh w-full items-center justify-center bg-background">
+            <div className="flex flex-col items-center gap-4">
+                <Loader2 className="h-8 w-8 animate-spin text-accent"/>
+                <p className="text-muted-foreground">Verifying administrator access...</p>
+            </div>
+        </div>
+    );
+  }
+
+  // If user is an admin, render the admin layout.
+  // We add an extra check here to prevent a brief flash of content for non-admins.
+  if (userProfile?.isAdmin) {
+    return (
+        <div className="min-h-dvh">
+            {children}
+        </div>
+    );
+  }
+
+  // Fallback, in case the redirect effect hasn't fired yet.
+  return (
+    <div className="flex h-dvh w-full items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-accent"/>
+            <p className="text-muted-foreground">Verifying administrator access...</p>
+        </div>
+    </div>
+  );
+}
+
+    
