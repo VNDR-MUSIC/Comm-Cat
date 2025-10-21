@@ -14,6 +14,7 @@ import {
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { BookText, FileText, HelpCircle, Download } from "lucide-react"
+import Link from "next/link"
 
 const modules = [
     { id: "m1", title: "Module 1: Foundations of Self-Worth & Vision", progress: 100, lessons: [{ id: "l1", title: "Reclaiming Your Narrative" }, { id: "l2", title: "Goal Setting with Purpose" }] },
@@ -73,7 +74,9 @@ export default function DashboardPage() {
                                                         <BookText className="w-5 h-5 text-accent"/>
                                                         <span className="font-medium">{lesson.title}</span>
                                                     </div>
-                                                    <Button variant="ghost" size="sm">Start Lesson</Button>
+                                                    <Button variant="ghost" size="sm" asChild>
+                                                        <Link href={`/dashboard/courses/${lesson.id}`}>Start Lesson</Link>
+                                                    </Button>
                                                 </li>
                                             ))}
                                         </ul>
