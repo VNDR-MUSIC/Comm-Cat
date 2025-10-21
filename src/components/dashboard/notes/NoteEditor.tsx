@@ -117,7 +117,7 @@ export function NoteEditor({ note, onSave, onDelete }: NoteEditorProps) {
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone. This will permanently delete your note.
-                    </CADlertDialogDescription>
+                    </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
