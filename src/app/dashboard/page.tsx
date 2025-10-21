@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/accordion"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { BookText, FileText, HelpCircle, Download } from "lucide-react"
+import { BookText, FileText, HelpCircle, Download, MessageSquare, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
 
 const modules = [
-    { id: "m1", title: "Module 1: Foundations of Self-Worth & Vision", progress: 100, lessons: [{ id: "l1", title: "Reclaiming Your Narrative" }, { id: "l2", title: "Goal Setting with Purpose" }] },
-    { id: "m2", title: "Module 2: Financial Literacy & Wealth Building", progress: 75, lessons: [{ id: "l3", title: "Budgeting for a New Beginning" }, { id: "l4", title: "Repairing Credit" }] },
-    { id: "m3", title: "Module 3: Professional Readiness & Career Pathways", progress: 20, lessons: [{ id: "l5", title: "Crafting Your Resume" }, { id: "l6", title: "Mastering the Interview" }] },
-    { id: "m4", title: "Module 4: Health, Wellness, & Resilience", progress: 0, lessons: [] },
+    { id: "m1", title: "Module 1: Foundations of Self-Worth & Vision", progress: 100, lessons: [{ id: "l1", title: "Reclaiming Your Narrative" }, { id: "l2", title: "Goal Setting with Purpose" }], discussionCompleted: true },
+    { id: "m2", title: "Module 2: Financial Literacy & Wealth Building", progress: 75, lessons: [{ id: "l3", title: "Budgeting for a New Beginning" }, { id: "l4", title: "Repairing Credit" }], discussionCompleted: true },
+    { id: "m3", title: "Module 3: Professional Readiness & Career Pathways", progress: 20, lessons: [{ id: "l5", title: "Crafting Your Resume" }, { id: "l6", title: "Mastering the Interview" }], discussionCompleted: false },
+    { id: "m4", title: "Module 4: Health, Wellness, & Resilience", progress: 0, lessons: [], discussionCompleted: false },
 ]
 
 export default function DashboardPage() {
@@ -32,7 +32,7 @@ export default function DashboardPage() {
                         Welcome back, Catalyst!
                     </h1>
                     <p className="text-muted-foreground mt-2 text-lg">
-                        Continue your journey to leadership. Here's your progress so far.
+                        Your Cohort (Delta-2024) is on Week 28. Keep up the great work.
                     </p>
                 </header>
 
@@ -40,7 +40,7 @@ export default function DashboardPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="font-headline">Community Catalyst: Empowering Returning Citizens</CardTitle>
-                            <CardDescription>Overall Progress</CardDescription>
+                            <CardDescription>Overall Program Progress</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center gap-4">
@@ -64,9 +64,7 @@ export default function DashboardPage() {
                                 </AccordionTrigger>
                                 <AccordionContent className="p-6 border-t">
                                    <div className="space-y-4">
-                                        <p className="text-sm text-muted-foreground">
-                                            {module.lessons.length > 0 ? "Lessons in this module:" : "No lessons started yet."}
-                                        </p>
+                                        <h4 className="font-bold">Lessons in this module:</h4>
                                         <ul className="space-y-3">
                                             {module.lessons.map(lesson => (
                                                 <li key={lesson.id} className="flex justify-between items-center p-3 bg-secondary/50 rounded-md">
@@ -79,10 +77,18 @@ export default function DashboardPage() {
                                                     </Button>
                                                 </li>
                                             ))}
+                                             {module.lessons.length === 0 && <p className="text-sm text-muted-foreground">No lessons started yet for this module.</p>}
                                         </ul>
-                                        <div className="flex flex-wrap gap-2 pt-4">
+                                        <h4 className="font-bold pt-4 border-t">Required Actions:</h4>
+                                        <div className="flex flex-wrap gap-2">
                                             <Button variant="outline"><FileText />Reflect (Journal)</Button>
-                                            <Button variant="outline"><HelpCircle />Quiz</Button>
+                                            <Button variant="outline"><HelpCircle />Module Quiz</Button>
+                                             <Button variant="outline" asChild>
+                                                <Link href={`/dashboard/discussion/${module.id}`}>
+                                                     {module.discussionCompleted ? <CheckCircle2 className="text-green-500" /> : <MessageSquare />}
+                                                    <span>Join Discussion</span>
+                                                </Link>
+                                            </Button>
                                             <Button variant="outline"><Download />Download Resources</Button>
                                         </div>
                                    </div>

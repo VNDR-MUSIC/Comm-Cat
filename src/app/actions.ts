@@ -5,7 +5,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 const postSchema = z.object({
-  post: z.string().min(10, { message: "Post must be at least 10 characters long." }),
+  post: z.string().min(10, { message: "Your post must be at least 10 characters long to be meaningful." }),
 });
 
 export type PostState = {
@@ -24,7 +24,7 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Validation failed. Please check your post.",
+      message: "Please check your post content.",
       success: false,
     };
   }
@@ -36,7 +36,7 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
 
     if (!moderationResult.isAcceptable) {
       return {
-        message: `Moderation failed: ${moderationResult.reason}`,
+        message: `Your post was not accepted. Reason: ${moderationResult.reason}. Please revise and resubmit.`,
         success: false,
       };
     }
@@ -44,13 +44,14 @@ export async function submitPost(prevState: PostState, formData: FormData): Prom
     // In a real app, you would save the post to the database here.
     // e.g., await db.collection('discussions').add({ content: post, createdAt: new Date(), author: '...' })
     
+    // We are revalidating the path to simulate data being refetched.
     revalidatePath("/dashboard/discussion");
-    return { message: "Post submitted successfully!", success: true };
+    return { message: "Your post has been successfully submitted and is now live!", success: true };
 
   } catch (error) {
     console.error("Error during post submission:", error);
     return {
-      message: "An unexpected error occurred. Please try again.",
+      message: "An unexpected server error occurred. Please try again later.",
       success: false,
     };
   }
