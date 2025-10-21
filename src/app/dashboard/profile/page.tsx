@@ -64,13 +64,14 @@ export default function ProfilePage() {
         
         updateDocumentNonBlocking(userDocRef, updatedData);
 
+        // Simulate network latency for better UX and wait for optimistic update
         setTimeout(() => {
             toast({
                 title: "Profile Updated",
                 description: "Your changes have been saved successfully.",
             });
             setIsSaving(false);
-        }, 1000); // Simulate network latency for better UX
+        }, 1000); 
     };
     
     if (isUserLoading || isProfileLoading) {
