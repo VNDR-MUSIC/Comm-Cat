@@ -7,14 +7,12 @@ import { BookOpenCheck, PlayCircle, Loader2 } from "lucide-react";
 import { Progress } from '@/components/ui/progress';
 import GlowingButton from '@/components/shared/GlowingButton';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, orderBy } from 'firebase/firestore';
 import { useMemo } from 'react';
 
-const enrolledCourses = [
-    {
-        id: "community-catalyst",
-        title: "Community Catalyst: Empowering Returning Citizens",
-        description: "A comprehensive 52-week program to transform your future and become a leader for change in your community.",
+// This data will eventually be fully dynamic, but for now, we map fetched courses to this structure.
+const courseStructure = {
+    "Community Catalyst: Empowering Returning Citizens": {
         lessons: [
             { id: "l1", title: "Reclaiming Your Narrative" },
             { id: "l2", title: "Goal Setting with Purpose" },
@@ -24,15 +22,28 @@ const enrolledCourses = [
             { id: "l6", title: "Mastering the Interview" },
         ]
     }
-];
+}
 
 interface UserLessonProgress {
     lessonId: string;
 }
 
+interface Course {
+    id: string;
+    title: string;
+    description: string;
+}
+
 export default function CoursesPage() {
     const { user } = useUser();
     const firestore = useFirestore();
+
+    const coursesQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        // In a real app, you might query a user's specific enrollments.
+        // For now, we fetch all courses.
+        return query(collection(firestore, 'courses'), orderBy('title', 'asc'));
+    }, [firestore]);
 
     const progressQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
@@ -42,23 +53,14 @@ export default function CoursesPage() {
         );
     }, [firestore, user?.uid]);
 
-    const { data: lessonProgress, isLoading } = useCollection<UserLessonProgress>(progressQuery);
+    const { data: courses, isLoading: coursesLoading } = useCollection<Course>(coursesQuery);
+    const { data: lessonProgress, isLoading: progressLoading } = useCollection<UserLessonProgress>(progressQuery);
+
+    const isLoading = coursesLoading || progressLoading;
 
     const completedLessons = useMemo(() => {
         return new Set(lessonProgress?.map(p => p.lessonId) || []);
     }, [lessonProgress]);
-    
-    const course = enrolledCourses[0];
-    const totalLessons = course.lessons.length;
-    const completedLessonsCount = course.lessons.filter(l => completedLessons.has(l.id)).length;
-    
-    const overallProgress = totalLessons > 0 ? (completedLessonsCount / totalLessons) * 100 : 0;
-
-    const lastCompletedLessonIndex = course.lessons.findLastIndex(l => completedLessons.has(l.id));
-    const nextLesson = lastCompletedLessonIndex < course.lessons.length - 1 
-        ? course.lessons[lastCompletedLessonIndex + 1] 
-        : course.lessons[0];
-
 
     if (isLoading) {
         return (
@@ -80,34 +82,52 @@ export default function CoursesPage() {
                     </p>
                 </header>
 
-                {enrolledCourses.length > 0 ? (
+                {courses && courses.length > 0 ? (
                     <div className="grid gap-6">
-                        <Card key={course.id} className="shadow-lg">
-                            <CardHeader>
-                                <CardTitle className="font-headline text-2xl">{course.title}</CardTitle>
-                                <CardDescription>{course.description}</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-3">
-                                    <p className="text-sm font-medium">Overall Progress</p>
-                                    <div className="flex items-center gap-4">
-                                        <Progress value={overallProgress} className="w-full" />
-                                        <span className="font-bold text-lg text-foreground">{Math.round(overallProgress)}%</span>
-                                    </div>
-                                        <p className="text-sm text-muted-foreground pt-4">
-                                        Next up: <span className="font-bold text-foreground">{nextLesson.title}</span>
-                                    </p>
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                <GlowingButton asChild>
-                                    <Link href={`/dashboard/courses/${nextLesson.id}`}>
-                                        <PlayCircle className="mr-2 h-4 w-4" />
-                                        Continue Course
-                                    </Link>
-                                </GlowingButton>
-                            </CardFooter>
-                        </Card>
+                        {courses.map(course => {
+                            const structure = courseStructure[course.title as keyof typeof courseStructure] || { lessons: [] };
+                            const totalLessons = structure.lessons.length;
+                            const completedLessonsCount = structure.lessons.filter(l => completedLessons.has(l.id)).length;
+                            const overallProgress = totalLessons > 0 ? (completedLessonsCount / totalLessons) * 100 : 0;
+
+                            const lastCompletedLessonIndex = structure.lessons.findLastIndex(l => completedLessons.has(l.id));
+                            const nextLesson = lastCompletedLessonIndex < structure.lessons.length - 1 
+                                ? structure.lessons[lastCompletedLessonIndex + 1] 
+                                : structure.lessons[0];
+
+                            return (
+                                <Card key={course.id} className="shadow-lg">
+                                    <CardHeader>
+                                        <CardTitle className="font-headline text-2xl">{course.title}</CardTitle>
+                                        <CardDescription>{course.description}</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            <p className="text-sm font-medium">Overall Progress</p>
+                                            <div className="flex items-center gap-4">
+                                                <Progress value={overallProgress} className="w-full" />
+                                                <span className="font-bold text-lg text-foreground">{Math.round(overallProgress)}%</span>
+                                            </div>
+                                            {nextLesson && (
+                                                <p className="text-sm text-muted-foreground pt-4">
+                                                    Next up: <span className="font-bold text-foreground">{nextLesson.title}</span>
+                                                </p>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                    <CardFooter>
+                                        {nextLesson && (
+                                            <GlowingButton asChild>
+                                                <Link href={`/dashboard/courses/${nextLesson.id}`}>
+                                                    <PlayCircle className="mr-2 h-4 w-4" />
+                                                    Continue Course
+                                                </Link>
+                                            </GlowingButton>
+                                        )}
+                                    </CardFooter>
+                                </Card>
+                            );
+                        })}
                     </div>
                 ) : (
                     <Card>

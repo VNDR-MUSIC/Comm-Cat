@@ -9,39 +9,52 @@ import Link from 'next/link';
 import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
 import { collection, query, where, serverTimestamp } from 'firebase/firestore';
 
-const lessons: { [key: string]: { title: string, module: string, videoUrl?: string, description: string } } = {
+// This hardcoded data will be replaced by a Firestore fetch in a future step.
+const lessons: { [key: string]: { title: string, module: string, videoUrl?: string, description: string, courseId: string, moduleId: string } } = {
     l1: { 
         title: "Reclaiming Your Narrative", 
         module: "Module 1", 
         description: "Understand the power of your personal story and learn how to reframe your past to build a powerful future.",
-        videoUrl: "https://www.youtube.com/embed/videoseries?list=PLX_2g75xA94CMY1r3f-A-S2f-G4z_w_fC"
+        videoUrl: "https://www.youtube.com/embed/videoseries?list=PLX_2g75xA94CMY1r3f-A-S2f-G4z_w_fC",
+        courseId: "your-course-id", // Placeholder
+        moduleId: "your-module-id-1" // Placeholder
     },
     l2: { 
         title: "Goal Setting with Purpose", 
         module: "Module 1", 
         description: "Define meaningful short-term and long-term goals that align with your vision for a successful and fulfilling life.",
+        courseId: "your-course-id", // Placeholder
+        moduleId: "your-module-id-1" // Placeholder
     },
     l3: { 
         title: "Budgeting for a New Beginning", 
         module: "Module 2", 
         videoUrl: "https://www.youtube.com/embed/fK33dABa_CM",
-        description: "Master the fundamentals of personal finance. Create a realistic budget, track expenses, and develop a savings plan."
+        description: "Master the fundamentals of personal finance. Create a realistic budget, track expenses, and develop a savings plan.",
+        courseId: "your-course-id", // Placeholder
+        moduleId: "your-module-id-2" // Placeholder
     },
     l4: { 
         title: "Repairing Credit", 
         module: "Module 2", 
-        description: "Learn the steps to understand your credit report, dispute inaccuracies, and build a positive credit history over time."
+        description: "Learn the steps to understand your credit report, dispute inaccuracies, and build a positive credit history over time.",
+        courseId: "your-course-id", // Placeholder
+        moduleId: "your-module-id-2" // Placeholder
     },
     l5: { 
         title: "Crafting Your Resume", 
         module: "Module 3", 
         description: "Translate your life experiences and skills into a compelling resume that stands out to employers.",
-        videoUrl: "https://www.youtube.com/embed/uG2aEh6D_wc"
+        videoUrl: "https://www.youtube.com/embed/uG2aEh6D_wc",
+        courseId: "your-course-id", // Placeholder
+        moduleId: "your-module-id-3" // Placeholder
     },
     l6: { 
         title: "Mastering the Interview", 
         module: "Module 3", 
-        description: "Gain confidence and learn strategies to effectively answer common interview questions, including those about your past."
+        description: "Gain confidence and learn strategies to effectively answer common interview questions, including those about your past.",
+        courseId: "your-course-id", // Placeholder
+        moduleId: "your-module-id-3" // Placeholder
     },
 };
 
@@ -67,6 +80,7 @@ export default function LessonPage() {
     const { user } = useUser();
     const firestore = useFirestore();
 
+    // In a future step, this will fetch from Firestore
     const lesson = lessons[lessonId] || { title: "Lesson Not Found", module: "Unknown Module", description: "This lesson does not exist." };
     const nextLesson = getNextLesson(lessonId);
 
@@ -174,5 +188,3 @@ export default function LessonPage() {
         </div>
     );
 }
-
-    
