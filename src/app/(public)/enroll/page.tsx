@@ -10,11 +10,13 @@ import { Textarea } from '@/components/ui/textarea';
 import GlowingButton from '@/components/shared/GlowingButton';
 import { CheckCircle2, Info, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useAuth, initiateEmailSignUp } from '@/firebase';
+import { useAuth, useFirestore, setDocumentNonBlocking, initiateEmailSignUp } from '@/firebase';
+import { doc, serverTimestamp } from 'firebase/firestore';
 
 
 export default function EnrollPage() {
     const auth = useAuth();
+    const firestore = useFirestore();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -23,7 +25,7 @@ export default function EnrollPage() {
     const [error, setError] = useState<string | null>(null);
 
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
@@ -32,12 +34,30 @@ export default function EnrollPage() {
             return;
         }
 
+        if (!auth || !firestore) {
+            setError("Firebase is not initialized. Please try again later.");
+            return;
+        }
+
         try {
-            initiateEmailSignUp(auth, email, password);
-            // In a real app, you would also save the other form data to Firestore here
-            // associated with the new user's UID.
-            // For now, we'll just show the success message.
-            setIsSubmitted(true);
+            const userCredential = await initiateEmailSignUp(auth, email, password);
+            if (userCredential?.user) {
+                const [firstName, ...lastNameParts] = name.split(' ');
+                const lastName = lastNameParts.join(' ');
+
+                const userDocRef = doc(firestore, `users/${userCredential.user.uid}`);
+                const userProfileData = {
+                    id: userCredential.user.uid,
+                    email: email,
+                    firstName: firstName || '',
+                    lastName: lastName || '',
+                    enrollmentDate: serverTimestamp(),
+                    bio: 'Welcome to Catalyst Academy! Tell us a bit about yourself.'
+                };
+                // Use a non-blocking write, as we don't need to wait for it to complete to show the success message.
+                setDocumentNonBlocking(userDocRef, userProfileData, { merge: true });
+                setIsSubmitted(true);
+            }
         } catch (err: any) {
              setError(err.message || "An error occurred during sign-up.");
         }
@@ -55,7 +75,7 @@ export default function EnrollPage() {
                                 Thank you for taking this courageous step, {name || "Catalyst"}.
                             </p>
                             <p>
-                                We've received your application. Our founder, Dr. Warren O. Crabb, personally reviews every submission with the care and attention it deserves. You will receive an email regarding next steps within the next 7-10 business days. For now, let's get you prepared for your journey.
+                                We've received your application and created your account. Our founder, Dr. Warren O. Crabb, personally reviews every submission. You will receive an email regarding next steps within the next 7-10 business days. For now, let's get you prepared for your journey.
                             </p>
                             <GlowingButton asChild>
                                 <Link href="/welcome">See Your Next Steps</Link>

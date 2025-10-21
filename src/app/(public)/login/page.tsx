@@ -27,10 +27,11 @@ export default function LoginPage() {
         e.preventDefault();
         setError(null);
         try {
-            // We are not awaiting this, the onAuthStateChanged listener will handle the redirect
-            initiateEmailSignIn(auth, email, password);
+            // Await the sign-in and redirect on success. The auth listener will also catch it.
+            await initiateEmailSignIn(auth, email, password);
+            router.push('/dashboard');
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message || 'An unknown error occurred.');
         }
     };
     
