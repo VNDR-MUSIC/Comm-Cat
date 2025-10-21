@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -70,7 +71,7 @@ export default function SupportPage() {
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <Phone className="w-5 h-5 text-accent" />
-                                    <span>(800) 555-1234</span>
+                                    <a href="tel:+15615627222" className="hover:underline">+1 (561) 562-7222</a>
                                 </div>
                             </CardContent>
                         </Card>

@@ -15,6 +15,7 @@ export default function FounderPage() {
     titles: 'Founder | Executive Producer | Media Personality',
     location: 'Pinellas Park, FL',
     phone: '+1 (561) 562-7222',
+    phoneDisplay: '561-56-CRABB',
     email: 'doctorcrabb@tcsup.c',
     website: 'thedrproject.com',
     imageUrl: founderImage?.imageUrl || '',
@@ -88,7 +89,7 @@ export default function FounderPage() {
                         <CardContent className="space-y-4 text-sm">
                             <div className="flex items-center gap-4">
                                 <Phone className="w-5 h-5 text-accent" />
-                                <a href={`tel:${founder.phone.replace(/\s/g, '')}`} className="hover:underline">{founder.phone}</a>
+                                <a href={`tel:${founder.phone.replace(/\s/g, '')}`} className="hover:underline">{founder.phoneDisplay}</a>
                             </div>
                             <div className="flex items-center gap-4">
                                 <Mail className="w-5 h-5 text-accent" />
