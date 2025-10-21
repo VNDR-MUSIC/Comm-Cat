@@ -1,6 +1,5 @@
 
-// This component simulates a login form. In a real application,
-// it would handle authentication with Firebase.
+// This component now handles real authentication with Firebase.
 
 "use client";
 
@@ -11,15 +10,44 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import GlowingButton from '@/components/shared/GlowingButton';
 import { Button } from '@/components/ui/button';
+import { useAuth, useUser, initiateEmailSignIn } from '@/firebase';
+import React, { useEffect, useState } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 
 export default function LoginPage() {
     const router = useRouter();
+    const auth = useAuth();
+    const { user, isUserLoading } = useUser();
+    const [email, setEmail] = useState('student@catalyst.edu');
+    const [password, setPassword] = useState('password');
+    const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate successful login and redirect
-        router.push('/dashboard');
+        setError(null);
+        try {
+            // We are not awaiting this, the onAuthStateChanged listener will handle the redirect
+            initiateEmailSignIn(auth, email, password);
+        } catch (err: any) {
+            setError(err.message);
+        }
     };
+    
+    useEffect(() => {
+        // Redirect if user is already logged in
+        if (!isUserLoading && user) {
+            router.push('/dashboard');
+        }
+    }, [user, isUserLoading, router]);
+
+    if (isUserLoading || (!isUserLoading && user)) {
+        return (
+            <div className="min-h-[80vh] flex items-center justify-center bg-background">
+                <p>Loading...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center bg-background">
@@ -31,13 +59,32 @@ export default function LoginPage() {
                     </CardHeader>
                     <form onSubmit={handleSubmit}>
                         <CardContent className="space-y-6">
+                            {error && (
+                                <Alert variant="destructive">
+                                    <AlertTriangle className="h-4 w-4" />
+                                    <AlertDescription>{error}</AlertDescription>
+                                </Alert>
+                            )}
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" type="email" placeholder="you@example.com" required defaultValue="student@catalyst.edu"/>
+                                <Input 
+                                    id="email" 
+                                    type="email" 
+                                    placeholder="you@example.com" 
+                                    required 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" type="password" required defaultValue="password" />
+                                <Input 
+                                    id="password" 
+                                    type="password" 
+                                    required 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
                             </div>
                         </CardContent>
                         <CardFooter className="flex flex-col gap-4">
