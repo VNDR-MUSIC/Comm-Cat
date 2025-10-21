@@ -6,6 +6,9 @@ import { useRouter } from 'next/navigation';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+
 
 interface UserProfile {
     isAdmin?: boolean;
@@ -52,9 +55,14 @@ export default function AdminLayout({
   // We add an extra check here to prevent a brief flash of content for non-admins.
   if (userProfile?.isAdmin) {
     return (
-        <div className="min-h-dvh">
-            {children}
-        </div>
+       <SidebarProvider>
+            <AdminSidebar />
+            <SidebarInset>
+                <div className="min-h-dvh">
+                    {children}
+                </div>
+            </SidebarInset>
+        </SidebarProvider>
     );
   }
 
