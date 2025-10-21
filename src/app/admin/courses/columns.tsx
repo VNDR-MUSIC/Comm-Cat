@@ -4,6 +4,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { ArrowUpDown } from "lucide-react"
+import Link from "next/link"
 
 export interface CourseData {
   id: string;
@@ -26,6 +27,14 @@ export const columns: ColumnDef<CourseData>[] = [
         </Button>
       )
     },
+    cell: ({ row }) => {
+        const course = row.original;
+        return (
+            <Link href={`/admin/courses/${course.id}`} className="font-medium hover:text-accent hover:underline">
+                {course.title}
+            </Link>
+        )
+    }
   },
   {
     accessorKey: "description",
