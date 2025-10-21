@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Shield, Sparkles, TrendingUp, UserCheck } from 'lucide-react';
