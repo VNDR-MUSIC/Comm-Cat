@@ -328,3 +328,50 @@ export async function addLessonToModule(prevState: LessonState, formData: FormDa
         };
     }
 }
+
+
+const updateLessonSchema = lessonSchema.extend({
+  lessonId: z.string(),
+});
+
+export async function updateLesson(prevState: LessonState, formData: FormData): Promise<LessonState> {
+    const validatedFields = updateLessonSchema.safeParse({
+        title: formData.get('title'),
+        duration: formData.get('duration'),
+        activityType: formData.get('activityType'),
+        courseId: formData.get('courseId'),
+        moduleId: formData.get('moduleId'),
+        lessonId: formData.get('lessonId'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            success: false,
+            message: 'Validation failed.'
+        };
+    }
+    
+    const { firestore } = initializeFirebase();
+    const { title, courseId, moduleId, lessonId, duration, activityType } = validatedFields.data;
+
+    try {
+        const lessonDocRef = doc(firestore, `courses/${courseId}/modules/${moduleId}/lessons`, lessonId);
+        await updateDoc(lessonDocRef, {
+            title,
+            duration,
+            activityType,
+            updatedAt: serverTimestamp(),
+        });
+
+        revalidatePath(`/admin/courses/${courseId}/modules/${moduleId}`);
+        return { success: true, message: "Lesson updated successfully!" };
+
+    } catch (error) {
+        console.error("Error updating lesson:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred while updating the lesson.",
+        };
+    }
+}

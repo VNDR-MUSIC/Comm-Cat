@@ -127,21 +127,23 @@ export default function ModuleDetailPage() {
                    {lessons && lessons.length > 0 ? (
                        <div className="border rounded-md">
                            {lessons.map((lesson, index) => (
-                                <div key={lesson.id} className={`flex items-start gap-4 p-4 ${index < lessons.length - 1 ? 'border-b' : ''}`}>
-                                    <div className="text-accent mt-1">{getIconForType(lesson.activityType)}</div>
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-center">
-                                            <h4 className="font-bold">{lesson.title}</h4>
-                                            <div className="text-right text-xs text-muted-foreground">
-                                                <p>{lesson.duration}</p>
-                                                <p className="font-semibold">{lesson.activityType}</p>
+                                <Link key={lesson.id} href={`/admin/courses/${courseId}/modules/${moduleId}/lessons/${lesson.id}/edit`}>
+                                    <div className={`flex items-start gap-4 p-4 hover:bg-accent/10 ${index < lessons.length - 1 ? 'border-b' : ''}`}>
+                                        <div className="text-accent mt-1">{getIconForType(lesson.activityType)}</div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-center">
+                                                <h4 className="font-bold">{lesson.title}</h4>
+                                                <div className="text-right text-xs text-muted-foreground">
+                                                    <p>{lesson.duration}</p>
+                                                    <p className="font-semibold">{lesson.activityType}</p>
+                                                </div>
                                             </div>
                                         </div>
+                                        <Button variant="ghost" size="icon">
+                                            <ChevronRight className="w-4 h-4" />
+                                        </Button>
                                     </div>
-                                    <Button variant="ghost" size="icon">
-                                        <ChevronRight className="w-4 h-4" />
-                                    </Button>
-                                </div>
+                                </Link>
                            ))}
                        </div>
                    ) : (

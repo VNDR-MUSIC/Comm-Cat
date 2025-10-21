@@ -151,6 +151,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "updatedAt": {
+          "type": "object",
+          "description": "Timestamp of when the lesson was last updated."
         }
       },
       "required": [
@@ -732,5 +736,3 @@
     "reasoning": "The Firestore structure is designed to support the Catalyst Academy platform, focusing on courses, user progress, and community interaction. It emphasizes authorization independence and clear security rules. User-specific data (progress, certificates) is stored under the `/users/{userId}` path for private access. Course-related data (courses, modules, lessons, resources) is stored in top-level collections, enabling efficient listing and querying. Discussion threads and replies are nested under modules to maintain context and facilitate moderation. The structure uses denormalization where necessary to avoid complex security rules that require `get()` calls.\n\n**Authorization Independence:** User-specific data like `UserCourseProgress`, `ModuleProgress`, and `Certificate` are nested under `/users/{userId}`. This inherently ties the data's access control to the user's ID, removing the need for `get()` calls in security rules. For collaborative content like `DiscussionThread` and `DiscussionReply`, the `creatorId` field is used, which, although not strictly a membership map, allows simple checks against `request.auth.uid` for creation and modification.\n\n**QAPs (Rules are not Filters):** Segregation is used extensively. User data is separated from course content. Private user data resides under `/users/{userId}`, ensuring that listing operations are always secure. Public course content is stored in top-level collections, and its access is controlled based on user authentication (e.g., only authenticated users can access certain course details)."
   }
 }
-
-    
