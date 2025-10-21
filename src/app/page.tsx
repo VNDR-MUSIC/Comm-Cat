@@ -47,7 +47,7 @@ const courseFeatures = [
 
 const facilitators = PlaceHolderImages.filter(img => img.id.startsWith("facilitator-"));
 const facilitatorDetails = [
-    { name: 'Dr. Aliyah Khan', title: 'Founder & Lead Curriculum Designer', imageId: 'facilitator-1', bio: 'Dr. Khan combines her Ph.D. in Social Work with lived experience to create a curriculum that is both evidence-based and deeply empathetic.' },
+    { name: 'Dr. Warren O. Crabb', title: 'Founder & Lead Curriculum Designer', imageId: 'facilitator-1', bio: 'Dr. Crabb combines his background in media and production with lived experience to create a curriculum that is both evidence-based and deeply empathetic.' },
     { name: 'Marcus Reid', title: 'Community Outreach & Partnerships Lead', imageId: 'facilitator-2', bio: 'A master networker, Marcus builds bridges to employers, community leaders, and resources to ensure our Catalysts have every opportunity to succeed.' },
     { name: 'Elena Santos', title: 'Career & Entrepreneurship Coach', imageId: 'facilitator-3', bio: 'Elena is a certified career coach who specializes in helping individuals translate their life experiences into powerful assets for the job market or their own business ventures.' },
 ];
@@ -282,5 +282,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    

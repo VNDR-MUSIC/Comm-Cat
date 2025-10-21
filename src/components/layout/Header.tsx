@@ -15,6 +15,7 @@ import React from 'react';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
+  { href: '/founder', label: 'Founder' },
   { href: '/curriculum', label: 'Curriculum' },
 ];
 

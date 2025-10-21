@@ -46,7 +46,7 @@ const timeline = [
 
 const team = PlaceHolderImages.filter(img => img.id.startsWith("facilitator-"));
 const teamDetails = [
-    { name: 'Dr. Aliyah Khan', title: 'Founder & CEO', imageId: 'facilitator-1', bio: 'With a Ph.D. in Social Work and personal experience with the justice system, Dr. Khan founded Catalyst Academy to build the support system she wished she had.' },
+    { name: 'Dr. Warren O. Crabb', title: 'Founder & CEO', imageId: 'facilitator-1', bio: 'A dynamic and visionary media leader with a strong background in television, radio, and community-based programming who founded Catalyst Academy to build the support system he wished he had.' },
     { name: 'Marcus Reid', title: 'Director of Programs', imageId: 'facilitator-2', bio: 'Marcus is a community organizer with 15 years of experience building bridges between marginalized communities and local government. He oversees all curriculum and mentorship.' },
     { name: 'Elena Santos', title: 'Director of Career Services', imageId: 'facilitator-3', bio: 'Elena brings a decade of experience from the corporate recruiting world, now dedicated to forging partnerships with inclusive employers and preparing catalysts for success.' },
 ];
@@ -140,6 +140,7 @@ export default function AboutPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-muted-foreground">{value.description}</p>
+
                                 </CardContent>
                              </Card>
                         ))}
