@@ -70,10 +70,10 @@ const Footer = () => {
 
           <div className="mt-8 pt-8 border-t border-secondary-foreground/10 text-center text-sm text-secondary-foreground/50">
             <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-4 mb-6">
-                <div className="text-right">
+                <div className="text-right shrink-0">
                     <p className="font-bold">Powered by:</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-wrap justify-center">
                     {blaqueTechLogo && (
                         <Link href="https://blaque.tech" target="_blank" rel="noopener noreferrer">
                             <Image src={blaqueTechLogo.imageUrl} alt={blaqueTechLogo.description} width={100} height={40} className="object-contain invert" data-ai-hint={blaqueTechLogo.imageHint} />
