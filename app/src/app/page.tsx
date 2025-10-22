@@ -6,6 +6,7 @@ import { Award, BarChart, CalendarDays, Target, Users, BookOpen, Landmark, Brief
 import React from 'react';
 import Autoplay from "embla-carousel-autoplay";
 
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -119,7 +120,7 @@ const featuredModules = [
 ];
 
 
-export default function RootPage() {
+export default function HomePage() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image-1');
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
