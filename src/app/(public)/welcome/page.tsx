@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import GlowingButton from "@/components/shared/GlowingButton";
-import { CheckCircle, BookOpen, Users, CalendarDays, ExternalLink } from "lucide-react";
+import { CheckCircle, BookOpen, Users, CalendarDays, ExternalLink, LifeBuoy } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,6 +40,12 @@ export default function WelcomePage() {
             title: "Understand the Community Covenant",
             description: "Our community is built on trust and respect. Read the principles that guide our interactions.",
             action: { href: "/community", text: "Read the Covenant" }
+        },
+         {
+            icon: <LifeBuoy className="h-6 w-6 text-accent" />,
+            title: "Visit the Knowledge Base",
+            description: "Have a question? Find answers to common questions or chat with our AI support assistant.",
+            action: { href: "/knowledge-base", text: "Get Support" }
         },
     ];
 

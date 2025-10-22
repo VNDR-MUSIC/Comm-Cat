@@ -38,6 +38,7 @@ const navItems = [
       { href: '/journey', label: 'The Journey' },
       { href: '/curriculum', label: 'Curriculum' },
       { href: '/community', label: 'Community' },
+      { href: '/knowledge-base', label: 'Knowledge Base' },
     ],
   },
   { href: '/sponsorship', label: 'Sponsorship' },

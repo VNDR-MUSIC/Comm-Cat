@@ -1,13 +1,11 @@
 
+'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { LifeBuoy, Mail, Phone, Calendar } from "lucide-react";
+import { Mail, Phone, Calendar } from "lucide-react";
 import GlowingButton from "@/components/shared/GlowingButton";
 import Link from "next/link";
+import Script from "next/script";
+import { Button } from "@/components/ui/button";
 
 export default function SupportPage() {
     return (
@@ -26,35 +24,12 @@ export default function SupportPage() {
                     <div className="lg:col-span-2">
                         <Card>
                             <CardHeader>
-                                <CardTitle className="font-headline">Send a Message</CardTitle>
-                                <CardDescription>Our team will get back to you within 24 hours.</CardDescription>
+                                <CardTitle className="font-headline">Chat With Our AI Assistant</CardTitle>
+                                <CardDescription>For immediate answers, ask our AI-powered support bot. It has access to our full knowledge base.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <form className="space-y-6">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="topic">Topic</Label>
-                                        <Select name="topic">
-                                            <SelectTrigger id="topic">
-                                                <SelectValue placeholder="Select a topic" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="technical">Technical Issue</SelectItem>
-                                                <SelectItem value="curriculum">Curriculum Question</SelectItem>
-                                                <SelectItem value="feedback">Feedback & Suggestions</SelectItem>
-                                                <SelectItem value="other">Other</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="subject">Subject</Label>
-                                        <Input id="subject" placeholder="e.g., Trouble accessing Module 2 video" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="message">Message</Label>
-                                        <Textarea id="message" rows={6} placeholder="Please describe your issue in detail..." />
-                                    </div>
-                                    <GlowingButton type="submit">Submit Request</GlowingButton>
-                                </form>
+                                <div id="chat_form"></div>
+                                <Script src="https://app.aminos.ai/js/chat_form_plugin.js" data-bot-id="55174" strategy="lazyOnload" />
                             </CardContent>
                         </Card>
                     </div>
@@ -62,7 +37,8 @@ export default function SupportPage() {
                     <div className="space-y-8">
                         <Card>
                             <CardHeader>
-                                <CardTitle className="font-headline">Contact Information</CardTitle>
+                                <CardTitle className="font-headline">Direct Contact</CardTitle>
+                                <CardDescription>For issues the bot can't resolve.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center gap-4">
@@ -77,8 +53,8 @@ export default function SupportPage() {
                         </Card>
                          <Card>
                             <CardHeader>
-                                <CardTitle className="font-headline">Schedule a Meeting</CardTitle>
-                                <CardDescription>Book a 1-on-1 session with a mentor.</CardDescription>
+                                <CardTitle className="font-headline">Schedule a 1-on-1</CardTitle>
+                                <CardDescription>Book a session with a mentor for personalized guidance.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Button asChild className="w-full">

@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar"
-import { LayoutDashboard, BookOpen, MessageSquare, Award, Folder, LifeBuoy, Notebook, Calendar } from "lucide-react"
+import { LayoutDashboard, BookOpen, MessageSquare, Award, Folder, LifeBuoy, Notebook, Calendar, BrainCircuit } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { UserNav } from "./UserNav";
@@ -22,6 +22,7 @@ const navItems = [
     { href: "/dashboard/discussion", icon: <MessageSquare />, label: "Discussion" },
     { href: "/dashboard/schedule", icon: <Calendar />, label: "Schedule" },
     { href: "/dashboard/resources", icon: <Folder />, label: "Resources" },
+    { href: "/dashboard/knowledge-base", icon: <BrainCircuit />, label: "Knowledge Base" },
     { href: "/dashboard/support", icon: <LifeBuoy />, label: "Support" },
 ]
 
