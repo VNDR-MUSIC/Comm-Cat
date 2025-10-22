@@ -1,0 +1,13 @@
+{
+  "projects": {},
+  "targets": {
+    "autopulse-connect": {
+      "hosting": {
+        "autopulse-connect": [
+          "autopulse-connect"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
