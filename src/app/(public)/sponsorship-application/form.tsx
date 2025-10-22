@@ -22,7 +22,7 @@ import { SubmitButton } from '@/components/shared/SubmitButton';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-export default function SponsorshipApplicationPage() {
+export default function SponsorshipApplicationForm() {
     const searchParams = useSearchParams();
     const type = searchParams.get('type') || 'individual';
 

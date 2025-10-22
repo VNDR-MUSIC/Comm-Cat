@@ -1,6 +1,10 @@
 
-'use server';
+"use client";
 
+// This component is a client component because it fetches data from Firestore
+// on the client-side. This is necessary to avoid build errors caused by
+// calling client-side Firebase functions on the server.
+import { useEffect, useState } from 'react';
 import { initializeFirebase } from "@/firebase";
 import { collection, getDocs, query } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
@@ -21,33 +25,35 @@ interface UserLessonProgress {
     userId: string;
 }
 
-async function getAtRiskStudents() {
-    const { firestore } = initializeFirebase();
+export function StudentsAtRisk() {
+    const [atRiskStudents, setAtRiskStudents] = useState<User[]>([]);
 
-    const usersQuery = query(collection(firestore, 'users'));
-    const progressQuery = query(collection(firestore, 'userLessonProgress'));
-    
-    try {
-        const [userSnap, progressSnap] = await Promise.all([
-            getDocs(usersQuery),
-            getDocs(progressQuery)
-        ]);
+    useEffect(() => {
+        async function getAtRiskStudents() {
+            const { firestore } = initializeFirebase();
 
-        const allUsers = userSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
-        const activeStudentIds = new Set(progressSnap.docs.map(doc => (doc.data() as UserLessonProgress).userId));
+            const usersQuery = query(collection(firestore, 'users'));
+            const progressQuery = query(collection(firestore, 'userLessonProgress'));
 
-        const atRiskStudents = allUsers.filter(user => !user.isAdmin && !activeStudentIds.has(user.id));
-        
-        return atRiskStudents;
+            try {
+                const [userSnap, progressSnap] = await Promise.all([
+                    getDocs(usersQuery),
+                    getDocs(progressQuery)
+                ]);
 
-    } catch (error) {
-        console.error("Error fetching students at risk:", error);
-        return [];
-    }
-}
+                const allUsers = userSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+                const activeStudentIds = new Set(progressSnap.docs.map(doc => (doc.data() as UserLessonProgress).userId));
 
-export async function StudentsAtRisk() {
-    const atRiskStudents = await getAtRiskStudents();
+                const atRiskStudents = allUsers.filter(user => !user.isAdmin && !activeStudentIds.has(user.id));
+
+                setAtRiskStudents(atRiskStudents);
+
+            } catch (error) {
+                console.error("Error fetching students at risk:", error);
+            }
+        }
+        getAtRiskStudents();
+    }, []);
 
     return (
         <Card>

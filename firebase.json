@@ -1,8 +1,8 @@
+
 {
   "hosting": [
     {
       "target": "autopulse-connect",
-      "public": "public",
       "ignore": [
         "firebase.json",
         "**/.*",
