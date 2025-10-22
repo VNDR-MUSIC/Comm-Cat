@@ -6,6 +6,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Catalyst Academy',
@@ -38,7 +40,11 @@ export default function RootLayout({
       </head>
       <body className={cn("font-body antialiased overflow-x-hidden", fontHeadline.variable, fontBody.variable)}>
         <FirebaseClientProvider>
-            {children}
+            <div className="flex flex-col min-h-dvh bg-background text-foreground">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
             <Toaster />
         </FirebaseClientProvider>
       </body>
