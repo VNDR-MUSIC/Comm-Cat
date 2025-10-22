@@ -36,7 +36,7 @@ export default function RootLayout({
       <head>
         <Script src="https://app.aminos.ai/js/chat_plugin.js" data-bot-id="55174" data-position="right" strategy="beforeInteractive" />
       </head>
-      <body className={cn("font-body antialiased", fontHeadline.variable, fontBody.variable)}>
+      <body className={cn("font-body antialiased overflow-x-hidden", fontHeadline.variable, fontBody.variable)}>
         <FirebaseClientProvider>
             {children}
             <Toaster />

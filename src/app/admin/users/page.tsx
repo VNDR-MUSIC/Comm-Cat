@@ -40,7 +40,9 @@ export default function AdminUsersPage() {
                             <Loader2 className="h-8 w-8 animate-spin text-accent" />
                          </div>
                     ) : (
-                        <DataTable columns={columns} data={users || []} filterColumnId="email" filterPlaceholder="Filter by email..." />
+                        <div className="overflow-x-auto">
+                            <DataTable columns={columns} data={users || []} filterColumnId="email" filterPlaceholder="Filter by email..." />
+                        </div>
                     )}
                 </CardContent>
             </Card>

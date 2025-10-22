@@ -49,7 +49,9 @@ export default function AdminCoursesPage() {
                             <Loader2 className="h-8 w-8 animate-spin text-accent" />
                          </div>
                     ) : (
-                        <DataTable columns={columns} data={courses || []} filterColumnId="title" filterPlaceholder="Filter by title..." />
+                        <div className="overflow-x-auto">
+                            <DataTable columns={columns} data={courses || []} filterColumnId="title" filterPlaceholder="Filter by title..." />
+                        </div>
                     )}
                 </CardContent>
             </Card>
