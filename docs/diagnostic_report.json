@@ -1,0 +1,146 @@
+
+{
+  "diagnosticReport": {
+    "generalProjectInfo": {
+      "projectName": "Catalyst Academy",
+      "framework": "Next.js 15.3.3",
+      "firebaseSdkVersion": "11.9.1",
+      "hostingTarget": "Firebase App Hosting",
+      "integrations": [
+        "Firestore",
+        "Authentication",
+        "Genkit (for AI)"
+      ]
+    },
+    "websiteArchitecture": {
+      "layoutSystem": "Next.js App Router",
+      "pagesAndRoutes": {
+        "publicPages": [
+          "/ (Homepage)",
+          "/about",
+          "/community",
+          "/curriculum",
+          "/enroll",
+          "/founder",
+          "/journey",
+          "/knowledge-base",
+          "/login",
+          "/returning-citizens",
+          "/sponsorship",
+          "/sponsorship-application",
+          "/symbi (for AI training)",
+          "/welcome"
+        ],
+        "dashboardPages": [
+          "/dashboard",
+          "/dashboard/courses",
+          "/dashboard/courses/[courseId]/modules/[moduleId]/lessons/[lessonId]",
+          "/dashboard/discussion",
+          "/dashboard/discussion/[moduleId]",
+          "/dashboard/notes",
+          "/dashboard/profile",
+          "/dashboard/progress",
+          "/dashboard/resources",
+          "/dashboard/schedule",
+          "/dashboard/support"
+        ],
+        "adminPages": [
+          "/admin",
+          "/admin/courses",
+          "/admin/courses/new",
+          "/admin/courses/[courseId]",
+          "/admin/courses/[courseId]/edit",
+          "/admin/courses/[courseId]/modules/[moduleId]",
+          "/admin/courses/[courseId]/modules/[moduleId]/lessons/[lessonId]/edit",
+          "/admin/resources",
+          "/admin/resources/new",
+          "/admin/sponsorships",
+          "/admin/users"
+        ]
+      },
+      "navigation": {
+        "publicHeader": "Main navigation with links to Home, The Program (dropdown), and Sponsorship. Includes Login and Enroll buttons.",
+        "dashboardSidebar": "Vertical navigation for authenticated users with links to Dashboard, My Program, Progress, Notes, Discussion, etc.",
+        "adminSidebar": "Vertical navigation for administrators with links to Dashboard, Users, Sponsorships, Courses, etc.",
+        "footer": "Shared footer with quick links, contact information, social media, and partner logos."
+      },
+      "dynamicRoutes": [
+        "/dashboard/courses/[courseId]/modules/[moduleId]/lessons/[lessonId]",
+        "/dashboard/discussion/[moduleId]",
+        "/admin/courses/[courseId]",
+        "/admin/courses/[courseId]/edit",
+        "/admin/courses/[courseId]/modules/[moduleId]",
+        "/admin/courses/[courseId]/modules/[moduleId]/lessons/[lessonId]/edit"
+      ],
+      "apiEndpoints": "None. Data mutations are handled via Next.js Server Actions in `src/app/actions.ts`."
+    },
+    "uiAndLogic": {
+      "uiLibraries": [
+        "Tailwind CSS",
+        "shadcn/ui",
+        "Framer Motion",
+        "Lucide React (icons)",
+        "Recharts (charts)"
+      ],
+      "dataFetching": "Client-side data fetching from Firestore using custom hooks (`useCollection`, `useDoc`) that wrap `onSnapshot` for real-time updates.",
+      "serverActions": [
+        "submitPost: Handles discussion post submissions with AI moderation.",
+        "submitSponsorship: Saves sponsorship applications to Firestore.",
+        "createCourse, updateCourse, addModuleToCourse, addLessonToModule, updateLesson, createResource: Admin actions for managing curriculum.",
+        "toggleAdminStatus: Admin action to change user roles."
+      ],
+      "thirdPartyIntegrations": [
+        "aminos.ai: Embedded AI chatbot for support.",
+        "TidyCal: Embedded calendar for scheduling 1-on-1 sessions.",
+        "Picsum Photos: Used for placeholder images."
+      ]
+    },
+    "rulesAndAuth": {
+      "firestoreRules": "Rules are not explicitly defined in a `.rules` file but are implied by the backend-driven architecture and `docs/backend.json`. Security is intended to be handled by a combination of client-side logic and backend security rules that are not visible in this project's file structure.",
+      "authProviders": [
+        "Email/Password",
+        "Anonymous"
+      ],
+      "roleBasedAccess": "An `isAdmin` boolean flag on the `User` entity is used to control access to the `/admin` route group. This is checked in `src/app/admin/layout.tsx`."
+    },
+    "buildAndDeployConfig": {
+      "firebaseJson": "Not present. Configuration is managed by `apphosting.yaml` for Firebase App Hosting.",
+      "firebaserc": "Not present.",
+      "nextConfigJs": {
+        "typescript": { "ignoreBuildErrors": true },
+        "eslint": { "ignoreDuringBuilds": true },
+        "images": {
+          "remotePatterns": [
+            { "protocol": "https", "hostname": "**" }
+          ]
+        }
+      },
+      "ssrConfig": "The project uses Firebase App Hosting's default SSR configuration. No custom rewrites or redirects are defined in the visible config files."
+    },
+    "currentErrors": {
+      "publishErrors": "No explicit `PUBLISH` errors are logged, but the sequence of recent fixes indicates potential instability related to routing, JSX syntax, and responsive layout issues that could cause deployment failures or runtime errors.",
+      "knownBugs": [
+        "Recent `PageNotFoundError` issues suggest that there may be other incorrect `Link` href values.",
+        "The project has required multiple fixes for horizontal overflow on mobile, indicating that responsive styling might not be robust across all components.",
+        "The dashboard previously had a critical loading issue due to inefficient data fetching, which could be a pattern elsewhere."
+      ]
+    },
+    "objectives": {
+      "endGoal": "Achieve a stable, fully functional, and scalable deployment on Firebase App Hosting. The application should be free of build and runtime errors, fully responsive on all devices, and provide a seamless user experience.",
+      "advancedRequirements": [
+        "Ensure robust role-based access control for both 'student' and 'admin' roles.",
+        "Optimize Firestore queries to be efficient and cost-effective.",
+        "Improve user onboarding and support through the integrated knowledge base and chatbot.",
+        "Maintain a clean, modern, and professional UI/UX consistent with the brand identity."
+      ]
+    },
+    "autoCollectedFiles": {
+      "firebase.json": "File not found.",
+      ".firebaserc": "File not found.",
+      "next.config.js": "{\n  \"typescript\": {\n    \"ignoreBuildErrors\": true\n  },\n  \"eslint\": {\n    \"ignoreDuringBuilds\": true\n  },\n  \"images\": {\n    \"remotePatterns\": [\n      {\n        \"protocol\": \"https\",\n        \"hostname\": \"**\"\n      }\n    ]\n  }\n}",
+      "package.json": "{\n  \"name\": \"nextn\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"next dev --turbopack -p 9002\",\n    \"genkit:dev\": \"genkit start -- tsx src/ai/dev.ts\",\n    \"genkit:watch\": \"genkit start -- tsx --watch src/ai/dev.ts\",\n    \"build\": \"NODE_ENV=production next build\",\n    \"start\": \"next start\",\n    \"lint\": \"next lint\",\n    \"typecheck\": \"tsc --noEmit\"\n  },\n  \"dependencies\": {\n    \"@genkit-ai/google-genai\": \"^1.20.0\",\n    \"@genkit-ai/next\": \"^1.20.0\",\n    \"@hookform/resolvers\": \"^4.1.3\",\n    \"@radix-ui/react-accordion\": \"^1.2.3\",\n    \"@radix-ui/react-alert-dialog\": \"^1.1.6\",\n    \"@radix-ui/react-aspect-ratio\": \"^1.1.0\",\n    \"@radix-ui/react-avatar\": \"^1.1.3\",\n    \"@radix-ui/react-checkbox\": \"^1.1.4\",\n    \"@radix-ui/react-collapsible\": \"^1.1.11\",\n    \"@radix-ui/react-dialog\": \"^1.1.6\",\n    \"@radix-ui/react-dropdown-menu\": \"^2.1.6\",\n    \"@radix-ui/react-label\": \"^2.1.2\",\n    \"@radix-ui/react-menubar\": \"^1.1.6\",\n    \"@radix-ui/react-popover\": \"^1.1.6\",\n    \"@radix-ui/react-progress\": \"^1.1.2\",\n    \"@radix-ui/react-radio-group\": \"^1.2.3\",\n    \"@radix-ui/react-scroll-area\": \"^1.2.3\",\n    \"@radix-ui/react-select\": \"^2.1.6\",\n    \"@radix-ui/react-separator\": \"^1.1.2\",\n    \"@radix-ui/react-slider\": \"^1.2.3\",\n    \"@radix-ui/react-slot\": \"^1.2.3\",\n    \"@radix-ui/react-switch\": \"^1.1.3\",\n    \"@radix-ui/react-tabs\": \"^1.1.3\",\n    \"@radix-ui/react-toast\": \"^1.2.6\",\n    \"@radix-ui/react-tooltip\": \"^1.1.8\",\n    \"class-variance-authority\": \"^0.7.1\",\n    \"clsx\": \"^2.1.1\",\n    \"date-fns\": \"^3.6.0\",\n    \"dotenv\": \"^16.5.0\",\n    \"embla-carousel-autoplay\": \"^8.6.0\",\n    \"embla-carousel-react\": \"^8.6.0\",\n    \"firebase\": \"^11.9.1\",\n    \"framer-motion\": \"^11.5.1\",\n    \"genkit\": \"^1.20.0\",\n    \"lucide-react\": \"^0.475.0\",\n    \"next\": \"15.3.3\",\n    \"patch-package\": \"^8.0.0\",\n    \"react\": \"^18.3.1\",\n    \"react-day-picker\": \"^8.10.1\",\n    \"react-dom\": \"^18.3.1\",\n    \"react-hook-form\": \"^7.54.2\",\n    \"react-resizable-panels\": \"^2.0.22\",\n    \"recharts\": \"^2.15.1\",\n    \"tailwind-merge\": \"^3.0.1\",\n    \"tailwindcss-animate\": \"^1.0.7\",\n    \"zod\": \"^3.24.2\"\n  },\n  \"devDependencies\": {\n    \"@tanstack/react-table\": \"^8.19.2\",\n    \"@types/node\": \"^20\",\n    \"@types/react\": \"^18\",\n    \"@types/react-dom\": \"^18\",\n    \"genkit-cli\": \"^1.20.0\",\n    \"postcss\": \"^8\",\n    \"tailwindcss\": \"^3.4.1\",\n    \"typescript\": \"^5\"\n  }\n}"
+    }
+  }
+}
+
+    
