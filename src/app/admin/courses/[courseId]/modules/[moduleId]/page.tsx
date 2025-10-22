@@ -25,6 +25,7 @@ interface LessonData {
 
 const getIconForType = (type: string) => {
     switch (type) {
+        case "HTML Course": return <BookOpen />;
         case "Video & Reflection": return <Video />;
         case "Interactive Workshop": return <Users />;
         case "Expert Session": return <Pencil />;
@@ -55,7 +56,7 @@ export default function ModuleDetailPage() {
     
     const lessonsQuery = useMemoFirebase(() => {
         if (!firestore || !courseId || !moduleId) return null;
-        return query(collection(firestore, `courses/${courseId}/modules/${moduleId}/lessons`), orderBy('title', 'asc'));
+        return query(collection(firestore, `courses/${courseId}/modules/${moduleId}/lessons`));
     }, [firestore, courseId, moduleId]);
 
     const { data: module, isLoading: isModuleLoading } = useDoc<ModuleData>(moduleDocRef);

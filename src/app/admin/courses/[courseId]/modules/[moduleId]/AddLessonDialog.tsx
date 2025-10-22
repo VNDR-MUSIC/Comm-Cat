@@ -101,6 +101,7 @@ export function AddLessonDialog({ courseId, moduleId }: AddLessonDialogProps) {
                                     <SelectValue placeholder="Select activity type" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="HTML Course">HTML Course</SelectItem>
                                     <SelectItem value="Video & Reflection">Video & Reflection</SelectItem>
                                     <SelectItem value="Interactive Workshop">Interactive Workshop</SelectItem>
                                     <SelectItem value="Expert Session">Expert Session</SelectItem>

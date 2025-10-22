@@ -7,7 +7,7 @@ import { PlayCircle, Loader2 } from "lucide-react";
 import { Progress } from '@/components/ui/progress';
 import GlowingButton from '@/components/shared/GlowingButton';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, limit } from 'firebase/firestore';
 import { useMemo, useState, useEffect } from 'react';
 
 interface Course {
@@ -59,14 +59,14 @@ export function CourseProgressCard({ course }: CourseProgressCardProps) {
             setIsLoading(true);
             
             // 1. Fetch modules
-            const modulesQuery = query(collection(firestore, `courses/${course.id}/modules`), orderBy('title', 'asc'));
+            const modulesQuery = query(collection(firestore, `courses/${course.id}/modules`), orderBy('order', 'asc'));
             const modulesSnapshot = await getDocs(modulesQuery);
             const fetchedModules = modulesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Module));
             setModules(fetchedModules);
 
             // 2. Fetch all lessons for all modules
             const allLessonsPromises = fetchedModules.map(async (module) => {
-                const lessonsQuery = query(collection(firestore, `courses/${course.id}/modules/${module.id}/lessons`), orderBy('title', 'asc'));
+                const lessonsQuery = query(collection(firestore, `courses/${course.id}/modules/${module.id}/lessons`));
                 const lessonsSnapshot = await getDocs(lessonsQuery);
                 return lessonsSnapshot.docs.map(doc => ({
                     moduleId: module.id,
