@@ -1,64 +1,72 @@
 #!/bin/bash
 # auto-clone-deploy-validate.sh
-# Usage: bash auto-clone-deploy-validate.sh <NEW_PROJECT_NAME>
-# Example: bash auto-clone-deploy-validate.sh com-catalyst
+# Usage: bash auto-clone-deploy-validate.sh <new-project-name>
 
 NEW_PROJECT_NAME="$1"
 
 if [ -z "$NEW_PROJECT_NAME" ]; then
-  echo "Usage: $0 <NEW_PROJECT_NAME>"
+  echo "Usage: bash $0 <new-project-name>"
   exit 1
 fi
 
-echo "🚀 Starting auto-clone, deploy, and validate for project '$NEW_PROJECT_NAME'"
+echo "🔍 Detecting latest working Firebase Studio project..."
+LATEST_PROJECT_DIR="$(ls -td -- */ | head -1 | sed 's#/##')"
 
-# Step 1: Detect latest working project
-PROJECTS_ROOT="/studiomain" # <-- change if your projects are elsewhere
-LATEST_PROJECT_DIR=$(ls -dt $PROJECTS_ROOT/* | head -1)
-
-if [ ! -d "$LATEST_PROJECT_DIR" ]; then
-  echo "❌ No Firebase Studio projects found in $PROJECTS_ROOT"
+if [ -z "$LATEST_PROJECT_DIR" ]; then
+  echo "❌ No Firebase Studio projects found in current directory."
   exit 1
 fi
 
-echo "📂 Latest project detected: $LATEST_PROJECT_DIR"
+echo "✅ Latest project detected: $LATEST_PROJECT_DIR"
 
-# Step 2: Clone project to new folder
-NEW_PROJECT_DIR="$PROJECTS_ROOT/$NEW_PROJECT_NAME"
-if [ -d "$NEW_PROJECT_DIR" ]; then
-  echo "⚠️  Target folder $NEW_PROJECT_DIR already exists. Exiting."
-  exit 1
+# Pre-deploy validation for 404 causes
+echo "🔎 Pre-deploy validation for 404 issues..."
+
+if [ ! -d "$LATEST_PROJECT_DIR/public" ]; then
+  echo "❌ Warning: /public folder is missing in the source project."
 fi
 
-cp -r "$LATEST_PROJECT_DIR" "$NEW_PROJECT_DIR"
-echo "✅ Cloned project to $NEW_PROJECT_DIR"
-
-# Step 3: Update internal references (optional: update package.json name, etc.)
-if [ -f "$NEW_PROJECT_DIR/package.json" ]; then
-  sed -i "s/\"name\": \".*\"/\"name\": \"$NEW_PROJECT_NAME\"/" "$NEW_PROJECT_DIR/package.json"
-  echo "🔧 Updated package.json name to $NEW_PROJECT_NAME"
+if [ -d "$LATEST_PROJECT_DIR/public/_next" ]; then
+  echo "❌ Warning: public/_next exists - may cause 404 conflicts."
 fi
 
-# Step 4: Change into new project folder
-cd "$NEW_PROJECT_DIR" || exit 1
-
-# Step 5: Install dependencies
-if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
-  echo "📦 Installing dependencies..."
-  npm install
+if ! grep -q "source: '/**'" "$LATEST_PROJECT_DIR/apphosting.yaml" 2>/dev/null; then
+  echo "❌ Warning: SSR wildcard rewrite missing in apphosting.yaml."
 fi
 
-# Step 6: Build project
-echo "🔨 Building Next.js project..."
+echo "✅ Pre-deploy validation complete."
+
+# Clone project
+echo "📂 Cloning project to $NEW_PROJECT_NAME..."
+cp -r "$LATEST_PROJECT_DIR" "$NEW_PROJECT_NAME"
+cd "$NEW_PROJECT_NAME" || exit 1
+
+# Update Firebase project ID
+echo "🔧 Updating Firebase project ID..."
+sed -i "s/autopulse-connect/$NEW_PROJECT_NAME/g" apphosting.yaml 2>/dev/null || echo "ℹ️ No project ID replacement needed in apphosting.yaml"
+
+# Install dependencies
+echo "📦 Installing dependencies..."
+npm install
+
+# Build project
+echo "🏗 Building project..."
 npm run build
 
-# Step 7: Deploy to Firebase Hosting
-echo "☁️ Deploying to Firebase Hosting..."
+# Deploy to Firebase
+echo "🚀 Deploying to Firebase Hosting..."
 firebase deploy --only apphosting
 
-# Step 8: Verify deployment
-echo "🌐 Validating deployment..."
-# Replace with your new Firebase Hosting URL if known, or list hosting sites
-echo "Deployed Complete! Check the Firebase Hosting dashboard for URL: https://$NEW_PROJECT_NAME.web.app"
+# Post-deploy verification
+LIVE_URL="https://$NEW_PROJECT_NAME.web.app"
+echo "🔗 Deployment complete! Checking live site at $LIVE_URL..."
 
-echo "🎉 Auto-clone, deploy, and validation complete for '$NEW_PROJECT_NAME'"
+HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$LIVE_URL")
+
+if [ "$HTTP_STATUS" == "200" ]; then
+  echo "✅ Live site is accessible: $LIVE_URL"
+elif [ "$HTTP_STATUS" == "404" ]; then
+  echo "❌ Live site returned 404. Check SSR rewrites and public/_next folder."
+else
+  echo "⚠️ Live site returned HTTP status $HTTP_STATUS. Manual check recommended."
+fi
