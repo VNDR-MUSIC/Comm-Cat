@@ -69,7 +69,7 @@ const Footer = () => {
           </div>
 
           <div className="mt-8 pt-8 border-t border-secondary-foreground/10 text-center text-sm text-secondary-foreground/50">
-            <div className="flex flex-wrap justify-center items-center gap-6 mb-6">
+            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-4 mb-6">
                 <div className="text-right">
                     <p className="font-bold">Powered by:</p>
                 </div>
