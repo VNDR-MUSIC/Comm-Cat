@@ -141,7 +141,7 @@ export default function HomePage() {
             </p>
             <div className="flex justify-center">
               <GlowingButton asChild>
-                <Link href="/enroll">Apply for Sponsorship</Link>
+                <Link href="/sponsorship-application">Apply for Sponsorship</Link>
               </GlowingButton>
             </div>
           </div>
