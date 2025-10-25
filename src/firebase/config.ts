@@ -1,8 +1,9 @@
+
 export const firebaseConfig = {
-  "projectId": "autopulse-connect",
-  "appId": "1:109075897024:web:5d849407a91b6713b36b25",
-  "apiKey": "AIzaSyBt6iMZnimukbpxURalarZs-AGt-CF4Oig",
-  "authDomain": "autopulse-connect.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "109075897024"
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
 };

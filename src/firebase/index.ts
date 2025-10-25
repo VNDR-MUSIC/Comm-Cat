@@ -14,16 +14,18 @@ export function initializeFirebase() {
     // populate the FirebaseOptions in production. It is critical that we attempt to call initializeApp()
     // without arguments.
     let firebaseApp;
-    try {
-      // Attempt to initialize via Firebase App Hosting environment variables
-      firebaseApp = initializeApp();
-    } catch (e) {
-      // Only warn in production because it's normal to use the firebaseConfig to initialize
-      // during development
-      if (process.env.NODE_ENV === "production") {
-        console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
-      }
-      firebaseApp = initializeApp(firebaseConfig);
+    if (process.env.FIREBASE_CONFIG) {
+        try {
+            // Attempt to initialize via Firebase App Hosting environment variables
+            firebaseApp = initializeApp();
+        } catch (e) {
+            // This should not happen if FIREBASE_CONFIG is set, but as a fallback
+            console.warn('Automatic initialization failed despite FIREBASE_CONFIG being set. Falling back to local config.', e);
+            firebaseApp = initializeApp(firebaseConfig);
+        }
+    } else {
+        // Not in a Firebase Hosting environment, so use the local config directly
+        firebaseApp = initializeApp(firebaseConfig);
     }
 
     return getSdks(firebaseApp);
