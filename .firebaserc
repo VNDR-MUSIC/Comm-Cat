@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "autopulse-connect"
+  },
   "targets": {
     "autopulse-connect": {
       "hosting": {
